@@ -24,7 +24,7 @@ export async function GET() {
       const slug = slugify(state);
       return `
   <url>
-    <loc>${baseUrl}/state/${slug}</loc>
+    <loc>${new URL(`/state/${slug}`, baseUrl).toString()}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>

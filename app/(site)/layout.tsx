@@ -107,7 +107,7 @@ export default function SiteLayout({
           </div>
 
           {/* Sidebar Ads (Desktop Only) */}
-          <aside className="md:w-1/4 hidden md:block border">
+          <aside className="md:w-1/4 hidden md:block">
             <div className="sticky top-24 space-y-6">
               <AdSlot location="sidebar_top" />
               <AdSlot location="sidebar_bottom" />

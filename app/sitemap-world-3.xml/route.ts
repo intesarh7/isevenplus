@@ -17,7 +17,7 @@ export async function GET() {
     .map(
       (row: any) => `
   <url>
-    <loc>${baseUrl}/world/${row.postal_code}</loc>
+    <loc>${new URL(`/world/${row.postal_code}`, baseUrl).toString()}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
