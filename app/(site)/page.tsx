@@ -21,17 +21,28 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [categories] = await db.query<RowDataPacket[]>(
-    "SELECT * FROM tool_categories LIMIT 6"
-  );
+  let categories: any[] = [];
+  let featuredTools: any[] = [];
+  let trendingTools: any[] = [];
 
-  const [featuredTools] = await db.query<RowDataPacket[]>(
-    "SELECT * FROM tools WHERE isActive=1 AND isDeleted=0 ORDER BY usageCount DESC LIMIT 8"
-  );
+  try {
+    const [cat] = await db.query<RowDataPacket[]>(
+      "SELECT * FROM tool_categories LIMIT 6"
+    );
+    categories = cat;
 
-  const [trendingTools] = await db.query<RowDataPacket[]>(
-    "SELECT * FROM tools WHERE isActive=1 AND isDeleted=0 ORDER BY rating DESC LIMIT 6"
-  );
+    const [feat] = await db.query<RowDataPacket[]>(
+      "SELECT * FROM tools WHERE isActive=1 AND isDeleted=0 ORDER BY usageCount DESC LIMIT 8"
+    );
+    featuredTools = feat;
+
+    const [trend] = await db.query<RowDataPacket[]>(
+      "SELECT * FROM tools WHERE isActive=1 AND isDeleted=0 ORDER BY rating DESC LIMIT 6"
+    );
+    trendingTools = trend;
+  } catch (err) {
+    console.error("Homepage DB Error:", err);
+  }
 
   return (
     <main className="bg-gray-50">
@@ -118,7 +129,7 @@ export default async function HomePage() {
       {/* 4️⃣ TRENDING */}
       <section className="py-16 px-6 bg-gray-100">
         <div className="max-w-6xl mx-auto">
-         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
             <h2 className="text-3xl font-bold">
               Trending Tools
             </h2>
