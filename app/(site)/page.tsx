@@ -11,7 +11,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 
- 
+ export const dynamic = "auto";
 
 export const metadata = {
   title: "iSevenPlus – Free Online Calculators & Smart Tools",
