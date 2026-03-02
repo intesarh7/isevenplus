@@ -18,7 +18,7 @@ ${sitemaps
   .map(
     (s) => `
   <sitemap>
-    <loc>${baseUrl}/${s}</loc>
+    <loc>${new URL(`/${s}`, baseUrl).toString()}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>`
   )
