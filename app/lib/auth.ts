@@ -1,17 +1,23 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = "supersecretkey"; // later .env me dalenge
+const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_key_change_this";
 
+/**
+ * Create JWT Token
+ */
 export function signToken(payload: any) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign(payload, JWT_SECRET, {
+    expiresIn: "1d", // token expiry
+  });
 }
-// const bcrypt = require("bcryptjs");
-// bcrypt.hash("123", 10).then(console.log);
 
+/**
+ * Verify JWT Token
+ */
 export function verifyToken(token: string) {
   try {
     return jwt.verify(token, JWT_SECRET);
-  } catch {
+  } catch (error) {
     return null;
   }
 }

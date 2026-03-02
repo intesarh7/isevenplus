@@ -25,12 +25,18 @@ export default function AdminTools() {
   });
 
   // 🔥 Load Tools
-  const fetchTools = async () => {
-    const res = await fetch("/api/admin/tools/list");
+ const fetchTools = async () => {
+  try {
+    const res = await fetch("/api/admin/tools/list", {
+      cache: "no-store",
+    });
+
     const data = await res.json();
     setTools(data);
-  };
-
+  } catch (err) {
+    console.error("Fetch tools failed:", err);
+  }
+};
   const fetchCategories = async () => {
     const res = await fetch("/api/admin/categories/list");
     const data = await res.json();
