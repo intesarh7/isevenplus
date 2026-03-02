@@ -6,7 +6,7 @@ export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   const [rows] = await db.query<RowDataPacket[]>(
-    "SELECT DISTINCT pincode FROM world_postal_codes"
+    "SELECT DISTINCT pincode FROM worldwide_postal_codes"
   );
 
   const urls = rows
