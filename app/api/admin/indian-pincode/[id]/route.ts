@@ -1,23 +1,18 @@
 import db from "@/app/lib/db";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-// ✅ Correct Params Type (NO Promise here)
-interface RouteContext {
-  params: {
-    id: string;
-  };
-}
+// ✅ Next.js 15 Route Handler (params is Promise)
 
-// ✅ PUT - Update Indian Pincode
 export async function PUT(
-  req: Request,
-  context: RouteContext
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = context.params;
+    // 🔥 IMPORTANT: await params
+    const { id } = await context.params;
+
     const body = await req.json();
 
-    // ✅ Basic validation
     if (!id) {
       return NextResponse.json(
         { success: false, message: "ID is required" },
