@@ -6,14 +6,14 @@ export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   const [rows] = await db.query<RowDataPacket[]>(
-    "SELECT DISTINCT pincode FROM worldwide_postal_codes" 
+    "SELECT DISTINCT postal_code FROM worldwide_postal_codes" 
   );
 
   const urls = rows
     .map(
       (row) => `
   <url>
-    <loc>${baseUrl}/pincode/${row.pincode}</loc>
+    <loc>${baseUrl}/postal_code/${row.pincode}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
