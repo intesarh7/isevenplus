@@ -13,7 +13,7 @@ export async function GET() {
     .map(
       (tool) => `
   <url>
-    <loc>${baseUrl}/tools/${tool.slug}</loc>
+    <loc>${new URL(`/tools/${tool.slug}`, baseUrl).toString()}</loc>
     <lastmod>${tool.updatedAt?.toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
