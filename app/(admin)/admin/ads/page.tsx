@@ -2,6 +2,8 @@ import db from "@/app/lib/db";
 import { RowDataPacket } from "mysql2";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic"; // 🔥 IMPORTANT FIX
+
 export const metadata = {
   title: "Manage Ads | Admin",
   robots: { index: false, follow: false },
@@ -14,12 +16,8 @@ export default async function AdsPage() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
-
-      {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">
-          Ads Management
-        </h1>
+        <h1 className="text-3xl font-bold">Ads Management</h1>
 
         <Link
           href="/admin/ads/new"
@@ -29,17 +27,14 @@ export default async function AdsPage() {
         </Link>
       </div>
 
-      {/* Table */}
       <div className="bg-white shadow rounded-2xl overflow-x-auto">
-
         <table className="w-full text-left">
-
           <thead className="bg-gray-100">
             <tr>
               <th className="p-4">Ad Name</th>
               <th className="p-4">Location</th>
               <th className="p-4">Status</th>
-              <th className="p-4">impression</th>
+              <th className="p-4">Impression</th>
               <th className="p-4">Created</th>
               <th className="p-4">Actions</th>
             </tr>
@@ -48,14 +43,8 @@ export default async function AdsPage() {
           <tbody>
             {ads.map((ad) => (
               <tr key={ad.id} className="border-b">
-
-                <td className="p-4 font-medium">
-                  {ad.adName}
-                </td>
-
-                <td className="p-4">
-                  {ad.location}
-                </td>
+                <td className="p-4 font-medium">{ad.adName}</td>
+                <td className="p-4">{ad.location}</td>
 
                 <td className="p-4">
                   {ad.isActive ? (
@@ -68,16 +57,14 @@ export default async function AdsPage() {
                     </span>
                   )}
                 </td>
-                <td className="p-4">
-                  {ad.impressions}
-                </td>
+
+                <td className="p-4">{ad.impressions}</td>
 
                 <td className="p-4 text-sm text-gray-500">
                   {new Date(ad.createdAt).toLocaleDateString()}
                 </td>
 
                 <td className="p-4 space-x-3">
-
                   <Link
                     href={`/admin/ads/edit/${ad.id}`}
                     className="text-blue-600 hover:underline"
@@ -91,17 +78,12 @@ export default async function AdsPage() {
                   >
                     Delete
                   </Link>
-
                 </td>
-
               </tr>
             ))}
           </tbody>
-
         </table>
-
       </div>
-
     </div>
   );
 }
