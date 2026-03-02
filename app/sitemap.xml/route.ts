@@ -6,7 +6,7 @@ export async function GET() {
   const sitemaps = [
     "sitemap-tools.xml",
     "sitemap-india-pincodes.xml",
-    "sitemap-world-postal.xml",
+    "sitemap-world-index.xml",
     "sitemap-states.xml",
     "sitemap-cities.xml",
     "sitemap-blog.xml",
