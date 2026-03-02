@@ -57,18 +57,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 301);
   }
 
-  /* =====================================================
-     5️⃣ FORCE HTTPS (Production Only)
-  ====================================================== */
-  if (
-    process.env.NODE_ENV === "production" &&
-    protocol !== "https"
-  ) {
-    return NextResponse.redirect(
-      `https://${host}${url.pathname}${url.search}`,
-      301
-    );
-  }
 
   /* =====================================================
      6️⃣ REMOVE WWW (Canonical Domain Fix)
