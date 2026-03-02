@@ -586,8 +586,6 @@ export default async function ToolPage({
             </p>
           </div>
 
-          <AdSlot location="tool_bottom" />
-
           {/* Related Tools */}
           <div className="mt-16">
             <h3 className="text-2xl font-bold mb-6">
