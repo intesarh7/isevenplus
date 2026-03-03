@@ -64,7 +64,7 @@ export default async function PincodePage({
 
   const resolvedSearchParams = await searchParams;
 
-  const query = resolvedSearchParams?.q?.trim() || "";
+  const query = resolvedSearchParams?.q?.toString().trim() ?? "";
   const type = resolvedSearchParams?.type || "india";
 
   let results: RowDataPacket[] = [];
