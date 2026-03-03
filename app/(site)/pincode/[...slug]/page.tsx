@@ -1,34 +1,72 @@
 import db from "@/app/lib/db";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { RowDataPacket } from "mysql2";
 import Link from "next/link";
 import { MapPin, ArrowRight } from "lucide-react";
 
 /* =========================================================
-   🔥 METADATA (SEO + Canonical)
+   🔥 HELPER
+========================================================= */
+function formatSlug(text: string) {
+  return text
+    ?.toString()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+/* =========================================================
+   🔥 BUILD SEO URL
+========================================================= */
+function buildPincodeUrl(data: any) {
+  const state = formatSlug(data.state);
+  const district = formatSlug(data.district);
+  const taluk = formatSlug(data.taluk || "");
+  const office = formatSlug(data.office_name || "");
+  const pincode = data.pincode;
+
+  const parts = ["pincode", state];
+
+  if (district) parts.push(district);
+  if (taluk) parts.push(taluk);
+  if (office) parts.push(office);
+
+  parts.push(pincode);
+
+  return "/" + parts.join("/");
+}
+
+/* =========================================================
+   🔥 METADATA
 ========================================================= */
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ code: string }>;
+  params: { slug: string[] };
 }) {
-  const { code } = await params;
+  const pincode = params.slug[params.slug.length - 1];
 
   const [rows] = await db.query<RowDataPacket[]>(
     "SELECT * FROM indian_pincodes WHERE pincode=? LIMIT 1",
-    [code]
+    [pincode]
   );
 
   if (!rows.length) return {};
 
   const data = rows[0];
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+    "https://isevenplus.com";
+
+  const canonicalPath = buildPincodeUrl(data);
 
   return {
-    title: `${code} Pincode - ${data.district}, ${data.state} | iSevenPlus`,
-    description: `Complete details of ${code} pincode in ${data.district}, ${data.state}. Office name, branch type, delivery status and more.`,
+    title: `${data.pincode} Pincode - ${data.district}, ${data.state} | iSevenPlus`,
+    description: `Complete details of ${data.pincode} pincode in ${data.district}, ${data.state}. Office name, branch type, delivery status and more.`,
     alternates: {
-      canonical: `${baseUrl}/pincode/${code}`,
+      canonical: baseUrl + canonicalPath,
     },
   };
 }
@@ -39,34 +77,44 @@ export async function generateMetadata({
 export default async function PincodeDetail({
   params,
 }: {
-  params: Promise<{ code: string }>;
+  params: { slug: string[] };
 }) {
-  const { code } = await params;
+  const pincode = params.slug[params.slug.length - 1];
 
   const [rows] = await db.query<RowDataPacket[]>(
     "SELECT * FROM indian_pincodes WHERE pincode=?",
-    [code]
+    [pincode]
   );
 
   if (!rows.length) return notFound();
 
   const data = rows[0];
 
+  const correctPath = buildPincodeUrl(data);
+
+  // 🔥 Redirect if URL structure is wrong
+  if (!params.slug.join("/").includes(data.pincode)) {
+    redirect(correctPath);
+  }
+
   /* =========================================================
-     🔥 RELATED PINCODES (Same District)
+     🔥 RELATED PINCODES
   ========================================================= */
   const [related] = await db.query<RowDataPacket[]>(
-    `SELECT pincode 
-     FROM indian_pincodes 
+    `SELECT * FROM indian_pincodes 
      WHERE district=? AND pincode!=?
      LIMIT 8`,
-    [data.district, code]
+    [data.district, pincode]
   );
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+    "https://isevenplus.com";
+
+  const currentUrl = baseUrl + correctPath;
 
   /* =========================================================
-     🔥 JSON-LD (PostalAddress)
+     🔥 JSON-LD
   ========================================================= */
   const postalSchema = {
     "@context": "https://schema.org",
@@ -77,9 +125,6 @@ export default async function PincodeDetail({
     addressCountry: "IN",
   };
 
-  /* =========================================================
-     🔥 Breadcrumb Schema
-  ========================================================= */
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -94,18 +139,19 @@ export default async function PincodeDetail({
         "@type": "ListItem",
         position: 2,
         name: data.state,
-        item: `${baseUrl}/state/${data.state.toLowerCase().replace(/\s+/g, "-")}`,
+        item: `${baseUrl}/state/${formatSlug(data.state)}`,
       },
       {
         "@type": "ListItem",
         position: 3,
         name: data.district,
-        item: `${baseUrl}/city/${data.district.toLowerCase().replace(/\s+/g, "-")}`,
+        item: `${baseUrl}/city/${formatSlug(data.district)}`,
       },
       {
         "@type": "ListItem",
         position: 4,
         name: data.pincode,
+        item: currentUrl,
       },
     ],
   };
@@ -113,7 +159,6 @@ export default async function PincodeDetail({
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
 
-      {/* Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(postalSchema) }}
@@ -123,7 +168,6 @@ export default async function PincodeDetail({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      {/* Header */}
       <div className="text-center mb-10">
         <MapPin className="w-10 h-10 mx-auto text-indigo-600 mb-4" />
         <h1 className="text-4xl font-bold mb-3">
@@ -134,9 +178,7 @@ export default async function PincodeDetail({
         </p>
       </div>
 
-      {/* Main Card */}
       <div className="bg-white shadow-xl rounded-3xl p-8 mb-12">
-
         <div className="grid md:grid-cols-2 gap-6 text-gray-700">
 
           <p><strong>Office Name:</strong> {data.office_name}</p>
@@ -148,34 +190,10 @@ export default async function PincodeDetail({
           <p><strong>Taluk:</strong> {data.taluk}</p>
           <p><strong>Circle:</strong> {data.circle}</p>
           <p><strong>State:</strong> {data.state}</p>
-          <p><strong>Created At:</strong> {new Date(data.created_at).toLocaleDateString()}</p>
 
         </div>
-
-        {/* Internal Links */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4">
-
-          <Link
-            href={`/state/${data.state.toLowerCase().replace(/\s+/g, "-")}`}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl"
-          >
-            View All Pincodes in {data.state}
-            <ArrowRight size={16} />
-          </Link>
-
-          <Link
-            href={`/city/${data.district.toLowerCase().replace(/\s+/g, "-")}`}
-            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-xl"
-          >
-            View All Pincodes in {data.district}
-            <ArrowRight size={16} />
-          </Link>
-
-        </div>
-
       </div>
 
-      {/* Related Pincodes */}
       {related.length > 0 && (
         <div>
           <h2 className="text-2xl font-bold mb-6">
@@ -186,7 +204,7 @@ export default async function PincodeDetail({
             {related.map((item: any) => (
               <Link
                 key={item.pincode}
-                href={`/pincode/${item.pincode}`}
+                href={buildPincodeUrl(item)}
                 className="border rounded-xl p-4 text-center hover:shadow-lg transition"
               >
                 {item.pincode}
@@ -195,24 +213,6 @@ export default async function PincodeDetail({
           </div>
         </div>
       )}
-
-      {/* SEO Content */}
-      <section className="mt-16 bg-indigo-50 p-8 rounded-3xl">
-        <h2 className="text-2xl font-bold mb-4">
-          About {data.pincode} Pincode
-        </h2>
-
-        <p className="text-gray-700 leading-relaxed mb-4">
-          The pincode {data.pincode} belongs to {data.district} district in {data.state}. 
-          This post office falls under the {data.branch_type} branch type 
-          and its delivery status is {data.delivery_status}.
-        </p>
-
-        <p className="text-gray-700 leading-relaxed">
-          Use this page to verify postal details, courier delivery coverage,
-          and address information for this location.
-        </p>
-      </section>
 
     </div>
   );

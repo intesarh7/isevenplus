@@ -66,20 +66,36 @@ export default function PincodeAutoSuggest({
               <div className="px-4 py-2 text-sm font-semibold bg-gray-100">
                 🇮🇳 India Results
               </div>
-              {indiaResults.map((item, index) => (
-                <div
-                  key={`india-${index}`}
-                  onClick={() =>
-                    router.push(`/pincode/${item.pincode}`)
-                  }
-                  className="p-3 hover:bg-indigo-50 cursor-pointer border-b"
-                >
-                  <p className="font-medium">{item.pincode}</p>
-                  <p className="text-sm text-gray-500">
-                    {item.district}, {item.state}
-                  </p>
-                </div>
-              ))}
+              {indiaResults.map((item, index) => {
+                const state = formatSlug(item.state);
+                const district = formatSlug(item.district);
+                const taluk = formatSlug(item.taluk || "");
+                const office = formatSlug(item.office_name || "");
+                const pincode = item.pincode;
+
+                const parts = ["pincode", state];
+
+                if (district) parts.push(district);
+                if (taluk) parts.push(taluk);
+                if (office) parts.push(office);
+
+                parts.push(pincode);
+
+                const finalUrl = `/${parts.join("/")}`;
+
+                return (
+                  <div
+                    key={`india-${index}`}
+                    onClick={() => router.push(finalUrl)}
+                    className="p-3 hover:bg-indigo-50 cursor-pointer border-b"
+                  >
+                    <p className="font-medium">{item.pincode}</p>
+                    <p className="text-sm text-gray-500">
+                      {item.office_name}, {item.district}, {item.state}
+                    </p>
+                  </div>
+                );
+              })}
             </>
           )}
 
