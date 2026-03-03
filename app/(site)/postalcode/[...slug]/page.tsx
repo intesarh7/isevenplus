@@ -8,7 +8,31 @@ import { MapPin, ArrowRight } from "lucide-react";
    🔥 HELPER
 ========================================================= */
 function formatSlug(text: string) {
-  return text.toLowerCase().replace(/\s+/g, "-");
+  return text
+    ?.toString()
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+/* =========================================================
+   🔥 BUILD SEO URL
+========================================================= */
+function buildPostalUrl(data: any) {
+  const country = formatSlug(data.country_code);
+  const state = formatSlug(data.admin1 || "");
+  const city = formatSlug(data.place_name || "");
+  const postal = data.postal_code.replace(/\s+/g, "");
+
+  const parts = ["postalcode", country];
+
+  if (state) parts.push(state);
+  if (city) parts.push(city);
+
+  parts.push(postal);
+
+  return "/" + parts.join("/");
 }
 
 /* =========================================================
@@ -17,10 +41,10 @@ function formatSlug(text: string) {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ code: string }>;
+  params: { slug: string[] };
 }) {
-  const { code } = await params;
-  const cleanCode = decodeURIComponent(code).trim();
+  const postal = params.slug[params.slug.length - 1];
+  const cleanCode = decodeURIComponent(postal).trim();
 
   const [rows] = await db.query<RowDataPacket[]>(
     `SELECT * FROM worldwide_postal_codes 
@@ -32,13 +56,17 @@ export async function generateMetadata({
   if (!rows.length) return {};
 
   const data = rows[0];
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+    "https://isevenplus.com";
+
+  const canonicalPath = buildPostalUrl(data);
 
   return {
     title: `${data.postal_code} Postal Code - ${data.place_name}, ${data.country_code} | iSevenPlus`,
-    description: `Complete details of postal code ${data.postal_code} in ${data.place_name}, ${data.country_code}. View location coordinates and regional information.`,
+    description: `Complete details of postal code ${data.postal_code} in ${data.place_name}, ${data.country_code}. View coordinates and regional information.`,
     alternates: {
-      canonical: `${baseUrl}/world/${cleanCode.replace(/\s+/g, "")}`,
+      canonical: baseUrl + canonicalPath,
     },
   };
 }
@@ -49,10 +77,10 @@ export async function generateMetadata({
 export default async function WorldDetail({
   params,
 }: {
-  params: Promise<{ code: string }>;
+  params: { slug: string[] };
 }) {
-  const { code } = await params;
-  const cleanCode = decodeURIComponent(code).trim();
+  const postal = params.slug[params.slug.length - 1];
+  const cleanCode = decodeURIComponent(postal).trim();
 
   const [rows] = await db.query<RowDataPacket[]>(
     `SELECT * FROM worldwide_postal_codes 
@@ -64,13 +92,17 @@ export default async function WorldDetail({
   if (!rows.length) return notFound();
 
   const data = rows[0];
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+    "https://isevenplus.com";
+
+  const currentUrl = baseUrl + buildPostalUrl(data);
 
   /* =========================================================
-     🔥 RELATED POSTAL CODES (Same Country)
+     🔥 RELATED POSTAL CODES
   ========================================================= */
   const [related] = await db.query<RowDataPacket[]>(
-    `SELECT postal_code 
+    `SELECT * 
      FROM worldwide_postal_codes 
      WHERE country_code=? 
      AND REPLACE(postal_code, ' ', '') != REPLACE(?, ' ', '')
@@ -113,6 +145,7 @@ export default async function WorldDetail({
         "@type": "ListItem",
         position: 3,
         name: data.postal_code,
+        item: currentUrl,
       },
     ],
   };
@@ -137,23 +170,21 @@ export default async function WorldDetail({
           {data.postal_code} Postal Code Details
         </h1>
         <p className="text-gray-600">
-          {data.place_name}, {data.country_code}
+          {data.place_name}, {data.admin1 && `${data.admin1},`}{" "}
+          {data.country_code}
         </p>
       </div>
 
       {/* Main Card */}
       <div className="bg-white shadow-xl rounded-3xl p-8 mb-12">
         <div className="grid md:grid-cols-2 gap-6 text-gray-700">
-
           <p><strong>Place:</strong> {data.place_name}</p>
           <p><strong>State/Region:</strong> {data.admin1 || "N/A"}</p>
           <p><strong>Country:</strong> {data.country_code}</p>
           <p><strong>Latitude:</strong> {data.latitude}</p>
           <p><strong>Longitude:</strong> {data.longitude}</p>
-
         </div>
 
-        {/* Google Maps Link */}
         <div className="mt-8">
           <a
             href={`https://www.google.com/maps?q=${data.latitude},${data.longitude}`}
@@ -177,7 +208,7 @@ export default async function WorldDetail({
             {related.map((item: any) => (
               <Link
                 key={item.postal_code}
-                href={`/world/${item.postal_code.replace(/\s+/g, "")}`}
+                href={buildPostalUrl(item)}
                 className="border rounded-xl p-4 hover:shadow-lg transition text-center"
               >
                 {item.postal_code}
@@ -194,12 +225,12 @@ export default async function WorldDetail({
         </h2>
 
         <p className="text-gray-700 leading-relaxed mb-4">
-          The postal code {data.postal_code} belongs to {data.place_name} in {data.country_code}. 
+          The postal code {data.postal_code} belongs to {data.place_name} in {data.country_code}.
           This location lies at latitude {data.latitude} and longitude {data.longitude}.
         </p>
 
         <p className="text-gray-700 leading-relaxed">
-          Use this information for international shipping, courier services, 
+          Use this information for international shipping, courier services,
           address verification and global logistics planning.
         </p>
       </section>
