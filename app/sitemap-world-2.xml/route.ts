@@ -1,7 +1,7 @@
 import db from "@/app/lib/db";
 import { NextResponse } from "next/server";
 import { RowDataPacket } from "mysql2";
-
+export const dynamic = "force-dynamic";
 function formatSlug(text: string) {
   return text
     ?.toString()
