@@ -26,6 +26,12 @@ ${sitemaps
 </sitemapindex>`;
 
   return new NextResponse(xml, {
-    headers: { "Content-Type": "application/xml" },
+    headers: {
+      "Content-Type": "application/xml",
+      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+      "Pragma": "no-cache",
+      "Expires": "0",
+      "X-Robots-Tag": "noindex"
+    },
   });
 }
