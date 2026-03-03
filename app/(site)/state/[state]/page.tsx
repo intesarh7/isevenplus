@@ -46,26 +46,27 @@ export default async function StatePage({
   /* =========================================================
      🔥 FETCH DISTRICTS
   ========================================================= */
-  const [districtRows] = await db.query<RowDataPacket[]>(
-    `SELECT DISTINCT district 
-     FROM indian_pincodes 
-     WHERE LOWER(state) LIKE LOWER(?) 
-     ORDER BY district ASC`,
-    [`%${stateName}%`]
-  );
+const searchState = `%${stateName.replace(/\s+/g, "%")}%`;
+
+const [districtRows] = await db.query<RowDataPacket[]>(
+  `SELECT DISTINCT district 
+   FROM indian_pincodes 
+   WHERE LOWER(REPLACE(state, '&', 'and')) LIKE LOWER(?) 
+   ORDER BY district ASC`,
+  [searchState]
+);
 
   if (!districtRows.length) return notFound();
 
   /* =========================================================
      🔥 TOTAL PINCODE COUNT
   ========================================================= */
-  const [countRows] = await db.query<RowDataPacket[]>(
-    `SELECT COUNT(*) as total 
-     FROM indian_pincodes 
-     WHERE LOWER(state) LIKE LOWER(?)`,
-    [`%${stateName}%`]
-  );
-
+const [countRows] = await db.query<RowDataPacket[]>(
+  `SELECT COUNT(*) as total 
+   FROM indian_pincodes 
+   WHERE LOWER(REPLACE(state, '&', 'and')) LIKE LOWER(?)`,
+  [searchState]
+);
   const totalPincodes = countRows[0]?.total || 0;
 
   /* =========================================================
@@ -79,7 +80,7 @@ export default async function StatePage({
    AND LOWER(state) != LOWER(?)
    ORDER BY state ASC
    LIMIT 8`,
-    [stateName]
+    [stateName.replace(/\s+/g, " ")]
   );
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";

@@ -9,6 +9,15 @@ import PincodeAutoSuggest from "@/app/components/PincodeAutoSuggest";
 const baseUrl =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
+  const generateSlug = (text: string) => {
+  return text
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .trim();
+};
 /* =========================================================
    ✅ DYNAMIC SEO METADATA
 ========================================================= */
@@ -176,10 +185,10 @@ export default async function PincodePage({
         />
       )}
 
-      <main className="max-w-7xl mx-auto px-4 py-12 md:flex gap-10">
+      <main className="max-w-7xl mx-auto px-4 py-12 flex flex-col-reverse md:flex-row gap-10">
 
         {/* ================= LEFT STATE PANEL ================= */}
-        <aside className="md:w-1/4 mb-10 md:mb-0">
+        <aside className="md:w-1/4 mt-10 md:mt-0">
           <div className="bg-white rounded-2xl shadow p-6 sticky top-24">
             <h3 className="text-lg font-bold mb-4">
               Browse By State
@@ -192,7 +201,7 @@ export default async function PincodePage({
                 .map((state: any, index: number) => (
                   <a
                     key={index}
-                    href={`/state/${state.state.toLowerCase().replace(/\s+/g, "-")}`}
+                    href={`/state/${generateSlug(state.state)}`}
                     className="flex justify-between items-center text-sm border-b pb-2 hover:text-indigo-600"
                   >
                     <span>{state.state}</span>
