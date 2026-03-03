@@ -1,6 +1,6 @@
 const baseUrl =
   process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
-  "https://isevenplus.com";
+  "https://www.isevenplus.com";
 
 export default function robots() {
   return {

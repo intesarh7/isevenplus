@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 const BASE_URL =
   process.env.NODE_ENV === "production"
-    ? "https://isevenplus.com"
+    ? "https://www.isevenplus.com"
     : "http://localhost:3000";
 
 export const metadata: Metadata = {

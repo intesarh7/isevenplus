@@ -58,7 +58,7 @@ export async function generateMetadata({
 
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
-    "https://isevenplus.com";
+    "https://www.isevenplus.com";
 
   const canonicalPath = buildPincodeUrl(data);
 
@@ -109,7 +109,7 @@ export default async function PincodeDetail({
 
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
-    "https://isevenplus.com";
+    "https://www.isevenplus.com";
 
   const currentUrl = baseUrl + correctPath;
 

@@ -58,7 +58,7 @@ export async function generateMetadata({
   const data = rows[0];
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
-    "https://isevenplus.com";
+    "https://www.isevenplus.com";
 
   const canonicalPath = buildPostalUrl(data);
 
@@ -94,7 +94,7 @@ export default async function WorldDetail({
   const data = rows[0];
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
-    "https://isevenplus.com";
+    "https://www.isevenplus.com";
 
   const currentUrl = baseUrl + buildPostalUrl(data);
 

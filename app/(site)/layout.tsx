@@ -6,7 +6,7 @@ import Script from "next/script";
 const isProd = process.env.NODE_ENV === "production";
 
 const BASE_URL = isProd
-  ? "https://isevenplus.com"
+  ? "https://www.isevenplus.com"
   : "http://localhost:3000";
 
 export const metadata = {

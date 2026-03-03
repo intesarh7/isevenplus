@@ -62,8 +62,8 @@ export default async function ToolsPage({
     <div className="max-w-7xl mx-auto px-4 py-10">
       <BreadcrumbSchema
         items={[
-          { name: "Home", url: "https://isevenplus.com" },
-          { name: "Tools", url: "https://isevenplus.com/tools" },
+          { name: "Home", url: "https://www.isevenplus.com" },
+          { name: "Tools", url: "https://www.isevenplus.com/tools" },
           ...(category
             ? [
               {
@@ -71,7 +71,7 @@ export default async function ToolsPage({
                   (categories as any[]).find(
                     (c) => c.id === Number(category)
                   )?.name || "",
-                url: `https://isevenplus.com/tools?category=${category}`,
+                url: `https://www.isevenplus.com/tools?category=${category}`,
               },
             ]
             : []),
