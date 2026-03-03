@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 
 export async function POST() {
-  const response = NextResponse.json({ success: true });
+  const response = NextResponse.json(
+    { message: "Logged out" },
+    { status: 200 }
+  );
 
   response.cookies.set("admin_token", "", {
     httpOnly: true,
-    expires: new Date(0),
+    secure: process.env.NODE_ENV === "production",
     path: "/",
+    expires: new Date(0),
   });
 
   return response;

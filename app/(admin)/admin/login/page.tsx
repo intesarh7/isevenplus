@@ -7,10 +7,13 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
     try {
       setLoading(true);
@@ -20,7 +23,7 @@ export default function AdminLogin() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // 🔥 VERY IMPORTANT
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
@@ -29,12 +32,12 @@ export default function AdminLogin() {
       if (res.ok) {
         router.push("/admin");
       } else {
-        alert(data.error || "Invalid credentials");
+        setError(data.error || "The email or password you entered doesn’t match our records.");
       }
 
     } catch (error) {
       console.error("Login error:", error);
-      alert("Something went wrong");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -50,24 +53,46 @@ export default function AdminLogin() {
 
         <form onSubmit={handleLogin} className="space-y-4">
 
-          <input
-            type="email"
-            placeholder="Email"
-            required
-            className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          {/* EMAIL */}
+          <div>
+            <input
+              type="email"
+              placeholder="Email"
+              required
+              className={`w-full border p-3 rounded-lg focus:outline-none focus:ring-2 ${error ? "border-red-500 focus:ring-red-400" : "focus:ring-blue-500"
+                }`}
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError(null);
+              }}
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            required
-            className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          {/* PASSWORD */}
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              required
+              className={`w-full border p-3 rounded-lg focus:outline-none focus:ring-2 ${error ? "border-red-500 focus:ring-red-400" : "focus:ring-blue-500"
+                }`}
+              value={password}
+               onChange={(e) => {
+                setPassword(e.target.value);
+                setError(null);
+              }}
+            />
+          </div>
 
+          {/* ERROR MESSAGE */}
+          {error && (
+            <p className="text-red-500 text-sm font-medium">
+              {error}
+            </p>
+          )}
+
+          {/* BUTTON */}
           <button
             type="submit"
             disabled={loading}

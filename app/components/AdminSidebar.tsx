@@ -15,11 +15,14 @@ export default function AdminSidebar() {
     { name: "Ads", href: "/admin/ads" },
   ];
 
-  const handleLogout = async () => {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.push("/admin/login");
-  };
+ const handleLogout = async () => {
+  await fetch("/api/admin/logout", {
+    method: "POST",
+    credentials: "include",
+  });
 
+  router.push("/admin/login");
+};
   return (
     <aside className="w-64 bg-gray-900 text-white min-h-screen p-6">
       <h2 className="text-xl font-bold mb-8">Admin Panel</h2>
