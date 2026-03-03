@@ -4,37 +4,51 @@ import { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 
+function slugify(text: string) {
+  return text
+    ?.toString()
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "");
+}
+
+// ✅ XML escape function
+function escapeXml(unsafe: string) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 export async function GET() {
-  const baseUrl =
+  const rawBaseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
+  const baseUrl = rawBaseUrl.replace(/\/+$/, "");
+
   const [rows] = await db.query<RowDataPacket[]>(
-    "SELECT DISTINCT pincode, district, state FROM indian_pincodes"
+    "SELECT DISTINCT pincode, city, district, state FROM indian_pincodes"
   );
 
   const urls = rows
     .map((row) => {
-      // Safely build URL parts
       const parts = [
         row.pincode,
         row.city,
         row.district,
         row.state,
       ]
-        .filter(Boolean) // remove null/undefined/empty
-        .map((part: string) =>
-          part
-            .toString()
-            .trim()
-            .toLowerCase()
-            .replace(/\s+/g, "-")
-        );
+        .filter(Boolean)
+        .map((part: string) => slugify(part));
 
       const fullUrl = `${baseUrl}/pincode/${parts.join("/")}`;
 
       return `
   <url>
-    <loc>${fullUrl}</loc>
+    <loc>${escapeXml(fullUrl)}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -51,9 +65,10 @@ ${urls}
     status: 200,
     headers: {
       "Content-Type": "application/xml",
-      "Cache-Control":"no-store, no-cache, must-revalidate, proxy-revalidate",
-      "Pragma": "no-cache",
-      "Expires": "0",
+      "Cache-Control":
+        "no-store, no-cache, must-revalidate, proxy-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
       "X-Robots-Tag": "noindex",
     },
   });
