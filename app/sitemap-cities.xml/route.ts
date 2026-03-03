@@ -1,7 +1,9 @@
 import db from "@/app/lib/db";
 import { NextResponse } from "next/server";
 import { RowDataPacket } from "mysql2";
+
 export const dynamic = "force-dynamic";
+
 function slugify(text: string) {
   return text
     ?.toLowerCase()
@@ -11,7 +13,11 @@ function slugify(text: string) {
 }
 
 export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  // Remove trailing slash safely
+  const rawBaseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
+
+  const baseUrl = rawBaseUrl.replace(/\/+$/, ""); // remove ending slash
 
   const [cities] = await db.query<RowDataPacket[]>(
     "SELECT DISTINCT district FROM indian_pincodes WHERE district IS NOT NULL AND district != ''"
@@ -22,9 +28,13 @@ export async function GET() {
   const urls = uniqueCities
     .map((city) => {
       const slug = slugify(city);
+      if (!slug) return ""; // safety
+
+      const fullUrl = `${baseUrl}/city/${slug}`;
+
       return `
   <url>
-    <loc>${baseUrl}/city/${slug}</loc>
+    <loc>${fullUrl}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
@@ -38,12 +48,14 @@ ${urls}
 </urlset>`;
 
   return new NextResponse(xml, {
+    status: 200,
     headers: {
       "Content-Type": "application/xml",
-      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-      "Pragma": "no-cache",
-      "Expires": "0",
-      "X-Robots-Tag": "noindex"
+      "Cache-Control":
+        "no-store, no-cache, must-revalidate, proxy-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+      "X-Robots-Tag": "noindex",
     },
   });
 }

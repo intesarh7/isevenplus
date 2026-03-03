@@ -13,17 +13,17 @@ export async function GET() {
   ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${sitemaps
-  .map(
-    (s) => `
-  <sitemap>
-    <loc>${new URL(`/${s}`, baseUrl).toString()}</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
-  </sitemap>`
-  )
-  .join("")}
-</sitemapindex>`;
+  <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  ${sitemaps
+    .map(
+      (s) => `
+    <sitemap>
+      <loc>${new URL(`/${s}`, baseUrl).toString()}</loc>
+      <lastmod>${new Date().toISOString()}</lastmod>
+    </sitemap>`
+    )
+    .join("")}
+  </sitemapindex>`;
 
   return new NextResponse(xml, {
     headers: {
