@@ -11,7 +11,7 @@ export const metadata = {
 export default function NotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
-      <div className="max-w-xl w-full text-center bg-white shadow-xl rounded-2xl p-10">
+      <div className="max-w-4xl w-full text-center bg-white shadow-xl rounded-2xl p-10">
 
         {/* 404 Number */}
         <h1 className="text-7xl font-extrabold text-indigo-600 mb-4">
