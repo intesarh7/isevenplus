@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import BookmarkButton from "./BookmarkButton";
+import Image from "next/image";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -23,7 +24,13 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold text-indigo-600">
-            <img src="isevenPlus-logo.png" width="130" alt="isevenPlus-logo" />
+            <Image
+              src="/isevenPlus-logo.png"
+              alt="iSevenPlus Logo"
+              width={130}
+              height={40}
+              priority
+            />
           </Link>
 
           {/* Desktop Menu */}
@@ -32,11 +39,10 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`transition ${
-                  pathname === link.href
+                className={`transition ${pathname === link.href
                     ? "text-indigo-600 font-semibold"
                     : "text-gray-700 hover:text-indigo-600"
-                }`}
+                  }`}
               >
                 {link.name}
               </Link>
@@ -65,9 +71,8 @@ export default function Navbar() {
 
       {/* Drawer Menu */}
       <div
-        className={`fixed top-0 right-0 h-full w-72 bg-white shadow-xl z-50 transform transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 h-full w-72 bg-white shadow-xl z-50 transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         {/* Drawer Header */}
         <div className="flex justify-between items-center p-4 border-b">
@@ -87,11 +92,10 @@ export default function Navbar() {
               key={link.name}
               href={link.href}
               onClick={() => setIsOpen(false)}
-              className={`text-lg transition ${
-                pathname === link.href
+              className={`text-lg transition ${pathname === link.href
                   ? "text-indigo-600 font-semibold"
                   : "text-gray-700 hover:text-indigo-600"
-              }`}
+                }`}
             >
               {link.name}
             </Link>
