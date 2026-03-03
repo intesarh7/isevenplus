@@ -1,5 +1,6 @@
 const baseUrl =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+  "https://isevenplus.com";
 
 export default function robots() {
   return {
@@ -9,6 +10,9 @@ export default function robots() {
         allow: "/",
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: [
+      `${baseUrl}/sitemap.xml`,
+      `${baseUrl}/sitemap-world-index.xml`,
+    ],
   };
 }
