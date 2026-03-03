@@ -58,15 +58,7 @@ if (url.pathname.startsWith("/admin")) {
   }
 
 
-  /* =====================================================
-     6️⃣ REMOVE WWW (Canonical Domain Fix)
-  ====================================================== */
-  if (host.startsWith("www.")) {
-    return NextResponse.redirect(
-      `https://${host.replace("www.", "")}${url.pathname}${url.search}`,
-      301
-    );
-  }
+  
 
   return NextResponse.next();
 }
