@@ -4,18 +4,18 @@ import { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 
-// ✅ Safe slug generator
-function formatSlug(text: any) {
+// ✅ Clean slug generator (safe for URLs)
+function slugify(text: any) {
   if (!text) return "";
 
   return text
     .toString()
+    .trim()
     .toLowerCase()
     .replace(/&/g, "and")          // handle &
-    .replace(/[^a-z0-9\s-]/g, "")  // remove special chars
-    .trim()
     .replace(/\s+/g, "-")          // spaces → dash
-    .replace(/-+/g, "-");          // remove duplicate dash
+    .replace(/[^\w-]/g, "")        // remove special chars
+    .replace(/-+/g, "-");          // remove duplicate dashes
 }
 
 // ✅ XML escape protection
@@ -30,44 +30,46 @@ function escapeXml(unsafe: string) {
 
 export async function GET() {
   try {
-    // ✅ Remove trailing slash safely
     const rawBaseUrl =
       process.env.NEXT_PUBLIC_BASE_URL ||
       "https://www.isevenplus.com";
 
     const baseUrl = rawBaseUrl.replace(/\/+$/, "");
 
-    const limit = 50000;
-    const offset = 100000;
-
     const [rows] = await db.query<RowDataPacket[]>(
-      `SELECT postal_code, country_code, admin1, place_name 
-       FROM worldwide_postal_codes
-       LIMIT ${limit} OFFSET ${offset}`
+      `SELECT 
+        pincode,
+        state,
+        district,
+        taluk,
+        office_name
+      FROM indian_pincodes`
     );
 
     const urls = rows
-      .map((row: any) => {
-        const country = formatSlug(row.country_code);
-        const state = formatSlug(row.admin1);
-        const city = formatSlug(row.place_name);
-        const postal = row.postal_code?.toString().trim();
+      .map((item) => {
+        const state = slugify(item.state);
+        const district = slugify(item.district);
+        const taluk = slugify(item.taluk);
+        const office = slugify(item.office_name);
+        const pincode = item.pincode?.toString().trim();
 
-        if (!postal) return "";
+        if (!pincode) return "";
 
-        const parts: string[] = ["postalcode"];
+        const parts: string[] = ["pincode"];
 
-        if (country) parts.push(country);
         if (state) parts.push(state);
-        if (city) parts.push(city);
+        if (district) parts.push(district);
+        if (taluk) parts.push(taluk);
+        if (office) parts.push(office);
 
-        parts.push(postal);
+        parts.push(pincode);
 
-        const loc = `${baseUrl}/${parts.join("/")}`;
+        const finalUrl = `${baseUrl}/${parts.join("/")}`;
 
         return `
   <url>
-    <loc>${escapeXml(loc)}</loc>
+    <loc>${escapeXml(finalUrl)}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -88,11 +90,10 @@ ${urls}
           "no-store, no-cache, must-revalidate, proxy-revalidate",
         Pragma: "no-cache",
         Expires: "0",
-        "X-Robots-Tag": "noindex",
       },
     });
   } catch (error) {
-    console.error("Worldwide Sitemap (Offset 100000) Error:", error);
+    console.error("Sitemap Error:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

@@ -168,6 +168,8 @@ export default async function PincodeDetail({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
+
+
       <div className="text-center mb-10">
         <MapPin className="w-10 h-10 mx-auto text-indigo-600 mb-4" />
         <h1 className="text-4xl font-bold mb-3">
@@ -190,9 +192,13 @@ export default async function PincodeDetail({
           <p><strong>Taluk:</strong> {data.taluk}</p>
           <p><strong>Circle:</strong> {data.circle}</p>
           <p><strong>State:</strong> {data.state}</p>
+          <a href="/pincode" className="bg-indigo-600 text-white px-6 py-3 rounded-xl text-center">Search Another Pincode</a>
 
         </div>
+        
       </div>
+
+      
 
       {related.length > 0 && (
         <div>

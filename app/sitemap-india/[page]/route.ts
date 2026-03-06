@@ -4,7 +4,9 @@ import { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 
-// ✅ Clean slug generator (safe for URLs)
+const LIMIT = 50000;
+
+// slug helper
 function slugify(text: any) {
   if (!text) return "";
 
@@ -12,13 +14,13 @@ function slugify(text: any) {
     .toString()
     .trim()
     .toLowerCase()
-    .replace(/&/g, "and")          // handle &
-    .replace(/\s+/g, "-")          // spaces → dash
-    .replace(/[^\w-]/g, "")        // remove special chars
-    .replace(/-+/g, "-");          // remove duplicate dashes
+    .replace(/&/g, "and")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]/g, "")
+    .replace(/-+/g, "-");
 }
 
-// ✅ XML escape protection
+// XML escape
 function escapeXml(unsafe: string) {
   return unsafe
     .replace(/&/g, "&amp;")
@@ -28,8 +30,14 @@ function escapeXml(unsafe: string) {
     .replace(/'/g, "&apos;");
 }
 
-export async function GET() {
+export async function GET(
+  req: Request,
+  { params }: { params: { page: string } }
+) {
   try {
+    const page = parseInt(params.page) || 1;
+    const offset = (page - 1) * LIMIT;
+
     const rawBaseUrl =
       process.env.NEXT_PUBLIC_BASE_URL ||
       "https://www.isevenplus.com";
@@ -37,13 +45,16 @@ export async function GET() {
     const baseUrl = rawBaseUrl.replace(/\/+$/, "");
 
     const [rows] = await db.query<RowDataPacket[]>(
-      `SELECT 
+      `
+      SELECT 
         pincode,
         state,
         district,
         taluk,
         office_name
-      FROM indian_pincodes`
+      FROM indian_pincodes
+      LIMIT ${LIMIT} OFFSET ${offset}
+      `
     );
 
     const urls = rows
@@ -83,14 +94,8 @@ ${urls}
 </urlset>`;
 
     return new NextResponse(xml, {
-      status: 200,
       headers: {
         "Content-Type": "application/xml",
-        "Cache-Control":
-          "no-store, no-cache, must-revalidate, proxy-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
-        "X-Robots-Tag": "noindex",
       },
     });
   } catch (error) {

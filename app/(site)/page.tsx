@@ -9,9 +9,12 @@ import {
   Layers,
   HelpCircle,
   ArrowRight,
+  Search,
 } from "lucide-react";
+import PostOfficeLocator from "../components/PostOfficeLocator";
+import PincodeAutoSuggest from "../components/PincodeAutoSuggest";
 
- export const dynamic = "auto";
+export const dynamic = "auto";
 
 export const metadata = {
   title: "iSevenPlus – Free Online Calculators & Smart Tools",
@@ -60,6 +63,21 @@ export default async function HomePage() {
         >
           Explore Tools
         </Link>
+      </section>
+      <section className="max-w-6xl mx-auto py-16 px-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+          <div className="bg-white shadow-lg p-6 rounded-xl max-w-3xl mx-auto">
+           
+             
+             <h2 className="text-2xl font-bold mb-6 text-orange-600">
+                Pincode Search by City, District or State
+            </h2>
+              <PincodeAutoSuggest />
+             
+          
+          </div>
+          <PostOfficeLocator />
+        </div>
       </section>
 
       {/* 2️⃣ CATEGORIES */}

@@ -43,7 +43,6 @@ ${urls}
       "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
       "Pragma": "no-cache",
       "Expires": "0",
-      "X-Robots-Tag": "noindex"
     },
   });
 }
