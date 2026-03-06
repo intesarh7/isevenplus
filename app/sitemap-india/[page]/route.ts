@@ -76,7 +76,7 @@ export async function GET(
 
         parts.push(pincode);
 
-        const finalUrl = `${baseUrl}/${parts.join("/")}`.replace(/([^:]\/)\/+/g, "$1");
+        const finalUrl = `${baseUrl}/${parts.join("/")}`.replace(/\/{2,}/g, "/").replace(":/", "://");
 
         return `
   <url>
