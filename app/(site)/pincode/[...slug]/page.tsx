@@ -3,6 +3,8 @@ import { notFound, redirect } from "next/navigation";
 import { RowDataPacket } from "mysql2";
 import Link from "next/link";
 import { MapPin, ArrowRight } from "lucide-react";
+import PincodeAutoSuggest from "@/app/components/PincodeAutoSuggest";
+import Breadcrumb from "@/app/components/Breadcrumb";
 
 /* =========================================================
    🔥 HELPER
@@ -15,6 +17,7 @@ function formatSlug(text: string) {
     .trim()
     .replace(/\s+/g, "-");
 }
+
 
 /* =========================================================
    🔥 BUILD SEO URL
@@ -63,8 +66,8 @@ export async function generateMetadata({
   const canonicalPath = buildPincodeUrl(data);
 
   return {
-    title: `${data.pincode} Pincode - ${data.district}, ${data.state} | iSevenPlus`,
-    description: `Complete details of ${data.pincode} pincode in ${data.district}, ${data.state}. Office name, branch type, delivery status and more.`,
+    title: `${data.pincode} Pincode - ${data.district}, ${data.state}, India | Post Office Details | iSevenPlus`,
+    description: `Complete details of ${data.pincode} pincode in ${data.district}, ${data.state}, India. Office name, branch type, delivery status and more.`,
     alternates: {
       canonical: baseUrl + canonicalPath,
     },
@@ -97,6 +100,29 @@ export default async function PincodeDetail({
     redirect(correctPath);
   }
 
+
+  /* =========================================================
+   🔥 ADDITIONAL DATA QUERIES
+========================================================= */
+
+  const [samePincodeOffices] = await db.query<RowDataPacket[]>(
+    `SELECT office_name FROM indian_pincodes WHERE pincode=?`,
+    [pincode]
+  );
+
+  const [areasCovered] = await db.query<RowDataPacket[]>(
+    `SELECT DISTINCT taluk FROM indian_pincodes 
+   WHERE pincode=? AND taluk IS NOT NULL AND taluk!=''`,
+    [pincode]
+  );
+
+  const [nearby] = await db.query<RowDataPacket[]>(
+    `SELECT * FROM indian_pincodes 
+   WHERE district=? AND pincode!=?
+   LIMIT 12`,
+    [data.district, pincode]
+  );
+
   /* =========================================================
      🔥 RELATED PINCODES
   ========================================================= */
@@ -114,15 +140,17 @@ export default async function PincodeDetail({
   const currentUrl = baseUrl + correctPath;
 
   /* =========================================================
-     🔥 JSON-LD
-  ========================================================= */
+   🔥 JSON-LD
+========================================================= */
+
   const postalSchema = {
     "@context": "https://schema.org",
     "@type": "PostalAddress",
+    name: `Pincode - ${data.pincode} ${data.district}, ${data.state}, India`,
     postalCode: data.pincode,
     addressLocality: data.district,
     addressRegion: data.state,
-    addressCountry: "IN",
+    addressCountry: "India",
   };
 
   const breadcrumbSchema = {
@@ -138,18 +166,24 @@ export default async function PincodeDetail({
       {
         "@type": "ListItem",
         position: 2,
+        name: "India Pincode",
+        item: `${baseUrl}/india-pincode`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
         name: data.state,
         item: `${baseUrl}/state/${formatSlug(data.state)}`,
       },
       {
         "@type": "ListItem",
-        position: 3,
+        position: 4,
         name: data.district,
         item: `${baseUrl}/city/${formatSlug(data.district)}`,
       },
       {
         "@type": "ListItem",
-        position: 4,
+        position: 5,
         name: data.pincode,
         item: currentUrl,
       },
@@ -168,9 +202,18 @@ export default async function PincodeDetail({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
+      <Breadcrumb
+        baseUrl={baseUrl}
+        state={data.state}
+        district={data.district}
+        pincode={data.pincode}
+      />
+      <h1 className="text-2xl font-bold mb-4">
+        {data.pincode} Pincode - {data.district}, {data.state}, India
+      </h1>
+      <PincodeAutoSuggest />
 
-
-      <div className="text-center mb-10">
+      <div className="text-center mb-10 mt-5">
         <MapPin className="w-10 h-10 mx-auto text-indigo-600 mb-4" />
         <h1 className="text-4xl font-bold mb-3">
           {data.pincode} Pincode Details
@@ -180,25 +223,180 @@ export default async function PincodeDetail({
         </p>
       </div>
 
+
+      {/* ================= PINCODE DETAILS TABLE ================= */}
+
       <div className="bg-white shadow-xl rounded-3xl p-8 mb-12">
-        <div className="grid md:grid-cols-2 gap-6 text-gray-700">
 
-          <p><strong>Office Name:</strong> {data.office_name}</p>
-          <p><strong>Branch Type:</strong> {data.branch_type}</p>
-          <p><strong>Delivery Status:</strong> {data.delivery_status}</p>
-          <p><strong>District:</strong> {data.district}</p>
-          <p><strong>Division:</strong> {data.division}</p>
-          <p><strong>Region:</strong> {data.region}</p>
-          <p><strong>Taluk:</strong> {data.taluk}</p>
-          <p><strong>Circle:</strong> {data.circle}</p>
-          <p><strong>State:</strong> {data.state}</p>
-          <a href="/pincode" className="bg-indigo-600 text-white px-6 py-3 rounded-xl text-center">Search Another Pincode</a>
+        <table className="w-full text-left border-collapse">
 
-        </div>
-        
+          <tbody className="text-gray-700">
+
+            <tr className="border-b">
+              <td className="py-2 font-semibold">Office Name</td>
+              <td>{data.office_name}</td>
+            </tr>
+
+            <tr className="border-b">
+              <td className="py-2 font-semibold">Branch Type</td>
+              <td>{data.branch_type}</td>
+            </tr>
+
+            <tr className="border-b">
+              <td className="py-2 font-semibold">Delivery Status</td>
+              <td>{data.delivery_status}</td>
+            </tr>
+
+            <tr className="border-b">
+              <td className="py-2 font-semibold">District</td>
+              <td>{data.district}</td>
+            </tr>
+
+            <tr className="border-b">
+              <td className="py-2 font-semibold">Division</td>
+              <td>{data.division}</td>
+            </tr>
+
+            <tr className="border-b">
+              <td className="py-2 font-semibold">Region</td>
+              <td>{data.region}</td>
+            </tr>
+
+            <tr className="border-b">
+              <td className="py-2 font-semibold">Taluk</td>
+              <td>{data.taluk}</td>
+            </tr>
+
+            <tr className="border-b">
+              <td className="py-2 font-semibold">Circle</td>
+              <td>{data.circle}</td>
+            </tr>
+
+            <tr>
+              <td className="py-2 font-semibold">State</td>
+              <td>{data.state}</td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
       </div>
 
-      
+      {/* ================= POST OFFICES ================= */}
+
+      {samePincodeOffices.length > 0 && (
+
+        <div className="mb-12">
+
+          <h2 className="text-2xl font-bold mb-4">
+            Post Offices in {data.pincode}
+          </h2>
+
+          <ul className="list-disc pl-6 text-gray-700 space-y-1">
+
+            {samePincodeOffices.map((item: any, index: number) => (
+              <li key={index}>{item.office_name}</li>
+            ))}
+
+          </ul>
+
+        </div>
+
+      )}
+
+      {/* ================= AREAS COVERED ================= */}
+
+      {areasCovered.length > 0 && (
+
+        <div className="mb-12">
+
+          <h2 className="text-2xl font-bold mb-4">
+            Areas Covered by {data.pincode}
+          </h2>
+
+          <div className="flex flex-wrap gap-3">
+
+            {areasCovered.map((item: any, index: number) => (
+              <span key={index}
+                className="border px-4 py-2 rounded text-sm bg-gray-50">
+                {item.taluk}
+              </span>
+            ))}
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* ================= NEARBY PINCODES ================= */}
+
+      {nearby.length > 0 && (
+
+        <div className="mb-12">
+
+          <h2 className="text-2xl font-bold mb-6">
+            Nearby Pincodes
+          </h2>
+
+          <div className="flex flex-wrap gap-3">
+
+            {nearby.map((item: any) => (
+              <Link
+                key={item.pincode}
+                href={buildPincodeUrl(item)}
+                className="border px-4 py-2 rounded hover:bg-indigo-50 text-sm"
+              >
+                {item.pincode}
+              </Link>
+            ))}
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* ================= DISTRICT & STATE LINKS ================= */}
+
+      <div className="mb-12 flex flex-wrap gap-4">
+
+        <Link
+          href={`/city/${formatSlug(data.district)}`}
+          className="bg-indigo-600 text-white px-6 py-3 rounded-xl flex items-center gap-2"
+        >
+          View All Pincodes in {data.district}
+          <ArrowRight size={16} />
+        </Link>
+
+        <Link
+          href={`/state/${formatSlug(data.state)}`}
+          className="border px-6 py-3 rounded-xl hover:bg-indigo-50 flex items-center gap-2"
+        >
+          Explore {data.state} Pincode List
+        </Link>
+
+      </div>
+
+      {/* ================= GOOGLE MAP ================= */}
+
+      <div className="mb-12">
+
+        <h2 className="text-2xl font-bold mb-4">
+          Location Map
+        </h2>
+
+        <iframe
+          title="pincode map"
+          width="100%"
+          height="350"
+          className="rounded-xl border"
+          loading="lazy"
+          src={`https://www.google.com/maps?q=${data.district},${data.state}&output=embed`}
+        ></iframe>
+
+      </div>
 
       {related.length > 0 && (
         <div>
@@ -206,12 +404,12 @@ export default async function PincodeDetail({
             Related Pincodes in {data.district}
           </h2>
 
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="flex flex-wrap gap-3">
             {related.map((item: any) => (
               <Link
                 key={item.pincode}
                 href={buildPincodeUrl(item)}
-                className="border rounded-xl p-4 text-center hover:shadow-lg transition"
+                className="border px-4 py-2 rounded hover:bg-indigo-50 transition text-sm"
               >
                 {item.pincode}
               </Link>
@@ -219,6 +417,73 @@ export default async function PincodeDetail({
           </div>
         </div>
       )}
+
+      {/* ================= FAQ ================= */}
+
+      <div className="mb-12 mt-10">
+
+        <h2 className="text-2xl font-bold mb-6">
+          Frequently Asked Questions
+        </h2>
+
+        <div className="space-y-4 text-gray-700">
+
+          <p>
+            <strong>What is the pincode of {data.district}?</strong><br />
+            The pincode of {data.district} is {data.pincode}.
+          </p>
+
+          <p>
+            <strong>Which district does {data.pincode} belong to?</strong><br />
+            The pincode {data.pincode} belongs to {data.district} district in {data.state}.
+          </p>
+
+          <p>
+            <strong>What is the delivery status of {data.pincode}?</strong><br />
+            The delivery status is {data.delivery_status}.
+          </p>
+
+          <p>
+            <strong>Which post office serves this pincode?</strong><br />
+            The post office associated with this pincode is {data.office_name}.
+          </p>
+
+        </div>
+
+      </div>
+
+      {/* ================= SEO CONTENT ================= */}
+
+      <section className="bg-indigo-50 p-8 rounded-3xl">
+
+        <h2 className="text-2xl font-bold mb-4">
+          About {data.pincode} Pincode
+        </h2>
+
+        <p className="text-gray-700 leading-relaxed mb-4">
+          The pincode {data.pincode} belongs to {data.district} district in {data.state}, India.
+          This postal code is managed by the India Post department and is used to
+          identify the delivery region for letters, parcels, and courier shipments.
+          Each pincode in India represents a specific geographic area served by a
+          particular post office.
+        </p>
+
+        <p className="text-gray-700 leading-relaxed mb-4">
+          The post office associated with this pincode is {data.office_name}.
+          It falls under the {data.division} postal division and {data.region} region.
+          The branch type for this office is {data.branch_type}, and the delivery
+          status is currently listed as {data.delivery_status}.
+        </p>
+
+        <p className="text-gray-700 leading-relaxed">
+          Including the correct pincode in your address ensures faster mail
+          delivery and accurate routing within the Indian postal network.
+          This page provides detailed information about the {data.pincode}
+          postal code including office details, administrative regions,
+          nearby pincodes, and related postal locations.
+        </p>
+
+      </section>
 
     </div>
   );
