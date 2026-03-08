@@ -2,6 +2,10 @@ import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import AdSlot from "@/app/components/AdSlot";
 import Script from "next/script";
+import db from "@/app/lib/db";
+import { RowDataPacket } from "mysql2";
+import { Flame, Sparkles, Folder } from "lucide-react";
+import SidebarCard from "../components/sidebarcard/SidebarCard";
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -46,11 +50,49 @@ export const metadata = {
   },
 };
 
-export default function SiteLayout({
+export default async function SiteLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+  let popular: any[] = [];
+  let recent: any[] = [];
+  let categories: any[] = [];
+  try {
+
+    /* Popular Tools */
+    const [pop] = await db.query<RowDataPacket[]>(`
+    SELECT name, slug 
+    FROM tools 
+    WHERE isActive=1 AND isDeleted=0
+    ORDER BY usageCount DESC
+    LIMIT 10
+  `);
+    popular = pop;
+
+    /* Recently Added Tools */
+    const [rec] = await db.query<RowDataPacket[]>(`
+    SELECT name, slug 
+    FROM tools 
+    WHERE isActive=1 AND isDeleted=0
+    ORDER BY createdAt DESC
+    LIMIT 10
+  `);
+    recent = rec;
+
+    /* Categories */
+    const [cat] = await db.query<RowDataPacket[]>(`
+    SELECT name, slug 
+    FROM tool_categories
+    LIMIT 10
+  `);
+    categories = cat;
+
+  } catch (err) {
+    console.error("Sidebar DB Error:", err);
+  }
+
   return (
     <>
       {/* ================= SEO PERFORMANCE ================= */}
@@ -110,14 +152,32 @@ export default function SiteLayout({
           <aside className="md:w-1/4 hidden md:block">
             <div className="sticky top-24 space-y-6">
               <AdSlot location="sidebar_top" />
+              <SidebarCard
+                title="Popular Tools"
+                icon={<Flame size={18} className="text-orange-500" />}
+                items={popular as any}
+              />
+
+              <SidebarCard
+                title="Recently Added"
+                icon={<Sparkles size={18} className="text-purple-500" />}
+                items={recent as any}
+              />
+
+              <SidebarCard
+                title="Categories"
+                icon={<Folder size={18} className="text-blue-500" />}
+                items={categories as any}
+                basePath="/category"
+              />
               <AdSlot location="sidebar_bottom" />
             </div>
           </aside>
 
         </div>
       </main>
-      
-        <AdSlot location="footer" />
+
+      <AdSlot location="footer" />
       {/* ================= MOBILE STICKY AD ================= */}
       <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg md:hidden z-50">
         <AdSlot location="mobile_sticky" />

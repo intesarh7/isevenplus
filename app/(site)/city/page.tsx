@@ -1,3 +1,4 @@
+import PageHeader from "@/app/components/PageHeader";
 import PincodeAutoSuggest from "@/app/components/PincodeAutoSuggest";
 import db from "@/app/lib/db";
 import { RowDataPacket } from "mysql2";
@@ -73,7 +74,12 @@ export default async function CityListPage() {
 
   return (
     <main className="max-w-6xl mx-auto py-12 px-4">
-
+      <PageHeader
+        items={[
+          { label: "India Pincode", href: "/india-pincode" },
+          { label: "All Cities" }
+        ]}
+      />
       <h1 className="text-3xl font-bold mb-8">
         Browse All Cities Pincode List
       </h1>

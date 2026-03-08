@@ -26,8 +26,52 @@ export default async function HomePage() {
   let categories: any[] = [];
   let featuredTools: any[] = [];
   let trendingTools: any[] = [];
+  let popularCalculators: any[] = [];
+  let popularCities: any[] = [];
+  let popularStates: any[] = [];
+  let topPincodes: any[] = [];
 
   try {
+    /* Popular Calculators */
+    const [popularCalc] = await db.query<RowDataPacket[]>(`
+  SELECT name, slug 
+  FROM tools
+  WHERE isActive=1 AND isDeleted=0
+  ORDER BY usageCount DESC
+  LIMIT 8
+`);
+    popularCalculators = popularCalc;
+
+    /* Popular Cities */
+    const [cities] = await db.query<RowDataPacket[]>(`
+  SELECT district, COUNT(*) as total
+  FROM indian_pincodes
+  GROUP BY district
+  ORDER BY total DESC
+  LIMIT 8
+`);
+    popularCities = cities;
+
+    /* Popular States */
+    const [states] = await db.query<RowDataPacket[]>(`
+  SELECT state, COUNT(*) as total
+  FROM indian_pincodes
+  GROUP BY state
+  ORDER BY total DESC
+  LIMIT 8
+`);
+    popularStates = states;
+
+    /* Top Pincodes */
+    const [pincodes] = await db.query<RowDataPacket[]>(`
+SELECT pincode
+FROM indian_pincodes
+WHERE pincode REGEXP '^[0-9]{6}$'
+GROUP BY pincode
+ORDER BY COUNT(*) DESC
+LIMIT 8
+`);
+    topPincodes = pincodes;
     const [cat] = await db.query<RowDataPacket[]>(
       "SELECT * FROM tool_categories LIMIT 6"
     );
@@ -67,14 +111,14 @@ export default async function HomePage() {
       <section className="max-w-6xl mx-auto py-16 px-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
           <div className="bg-white shadow-lg p-6 rounded-xl max-w-3xl mx-auto">
-           
-             
-             <h2 className="text-2xl font-bold mb-6 text-orange-600">
-                Pincode Search by City, District or State
+
+
+            <h2 className="text-2xl font-bold mb-6 text-orange-600">
+              Pincode Search by City, District or State
             </h2>
-              <PincodeAutoSuggest />
-             
-          
+            <PincodeAutoSuggest />
+
+
           </div>
           <PostOfficeLocator />
         </div>
@@ -91,7 +135,7 @@ export default async function HomePage() {
             href="/categories"
             className="flex items-center gap-2 text-indigo-600 font-medium hover:underline"
           >
-            View All
+            View All Categories
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -121,7 +165,7 @@ export default async function HomePage() {
               href="/tools"
               className="flex items-center gap-2 text-indigo-600 font-medium hover:underline"
             >
-              View All
+              View All Tools
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -155,7 +199,7 @@ export default async function HomePage() {
               href="/tools?sort=trending"
               className="flex items-center gap-2 text-indigo-600 font-medium hover:underline"
             >
-              View All
+              All Trending Tools
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -174,6 +218,30 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* POPULAR CALCULATORS */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-6xl mx-auto">
+
+          <h2 className="text-3xl font-bold mb-8">
+            Popular Calculators
+          </h2>
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+
+            {popularCalculators.map((tool: any) => (
+              <Link
+                key={tool.slug}
+                href={`/tools/${tool.slug}`}
+                className="border p-4 rounded-xl hover:shadow"
+              >
+                {tool.name}
+              </Link>
+            ))}
+
+          </div>
+        </div>
+      </section>
+
       {/* 5️⃣ PINCODE */}
       <section className="py-16 px-6 bg-indigo-50 text-center">
         <MapPin className="w-10 h-10 mx-auto text-indigo-600 mb-4" />
@@ -186,6 +254,84 @@ export default async function HomePage() {
         >
           Search Pincode
         </Link>
+      </section>
+
+      {/* POPULAR CITY PINCODES */}
+      <section className="py-16 px-6 bg-gray-50">
+
+        <div className="max-w-6xl mx-auto">
+
+          <h2 className="text-3xl font-bold mb-8">
+            Popular Cities Pincode
+          </h2>
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+
+            {popularCities.map((city: any) => (
+              <Link
+                key={city.district}
+                href={`/city/${city.district.toLowerCase().replace(/\s+/g, "-")}`}
+                className="border p-4 rounded-xl hover:shadow"
+              >
+                {city.district} Pincode
+              </Link>
+            ))}
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* PINCODE BY STATE */}
+      <section className="py-16 px-6 bg-white">
+
+        <div className="max-w-6xl mx-auto">
+
+          <h2 className="text-3xl font-bold mb-8">
+            Pincode by State
+          </h2>
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+
+            {popularStates.map((state: any) => (
+              <Link
+                key={state.state}
+                href={`/state/${state.state.toLowerCase().replace(/\s+/g, "-")}`}
+                className="border p-4 rounded-xl hover:shadow"
+              >
+                {state.state}
+              </Link>
+            ))}
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* TOP PINCODES */}
+      <section className="py-16 px-6 bg-gray-50">
+
+        <div className="max-w-6xl mx-auto">
+
+          <h2 className="text-3xl font-bold mb-8">
+            Popular Pincodes
+          </h2>
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+
+            {topPincodes.map((pin: any) => (
+              <Link
+                key={pin.pincode}
+                href={`/pincode/${pin.pincode}`}
+                className="border p-4 rounded-xl hover:shadow"
+              >
+                {pin.pincode}
+              </Link>
+            ))}
+
+          </div>
+
+        </div>
       </section>
 
       {/* 6️⃣ WHY */}
@@ -207,24 +353,133 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 7️⃣ FAQ */}
-      <section className="py-16 px-6 bg-white text-center">
-        <HelpCircle className="w-8 h-8 mx-auto text-indigo-600 mb-4" />
-        <h2 className="text-3xl font-bold mb-6">Frequently Asked Questions</h2>
+      {/* GUIDES */}
+      <section className="py-16 px-6 bg-gray-100">
+        <div className="max-w-6xl mx-auto">
 
-        <div className="max-w-3xl mx-auto space-y-6 text-left">
+          <h2 className="text-3xl font-bold mb-8">
+            Helpful Guides
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-6">
+
+            <Link href="/blog/how-to-find-pincode" className="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+              How to Find Your Area Pincode
+            </Link>
+
+            <Link href="/blog/what-is-postal-code" className="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+              What is a Postal Code?
+            </Link>
+
+            <Link href="/blog/how-post-office-works" className="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+              How Post Offices Work in India
+            </Link>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* 7️⃣ FAQ */}
+      <section className="py-20 px-6 bg-white text-center">
+
+        <HelpCircle className="w-10 h-10 mx-auto text-indigo-600 mb-4" />
+
+        <h2 className="text-3xl font-bold mb-10">
+          Frequently Asked Questions
+        </h2>
+
+        <div className="max-w-4xl mx-auto space-y-8 text-left">
+
           <div>
-            <h3 className="font-semibold">Are these tools free?</h3>
-            <p className="text-gray-600">
-              Yes, all calculators and tools on iSevenPlus are completely free.
+            <h3 className="font-semibold text-lg">
+              Are the calculators on iSevenPlus completely free to use?
+            </h3>
+            <p className="text-gray-600 mt-1">
+              Yes, all calculators and online tools available on iSevenPlus are 100% free to use.
+              You can calculate EMI, GST, income tax, BMI, working days and many other values
+              without any registration or hidden charges.
             </p>
           </div>
+
           <div>
-            <h3 className="font-semibold">Are calculations accurate?</h3>
-            <p className="text-gray-600">
-              Yes, tools use verified mathematical formulas.
+            <h3 className="font-semibold text-lg">
+              Are the calculation results accurate and reliable?
+            </h3>
+            <p className="text-gray-600 mt-1">
+              Yes. All calculators use verified mathematical formulas and standard
+              financial calculation methods to provide accurate and reliable results.
+              However, the results should be used for estimation purposes only.
             </p>
           </div>
+
+          <div>
+            <h3 className="font-semibold text-lg">
+              How can I find the pincode of a city, district or area in India?
+            </h3>
+            <p className="text-gray-600 mt-1">
+              You can easily search for any Indian postal code using the iSevenPlus
+              pincode finder tool. Simply enter the city name, district name, state,
+              or postal code to view the list of post offices and delivery details.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg">
+              Can I search post office details using a pincode?
+            </h3>
+            <p className="text-gray-600 mt-1">
+              Yes. By entering a pincode on iSevenPlus, you can view the complete list
+              of post offices associated with that postal code including branch type,
+              delivery status, division, and region.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg">
+              What types of online calculators are available on iSevenPlus?
+            </h3>
+            <p className="text-gray-600 mt-1">
+              iSevenPlus provides a wide range of calculators including finance
+              calculators, construction calculators, health and fitness tools,
+              date and time calculators, and daily utility tools to simplify
+              calculations for users worldwide.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg">
+              Do I need to create an account to use the tools?
+            </h3>
+            <p className="text-gray-600 mt-1">
+              No. All tools and calculators on iSevenPlus can be used instantly
+              without creating an account or signing up. The platform is designed
+              to provide quick and easy calculations for everyone.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg">
+              Can I use iSevenPlus calculators on mobile devices?
+            </h3>
+            <p className="text-gray-600 mt-1">
+              Yes. iSevenPlus is fully responsive and works smoothly on mobile
+              phones, tablets, laptops and desktop computers so you can access
+              calculators and tools from any device.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-lg">
+              How often is the pincode database updated?
+            </h3>
+            <p className="text-gray-600 mt-1">
+              The postal code database on iSevenPlus is regularly updated to ensure
+              accurate information about Indian post offices, pincodes, and delivery
+              areas.
+            </p>
+          </div>
+
         </div>
       </section>
 

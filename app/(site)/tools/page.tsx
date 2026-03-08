@@ -1,5 +1,6 @@
 import BreadcrumbSchema from "@/app/components/BreadcrumbSchema";
 import db from "@/app/lib/db";
+import { ChevronRight, Flame } from "lucide-react";
 import Link from "next/link";
 
 export default async function ToolsPage({
@@ -23,7 +24,7 @@ export default async function ToolsPage({
 
   // POPULAR TOOLS
   const [popular] = await db.query(
-    "SELECT slug, name, icon FROM tools WHERE isActive=1 ORDER BY usageCount DESC LIMIT 12"
+    "SELECT slug, name, icon FROM tools WHERE isActive=1 ORDER BY usageCount DESC LIMIT 25"
   );
 
   // RECENTLY ADDED
@@ -151,26 +152,40 @@ export default async function ToolsPage({
           </div>
 
           {/* 🔥 POPULAR TOOLS */}
-          {(popular as any[]).length > 0 && (
-            <>
-              <h2 className="text-2xl font-bold mb-4 mt-6">
-                🔥 Popular Tools
-              </h2>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-10">
+            {(popular as any[]).length > 0 && (
+              <>
+                {/* HEADER */}
+                <div className="flex items-center gap-2 px-5 py-4 bg-gray-50 border-b border-gray-100">
+                  <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                    <Flame size={18} className="text-orange-500" /> Popular Tools
+                  </h3>
+                </div>
 
-              <div className="grid md:grid-cols-1 gap-4 mb-10">
-                {(popular as any[]).map((tool) => (
-                  <Link
-                    key={tool.slug}
-                    href={`/tools/${tool.slug}`}
-                    className="border p-2 rounded hover:bg-gray-50 transition"
-                  >
-                    {tool.name}
-                  </Link>
-                ))}
-              </div>
-            </>
-          )}
-
+                <div className="p-4">
+                  <ul className="space-y-2">
+                    {(popular as any[]).map((tool) => (
+                      <li key={tool.slug}>
+                        <Link
+                          key={tool.slug}
+                          href={`/tools/${tool.slug}`}
+                          className="group flex items-center justify-between text-sm text-gray-600 hover:text-blue-600 transition"
+                        >
+                          <span className="truncate">
+                            {tool.name}
+                          </span>
+                          <ChevronRight
+                            size={14}
+                            className="opacity-0 group-hover:opacity-100 transition"
+                          />
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            )}
+          </div>
         </aside>
 
         {/* ================= MAIN CONTENT ================= */}

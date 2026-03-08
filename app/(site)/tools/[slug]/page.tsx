@@ -309,9 +309,9 @@ export default async function ToolPage({
     <>
 
 
-      <div className="max-w-7xl mx-auto px-0 py-5 md:flex gap-10">
+      <div className="w-full mx-auto px-0 py-5 md:flex gap-10">
         {/* ================= LEFT SIDE ================= */}
-        <div className="md:w-2/3">
+        <div className="w-full">
 
           {/* ================= BREADCRUMB UI ================= */}
           <nav className="text-sm text-gray-500 mb-4">
@@ -623,29 +623,7 @@ export default async function ToolPage({
           </div>
         </div>
         {/* ================= RIGHT SIDEBAR ================= */}
-        <aside className="md:w-1/3 space-y-8">
 
-          <SidebarCard
-            title="Popular Tools"
-            icon={<Flame size={18} className="text-orange-500" />}
-            items={popular as any}
-          />
-
-          <SidebarCard
-            title="Recently Added"
-            icon={<Sparkles size={18} className="text-purple-500" />}
-            items={recent as any}
-          />
-
-          <SidebarCard
-            title="Categories"
-            icon={<Folder size={18} className="text-blue-500" />}
-            items={categories as any}
-            basePath="/category"
-          />
-
-
-        </aside>
       </div>
     </>
   );

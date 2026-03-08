@@ -12,9 +12,10 @@ function deslugify(slug: string) {
   return slug
     .replace(/-/g, " ")
     .replace(/\s+/g, " ")
-    .trim();
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
-
+const year = new Date().getFullYear();
 /* =========================================================
    🔥 METADATA (FIXED: await params)
 ========================================================= */
@@ -40,8 +41,8 @@ export async function generateMetadata({
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   return {
-    title: `${cityName} Pincode List (${stateName}) - Postal Codes & Post Offices | iSevenPlus`,
-    description: `Find all pincodes in ${cityName}, ${stateName}, India. View complete list of post offices, branch types, delivery status and postal code details.`,
+    title: `${cityName} Pincode List (${year}) - (${stateName}) -All Post Office & ZIP Codes`,
+    description: `Find the complete ${cityName} pincode list with post office names, branch types, delivery status and postal codes in ${stateName}, India.`,
     alternates: {
       canonical: `${baseUrl}/city/${city}`,
     },
@@ -130,10 +131,6 @@ export default async function CityPage({
     ],
   };
 
-  console.log("CITY SLUG:", city);
-  console.log("CITY NAME:", cityName);
-  console.log("ROWS FOUND:", rows.length);
-
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
 
@@ -165,25 +162,27 @@ export default async function CityPage({
       </div>
 
       {/* Pincode Grid */}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-16">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
         {rows.map((row) => (
           <Link
-            key={row.pincode}
+            key={row.pincode + row.office_name}
             href={`/pincode/${row.pincode}`}
-            className="bg-white border rounded-2xl p-5 hover:shadow-xl transition flex flex-col justify-between"
+            className="flex items-center justify-between border border-gray-300 rounded-2xl px-5 py-4 bg-white hover:border-indigo-500 hover:shadow-md transition"
           >
             <div>
-              <h3 className="font-semibold text-lg mb-2">
+              <h3 className="text-lg font-semibold text-gray-900">
                 {row.pincode}
               </h3>
+
               <p className="text-sm text-gray-600">
                 {row.office_name}
               </p>
             </div>
 
-            <div className="mt-4 text-indigo-600 text-sm flex items-center gap-1">
-              View Details <ArrowRight size={14} />
-            </div>
+            <ArrowRight
+              size={18}
+              className="text-indigo-600 transition-transform group-hover:translate-x-1"
+            />
           </Link>
         ))}
       </div>

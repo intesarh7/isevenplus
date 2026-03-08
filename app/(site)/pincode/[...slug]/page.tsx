@@ -293,13 +293,16 @@ export default async function PincodeDetail({
             Post Offices in {data.pincode}
           </h2>
 
-          <ul className="list-disc pl-6 text-gray-700 space-y-1">
+          <div className="flex flex-wrap gap-3">
 
             {samePincodeOffices.map((item: any, index: number) => (
-              <li key={index}>{item.office_name}</li>
+              <span key={index}
+                className="border px-4 py-2 rounded text-sm bg-gray-50">
+                {item.office_name}
+              </span>
             ))}
 
-          </ul>
+          </div>
 
         </div>
 

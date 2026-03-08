@@ -13,8 +13,11 @@ function deslugify(slug: string) {
     .replace(/-/g, " ")
     .replace(/\band\b/g, "&")
     .replace(/\s+/g, " ")
-    .trim();
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
+
+const year = new Date().getFullYear();
 /* =========================================================
    🔥 METADATA (SEO Optimized)
 ========================================================= */
@@ -23,19 +26,19 @@ export async function generateMetadata({
 }: {
   params: Promise<{ state: string }>;
 }) {
+
   const { state } = await params;
   const stateName = deslugify(state);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   return {
-    title: `${stateName} Pincode List & District Wise Post Offices | iSevenPlus`,
-    description: `Explore complete district-wise pincode list of ${stateName}. Find post office details, delivery status and branch type.`,
+    title: `${stateName} Pincode List (${year}) - District Wise Post Offices & ZIP Codes | iSevenPlus`,
+    description: `Find the complete ${stateName} pincode list with district wise post offices, delivery status, branch types and postal codes in India. Updated postal database on iSevenPlus.`,
     alternates: {
       canonical: `${baseUrl}/state/${state}`,
     },
   };
 }
-
 /* =========================================================
    🔥 MAIN PAGE
 ========================================================= */
@@ -151,27 +154,31 @@ export default async function StatePage({
       </div>
 
       {/* District Grid */}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-16">
+       
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
         {districtRows.map((row) => (
           <Link
             key={row.district}
             href={`/city/${row.district
               .toLowerCase()
               .replace(/\s+/g, "-")}`}
-            className="bg-white border rounded-2xl p-5 hover:shadow-xl transition flex flex-col justify-between"
+            className="flex items-center justify-between border border-gray-300 rounded-2xl px-5 py-4 bg-white hover:border-indigo-500 hover:shadow-md transition"
           >
             <div>
-              <h3 className="font-semibold text-lg mb-2">
+              <h3 className="text-lg font-semibold text-gray-900">
                 {row.district}
               </h3>
+
               <p className="text-sm text-gray-600">
                 View all pincodes in {row.district}
               </p>
             </div>
 
-            <div className="mt-4 text-indigo-600 text-sm flex items-center gap-1">
-              Explore <ArrowRight size={14} />
-            </div>
+            <ArrowRight
+              size={18}
+              className="text-indigo-600 transition-transform group-hover:translate-x-1"
+            />
           </Link>
         ))}
       </div>
