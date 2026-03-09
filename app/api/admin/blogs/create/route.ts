@@ -2,7 +2,10 @@ import db from "@/app/lib/db";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/app/lib/auth";
+
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
 
   try {
@@ -31,7 +34,7 @@ export async function POST(req: Request) {
         { status: 401 }
       );
     }
-console.log("TOKEN:", token);
+
     const adminId = user.id;
 
     /* =========================
@@ -52,9 +55,6 @@ console.log("TOKEN:", token);
       metaDescription
     } = body;
 
-    console.log("BLOG CREATE BODY:", body);
-    console.log("ADMIN ID:", adminId);
-
     /* =========================
        VALIDATION
     ========================= */
@@ -74,7 +74,8 @@ console.log("TOKEN:", token);
       `
       SELECT id
       FROM blogs
-      WHERE slug=? AND deletedAt IS NULL
+      WHERE slug=? 
+      AND deletedAt IS NULL
       `,
       [slug]
     );
@@ -87,10 +88,10 @@ console.log("TOKEN:", token);
     }
 
     /* =========================
-       IMAGE SAFE VALUE
+       IMAGE VALUE (Blob URL)
     ========================= */
 
-    const image = featuredImage || "";
+    const image = featuredImage || null;
 
     /* =========================
        INSERT BLOG
@@ -110,9 +111,10 @@ console.log("TOKEN:", token);
         metaTitle,
         metaDescription,
         adminId,
-        publishedAt
+        publishedAt,
+        createdAt
       )
-      VALUES (?,?,?,?,?,?,?,?,?,?,?)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW())
       `,
       [
         title,

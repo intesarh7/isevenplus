@@ -1,6 +1,9 @@
 import db from "@/app/lib/db";
 import { NextResponse } from "next/server";
+
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
 
   try {
@@ -86,7 +89,8 @@ export async function POST(req: Request) {
         categoryId=?,
         metaTitle=?,
         metaDescription=?,
-        publishedAt=?
+        publishedAt=?,
+        updatedAt=NOW()
       WHERE id=?
       AND deletedAt IS NULL
       `,
