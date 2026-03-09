@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import path from "path";
 import fs from "fs/promises";
 
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
 
   try {
