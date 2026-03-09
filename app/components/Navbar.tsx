@@ -15,6 +15,7 @@ export default function Navbar() {
     { name: "Home", href: "/" },
     { name: "Tools", href: "/tools" },
     { name: "Pincode", href: "/pincode" },
+    { name: "Blogs", href: "/blogs" },
   ];
 
   return (
