@@ -8,8 +8,8 @@ export async function POST(req: Request) {
 
   try {
 
-    const data = await req.formData();
-    const file: any = data.get("file");
+    const formData = await req.formData();
+    const file: any = formData.get("file");
 
     if (!file) {
       return NextResponse.json(
@@ -24,13 +24,13 @@ export async function POST(req: Request) {
     const filename =
       Date.now() + "-" + file.name.replace(/\s+/g, "-");
 
-    const uploadDir = path.join(process.cwd(), "uploads");
+    // REAL project path
+    const root = process.env.PWD || process.cwd();
 
-    try {
-      await fs.access(uploadDir);
-    } catch {
-      await fs.mkdir(uploadDir, { recursive: true });
-    }
+    const uploadDir = path.join(root, "public", "uploads");
+
+    // folder auto create
+    await fs.mkdir(uploadDir, { recursive: true });
 
     const filepath = path.join(uploadDir, filename);
 
