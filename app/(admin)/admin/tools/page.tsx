@@ -25,18 +25,18 @@ export default function AdminTools() {
   });
 
   // 🔥 Load Tools
- const fetchTools = async () => {
-  try {
-    const res = await fetch("/api/admin/tools/list", {
-      cache: "no-store",
-    });
+  const fetchTools = async () => {
+    try {
+      const res = await fetch("/api/admin/tools/list", {
+        cache: "no-store",
+      });
 
-    const data = await res.json();
-    setTools(data);
-  } catch (err) {
-    console.error("Fetch tools failed:", err);
-  }
-};
+      const data = await res.json();
+      setTools(data);
+    } catch (err) {
+      console.error("Fetch tools failed:", err);
+    }
+  };
   const fetchCategories = async () => {
     const res = await fetch("/api/admin/categories/list");
     const data = await res.json();
@@ -59,8 +59,8 @@ export default function AdminTools() {
         statusFilter === "all"
           ? true
           : statusFilter === "active"
-          ? tool.isActive === 1
-          : tool.isActive === 0;
+            ? tool.isActive === 1
+            : tool.isActive === 0;
 
       return matchesSearch && matchesStatus;
     });
@@ -159,9 +159,15 @@ export default function AdminTools() {
           />
 
           <input
+            placeholder="Slug"
             value={form.slug}
-            className="w-full border p-3 rounded bg-gray-100"
-            readOnly
+            className="w-full border p-3 rounded"
+            onChange={(e) => {
+              setForm({
+                ...form,
+                slug: slugify(e.target.value),
+              });
+            }}
           />
 
           <select
@@ -179,7 +185,7 @@ export default function AdminTools() {
             ))}
           </select>
 
-          
+
 
           <input
             placeholder="Meta Title"
@@ -265,11 +271,10 @@ export default function AdminTools() {
                 <td>
                   <button
                     onClick={() => handleToggle(tool)}
-                    className={`px-3 py-1 rounded text-white ${
-                      tool.isActive
+                    className={`px-3 py-1 rounded text-white ${tool.isActive
                         ? "bg-green-600"
                         : "bg-gray-500"
-                    }`}
+                      }`}
                   >
                     {tool.isActive ? "Active" : "Inactive"}
                   </button>
@@ -303,11 +308,10 @@ export default function AdminTools() {
             <button
               key={i}
               onClick={() => setCurrentPage(i + 1)}
-              className={`px-3 py-1 rounded ${
-                currentPage === i + 1
+              className={`px-3 py-1 rounded ${currentPage === i + 1
                   ? "bg-blue-600 text-white"
                   : "bg-gray-200"
-              }`}
+                }`}
             >
               {i + 1}
             </button>
