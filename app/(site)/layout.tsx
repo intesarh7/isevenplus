@@ -98,16 +98,9 @@ export default async function SiteLayout({
       {/* ================= SEO PERFORMANCE ================= */}
 
       {/* Preconnect for faster ads */}
-      <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
-      <link rel="preconnect" href="https://googleads.g.doubleclick.net" />
-
+      
       {/* Adsense Global Script */}
-      <Script
-        async
-        strategy="afterInteractive"
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXX"
-        crossOrigin="anonymous"
-      />
+       
 
       {/* Organization Schema */}
       <Script
