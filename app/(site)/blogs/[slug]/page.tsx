@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: any) {
 
   if (!rows.length) return {};
 
-  const blog = rows[0];
+  const blog = rows[0] || null;
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
@@ -157,12 +157,14 @@ AND blogs.deletedAt IS NULL
     ? `${baseUrl}${blog.featuredImage}`
     : `${baseUrl}/default-blog.jpg`;
 
-  const processedContent = addHeadingAnchors(blog.content);
-  const readTime = readingTime(blog.content);
+const content = blog.content || "";
+
+const processedContent = addHeadingAnchors(content);
+const readTime = readingTime(content);
 
   const toc = generateTOC(processedContent);
 
-  const faqItems = extractFAQs(blog.content);
+  const faqItems = extractFAQs(content);
 
   const faqSchema = faqItems.length
     ? {
@@ -241,6 +243,10 @@ LIMIT 4
     ]
   };
 
+
+if (!blog) {
+  return <div>No Blog Found</div>;
+}
   return (
     <article className="max-w-4xl mx-auto px-4 py-12">
 
@@ -266,6 +272,7 @@ LIMIT 4
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(faqSchema)
           }}
+          
         />
       )}
 
@@ -382,7 +389,7 @@ LIMIT 4
 
       <div
         className="prose prose-lg max-w-none prose-headings:font-semibold prose-img:rounded-lg"
-        dangerouslySetInnerHTML={{ __html: processedContent }}
+        dangerouslySetInnerHTML={{ __html: processedContent || "" }}
       />
 
       <div className="mt-16 border rounded-xl p-6 bg-gray-50">
