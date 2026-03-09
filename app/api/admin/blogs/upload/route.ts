@@ -23,7 +23,8 @@ export async function POST(req: Request) {
 
     const filename = Date.now() + "-" + file.name.replace(/\s+/g, "-");
 
-    const uploadDir = path.resolve("./public/uploads");
+    // ROOT uploads folder (not inside public)
+    const uploadDir = path.join(process.cwd(), "uploads");
 
     await fs.mkdir(uploadDir, { recursive: true });
 
