@@ -94,7 +94,7 @@ AND deletedAt IS NULL
   const title = blog.metaTitle || blog.title;
   const description = blog.metaDescription || "";
 
-  const url = `${baseUrl}/blog/${blog.slug}`;
+  const url = `${baseUrl}/blogs/${blog.slug}`;
 
   const image = blog.featuredImage
     ? `${baseUrl}${blog.featuredImage}`
@@ -147,9 +147,9 @@ function addHeadingAnchors(html: string) {
    Blog Page
 ========================= */
 
-export default async function BlogDetail({ params }: { params: { slug: string } }) {
+export default async function BlogDetail({ params }: { params: Promise<{ slug: string }> }) {
 
-  const slug = params?.slug;
+  const { slug } = await params;
 
   if (!slug) {
     return notFound();
@@ -178,7 +178,7 @@ AND blogs.deletedAt IS NULL
   console.log("BLOG DATA:", blog);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
-  const blogUrl = `${baseUrl}/blog/${blog.slug}`;
+  const blogUrl = `${baseUrl}/blogs/${blog.slug}`;
 
   const image = blog.featuredImage
     ? `${baseUrl}${blog.featuredImage}`
@@ -462,7 +462,7 @@ LIMIT 4
             {related.map((r: any) => (
               <Link
                 key={r.slug}
-                href={`/blog/${r.slug}`}
+                href={`/blogs/${r.slug}`}
                 className="block border rounded-lg p-4 hover:shadow"
               >
                 <h3 className="font-semibold">
