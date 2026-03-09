@@ -309,7 +309,7 @@ export default function ConversionRateCalculator() {
 
             {/* Related Tools */}
 
-            <section className="mt-10 md:p-8">
+            <section className="mt-10">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6">
                     Related Marketing Calculators
                 </h2>
