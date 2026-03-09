@@ -96,9 +96,17 @@ AND deletedAt IS NULL
 
   const url = `${baseUrl}/blogs/${blog.slug}`;
 
-  const image = blog.featuredImage
-    ? `${baseUrl}${blog.featuredImage}`
-    : `${baseUrl}/default-blog.jpg`;
+  let image = "/no-image.png";
+
+  if (blog.featuredImage) {
+
+    if (blog.featuredImage.startsWith("http")) {
+      image = blog.featuredImage;
+    } else {
+      image = `${baseUrl}${blog.featuredImage}`;
+    }
+
+  }
 
   return {
     title,
@@ -180,9 +188,9 @@ AND blogs.deletedAt IS NULL
 
   const blogUrl = `${baseUrl}/blogs/${blog.slug}`;
 
-const image = blog.featuredImage
-  ? `${baseUrl}${blog.featuredImage}`
-  : `${baseUrl}/no-image.png`;
+  const image = blog.featuredImage
+    ? `${baseUrl}${blog.featuredImage}`
+    : `${baseUrl}/no-image.png`;
 
   const content = blog.content || "";
 
@@ -352,14 +360,12 @@ LIMIT 4
 
       {/* Featured Image */}
 
-      {blog.featuredImage && (
-        <img
-          src={image}
-          alt={blog.title}
-          className="w-full rounded-xl mb-10 shadow h-96 object-cover object-top"
-          loading="lazy"
-        />
-      )}
+      <img
+        src={image}
+        alt={blog.title}
+        className="w-full rounded-xl mb-10 shadow h-96 object-cover object-top"
+        loading="lazy"
+      />
       <div className="flex gap-3 mb-10">
 
         <a
