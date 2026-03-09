@@ -70,7 +70,7 @@ export async function generateMetadata(
   { params }: { params: { slug: string } }
 ) {
 
-  const slug = params?.slug;
+  const slug = params.slug;
 
   if (!slug) return {};
 
@@ -147,9 +147,9 @@ function addHeadingAnchors(html: string) {
    Blog Page
 ========================= */
 
-export default async function BlogDetail({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BlogDetail({ params }: { params: { slug: string } }) {
 
-  const { slug } = await params;
+  const { slug } = params;
 
   if (!slug) {
     return notFound();
@@ -180,7 +180,9 @@ AND blogs.deletedAt IS NULL
 
   const blogUrl = `${baseUrl}/blogs/${blog.slug}`;
 
-const image = blog.featuredImage || "/no-image.png";
+const image = blog.featuredImage
+  ? `${baseUrl}${blog.featuredImage}`
+  : `${baseUrl}/no-image.png`;
 
   const content = blog.content || "";
 
@@ -257,7 +259,7 @@ LIMIT 4
         "@type": "ListItem",
         position: 2,
         name: "Blog",
-        item: `${baseUrl}/blog`
+        item: `${baseUrl}/blogs`
       },
       {
         "@type": "ListItem",
@@ -451,7 +453,7 @@ LIMIT 4
 
       {/* Related Posts */}
 
-      {related.length > 0 && (
+      {related?.length > 0 && (
         <div className="mt-16">
           <h2 className="text-2xl font-semibold mb-6">
             Related Posts

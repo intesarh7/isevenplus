@@ -60,7 +60,7 @@ LIMIT ? OFFSET ?
       <div className="flex flex-wrap items-center justify-between mb-8 gap-4">
 
         <p className="text-sm text-gray-500">
-          {blogs.length} Articles
+          {count.total} Articles
         </p>
 
         <form>
@@ -99,7 +99,7 @@ LIMIT ? OFFSET ?
               {blogs[0].title}
             </h2>
             <span className="text-xs text-indigo-600 font-medium">
-              {blogs[0].categoryName}
+              {blogs.categoryName}
             </span>
             <p className="text-gray-600 line-clamp-3">
               {blogs[0].excerpt}
