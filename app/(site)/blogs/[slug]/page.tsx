@@ -180,9 +180,7 @@ AND blogs.deletedAt IS NULL
 
   const blogUrl = `${baseUrl}/blogs/${blog.slug}`;
 
-  const image = blog.featuredImage
-    ? `${baseUrl}${blog.featuredImage}`
-    : `${baseUrl}/default-blog.jpg`;
+const image = blog.featuredImage || "/no-image.png";
 
   const content = blog.content || "";
 

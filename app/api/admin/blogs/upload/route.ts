@@ -1,6 +1,5 @@
+import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
-import path from "path";
-import fs from "fs/promises";
 
 export const runtime = "nodejs";
 
@@ -18,27 +17,16 @@ export async function POST(req: Request) {
       );
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
     const filename =
       Date.now() + "-" + file.name.replace(/\s+/g, "-");
 
-    // REAL project path
-    const root = process.env.PWD || process.cwd();
-
-    const uploadDir = path.join(root, "public", "uploads");
-
-    // folder auto create
-    await fs.mkdir(uploadDir, { recursive: true });
-
-    const filepath = path.join(uploadDir, filename);
-
-    await fs.writeFile(filepath, buffer);
+    const blob = await put(filename, file, {
+      access: "public",
+    });
 
     return NextResponse.json({
       success: true,
-      url: `/uploads/${filename}`
+      url: blob.url
     });
 
   } catch (error) {
@@ -46,7 +34,7 @@ export async function POST(req: Request) {
     console.error("UPLOAD ERROR:", error);
 
     return NextResponse.json(
-      { error: "Upload failed", details: String(error) },
+      { error: "Upload failed" },
       { status: 500 }
     );
 
