@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import path from "path";
-import fs from "fs";
+import fs from "fs/promises";
 
 export async function POST(req: Request) {
 
@@ -23,13 +23,13 @@ export async function POST(req: Request) {
 
     const uploadDir = path.join(process.cwd(), "public/uploads");
 
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
+    try {
+      await fs.mkdir(uploadDir, { recursive: true });
+    } catch (e) {}
 
     const filepath = path.join(uploadDir, filename);
 
-    fs.writeFileSync(filepath, buffer);
+    await fs.writeFile(filepath, buffer);
 
     return NextResponse.json({
       success: true,
