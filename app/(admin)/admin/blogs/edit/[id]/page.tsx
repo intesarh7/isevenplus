@@ -75,7 +75,6 @@ export default function EditBlog() {
     async function uploadImage(e: any) {
 
         const file = e.target.files?.[0];
-
         if (!file) return;
 
         console.log("Uploading image:", file);
@@ -92,16 +91,18 @@ export default function EditBlog() {
 
         console.log("Upload response:", data);
 
-        if (data?.url) {
-            setForm((prev) => ({
+        if (res.ok && data?.url) {
+
+            setForm(prev => ({
                 ...prev,
                 featuredImage: data.url
             }));
+
         } else {
-            alert("Image upload failed");
+
+            alert(data?.error || "Image upload failed");
+
         }
-
-
 
     }
 

@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   try {
 
     const formData = await req.formData();
-    const file: any = formData.get("file");
+    const file = formData.get("file") as File;
 
     if (!file) {
       return NextResponse.json(
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       Date.now() + "-" + file.name.replace(/\s+/g, "-");
 
     const blob = await put(filename, file, {
-      access: "public",
+      access: "public"
     });
 
     return NextResponse.json({
