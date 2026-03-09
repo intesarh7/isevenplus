@@ -21,12 +21,16 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const filename = Date.now() + "-" + file.name.replace(/\s+/g, "-");
+    const filename =
+      Date.now() + "-" + file.name.replace(/\s+/g, "-");
 
-    // ROOT uploads folder (not inside public)
     const uploadDir = path.join(process.cwd(), "uploads");
 
-    await fs.mkdir(uploadDir, { recursive: true });
+    try {
+      await fs.access(uploadDir);
+    } catch {
+      await fs.mkdir(uploadDir, { recursive: true });
+    }
 
     const filepath = path.join(uploadDir, filename);
 
