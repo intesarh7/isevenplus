@@ -1,7 +1,6 @@
 import db from "@/app/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-
-// ✅ Next.js 15 Route Handler (params is Promise)
+export const dynamic = "force-dynamic";
 
 export async function PUT(
   req: NextRequest,

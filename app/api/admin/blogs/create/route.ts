@@ -2,7 +2,7 @@ import db from "@/app/lib/db";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/app/lib/auth";
-
+export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
 
   try {
