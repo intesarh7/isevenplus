@@ -66,17 +66,23 @@ function extractFAQs(html: string = "") {
    SEO Metadata
 ========================= */
 
-export async function generateMetadata({ params }: any) {
+export async function generateMetadata(
+  { params }: { params: { slug: string } }
+) {
+
+  const slug = params?.slug;
+
+  if (!slug) return {};
 
   const [rows]: any = await db.query(
     `
-    SELECT title, slug, metaTitle, metaDescription, featuredImage
-    FROM blogs
-    WHERE slug=?
-    AND status='published'
-    AND deletedAt IS NULL
-    `,
-    [params.slug]
+SELECT title, slug, metaTitle, metaDescription, featuredImage
+FROM blogs
+WHERE slug=?
+AND status='published'
+AND deletedAt IS NULL
+`,
+    [slug]
   );
 
   if (!rows.length) return {};
@@ -150,7 +156,7 @@ export default async function BlogDetail({ params }: { params: { slug: string } 
   }
 
   const [rows]: any = await db.query(
-`
+    `
 SELECT 
 blogs.*,
 admins.name AS authorName,
@@ -164,12 +170,12 @@ WHERE blogs.slug=?
 AND blogs.status='published'
 AND blogs.deletedAt IS NULL
 `,
-[slug]
-);
+    [slug]
+  );
   if (!rows.length) return notFound();
 
   const blog = rows[0];
-console.log("BLOG DATA:", blog);
+  console.log("BLOG DATA:", blog);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
   const blogUrl = `${baseUrl}/blog/${blog.slug}`;
@@ -178,10 +184,10 @@ console.log("BLOG DATA:", blog);
     ? `${baseUrl}${blog.featuredImage}`
     : `${baseUrl}/default-blog.jpg`;
 
-const content = blog.content || "";
+  const content = blog.content || "";
 
-const processedContent = addHeadingAnchors(content);
-const readTime = readingTime(content);
+  const processedContent = addHeadingAnchors(content);
+  const readTime = readingTime(content);
 
   const toc = generateTOC(processedContent);
 
@@ -265,9 +271,9 @@ LIMIT 4
   };
 
 
-if (!blog) {
-  return <div>No Blog Found</div>;
-}
+  if (!blog) {
+    return <div>No Blog Found</div>;
+  }
   return (
     <article className="max-w-4xl mx-auto px-4 py-12">
 
@@ -293,7 +299,7 @@ if (!blog) {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(faqSchema)
           }}
-          
+
         />
       )}
 
@@ -348,7 +354,7 @@ if (!blog) {
 
       {blog.featuredImage && (
         <img
-          src={blog.featuredImage}
+          src={image}
           alt={blog.title}
           className="w-full rounded-xl mb-10 shadow h-96 object-cover object-top"
           loading="lazy"
