@@ -17,24 +17,31 @@ export async function POST(req: Request) {
       );
     }
 
+    console.log("FILE NAME:", file.name);
+
     const filename =
       Date.now() + "-" + file.name.replace(/\s+/g, "-");
 
     const blob = await put(filename, file, {
-      access: "public"
+      access: "public",
     });
+
+    console.log("BLOB URL:", blob.url);
 
     return NextResponse.json({
       success: true,
-      url: blob.url
+      url: blob.url,
     });
 
-  } catch (error) {
+  } catch (error: any) {
 
     console.error("UPLOAD ERROR:", error);
 
     return NextResponse.json(
-      { error: "Upload failed" },
+      {
+        error: "Upload failed",
+        details: error.message
+      },
       { status: 500 }
     );
 

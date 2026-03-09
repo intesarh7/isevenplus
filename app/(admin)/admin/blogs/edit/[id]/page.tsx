@@ -72,39 +72,37 @@ export default function EditBlog() {
         fetchBlog();
     }, [params.id]);
 
-    async function uploadImage(e: any) {
+async function uploadImage(e: any) {
 
-        const file = e.target.files?.[0];
-        if (!file) return;
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-        console.log("Uploading image:", file);
+  const fd = new FormData();
+  fd.append("file", file);
 
-        const fd = new FormData();
-        fd.append("file", file);
+  const res = await fetch("/api/admin/blogs/upload", {
+    method: "POST",
+    body: fd
+  });
 
-        const res = await fetch("/api/admin/blogs/upload", {
-            method: "POST",
-            body: fd
-        });
+  const data = await res.json();
 
-        const data = await res.json();
+  console.log("UPLOAD RESULT:", data);
 
-        console.log("Upload response:", data);
+  if (res.ok && data?.url) {
 
-        if (res.ok && data?.url) {
+    setForm(prev => ({
+      ...prev,
+      featuredImage: data.url
+    }));
 
-            setForm(prev => ({
-                ...prev,
-                featuredImage: data.url
-            }));
+  } else {
 
-        } else {
+    alert(data?.details || data?.error || "Upload failed");
 
-            alert(data?.error || "Image upload failed");
+  }
 
-        }
-
-    }
+}
 
 
     async function updateBlog() {
