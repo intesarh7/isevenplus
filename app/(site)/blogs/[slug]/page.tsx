@@ -96,7 +96,7 @@ AND deletedAt IS NULL
 
   const url = `${baseUrl}/blogs/${blog.slug}`;
 
- const image = blog.featuredImage || `${baseUrl}/default-blog.jpg`;
+  const image = blog.featuredImage || `${baseUrl}/default-blog.jpg`;
 
   return {
     title,
@@ -178,9 +178,8 @@ AND blogs.deletedAt IS NULL
 
   const blogUrl = `${baseUrl}/blogs/${blog.slug}`;
 
-  const image = blog.featuredImage
-    ? `${baseUrl}${blog.featuredImage}`
-    : `${baseUrl}/no-image.png`;
+
+  const image = blog.featuredImage || `${baseUrl}/no-image.png`;
 
   const content = blog.content || "";
 
