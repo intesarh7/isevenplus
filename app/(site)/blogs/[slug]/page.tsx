@@ -96,7 +96,7 @@ AND deletedAt IS NULL
 
   const url = `${baseUrl}/blogs/${blog.slug}`;
 
- const image = blog.featuredImage || "/no-image.png";
+ const image = blog.featuredImage || `${baseUrl}/default-blog.jpg`;
 
   return {
     title,
