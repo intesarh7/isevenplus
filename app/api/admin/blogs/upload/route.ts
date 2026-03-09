@@ -19,13 +19,11 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const filename = Date.now() + "-" + file.name;
+    const filename = Date.now() + "-" + file.name.replace(/\s+/g, "-");
 
-    const uploadDir = path.join(process.cwd(), "public/uploads");
+    const uploadDir = path.resolve("./public/uploads");
 
-    try {
-      await fs.mkdir(uploadDir, { recursive: true });
-    } catch (e) {}
+    await fs.mkdir(uploadDir, { recursive: true });
 
     const filepath = path.join(uploadDir, filename);
 
@@ -38,10 +36,10 @@ export async function POST(req: Request) {
 
   } catch (error) {
 
-    console.error("Upload error:", error);
+    console.error("UPLOAD ERROR:", error);
 
     return NextResponse.json(
-      { error: "Upload failed" },
+      { error: "Upload failed", details: String(error) },
       { status: 500 }
     );
 
