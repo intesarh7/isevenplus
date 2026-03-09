@@ -46,28 +46,33 @@ export default function CreateBlog() {
 
     async function handleSubmit() {
 
-        console.log("Submitting form:", form);
-
-        const res = await fetch("/api/admin/blogs/create", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include",
-            body: JSON.stringify(form)
-        });
-
-        const data = await res.json();
-
-        console.log(data);
-
-        if (data.success) {
-            router.push("/admin/blogs");
-        } else {
-            alert(data.error || "Something went wrong");
-        }
-
+    if (uploading) {
+        alert("Image upload in progress");
+        return;
     }
+
+    console.log("Submitting form:", form);
+
+    const res = await fetch("/api/admin/blogs/create", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(form)
+    });
+
+    const data = await res.json();
+
+    console.log(data);
+
+    if (data.success) {
+        router.push("/admin/blogs");
+    } else {
+        alert(data.error || "Something went wrong");
+    }
+
+}
 
     /* =========================
        Upload Image
@@ -81,6 +86,8 @@ export default function CreateBlog() {
             alert("Please select image");
             return;
         }
+
+        setUploading(true);
 
         console.log("Uploading file:", file);
 
@@ -96,11 +103,18 @@ export default function CreateBlog() {
 
         console.log("Upload response:", data);
 
-        setForm(prev => ({
-            ...prev,
-            featuredImage: data.url
-        }));
+        if (data?.url) {
 
+            setForm(prev => ({
+                ...prev,
+                featuredImage: data.url
+            }));
+
+        } else {
+            alert("Image upload failed");
+        }
+
+        setUploading(false);
     }
 
     return (
@@ -203,7 +217,8 @@ export default function CreateBlog() {
                 {form.featuredImage && (
                     <img
                         src={form.featuredImage}
-                        className="w-40 rounded"
+                        alt="Blog image"
+                        className="w-40 rounded mt-2"
                     />
                 )}
 

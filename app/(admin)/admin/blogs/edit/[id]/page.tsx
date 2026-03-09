@@ -28,7 +28,7 @@ export default function EditBlog() {
         metaDescription: ""
     });
 
-     async function fetchCategories() {
+    async function fetchCategories() {
 
         const res = await fetch("/api/admin/blogs/categories/list");
         const data = await res.json();
@@ -68,11 +68,9 @@ export default function EditBlog() {
         setLoading(false);
     }
 
-
     useEffect(() => {
         fetchBlog();
-    }, []);
-
+    }, [params.id]);
 
     async function uploadImage(e: any) {
 
@@ -94,10 +92,16 @@ export default function EditBlog() {
 
         console.log("Upload response:", data);
 
-        setForm((prev) => ({
-            ...prev,
-            featuredImage: data.url
-        }));
+        if (data?.url) {
+            setForm((prev) => ({
+                ...prev,
+                featuredImage: data.url
+            }));
+        } else {
+            alert("Image upload failed");
+        }
+
+
 
     }
 
@@ -106,7 +110,7 @@ export default function EditBlog() {
 
         console.log("Updating:", form);
 
-        await fetch("/api/admin/blogs/update", {
+        const res = await fetch("/api/admin/blogs/update", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -116,6 +120,13 @@ export default function EditBlog() {
                 ...form
             })
         });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            alert("Update failed");
+            return;
+        }
 
         router.push("/admin/blogs");
 
@@ -195,12 +206,17 @@ export default function EditBlog() {
 
             </div>
 
-            <input type="file" onChange={uploadImage} />
+            <input
+                type="file"
+                accept="image/*"
+                onChange={uploadImage}
+            />
 
             {form.featuredImage && (
                 <img
                     src={form.featuredImage}
-                    className="w-40 rounded"
+                    className="w-40 rounded mt-2"
+                    alt="Blog image"
                 />
             )}
 
