@@ -96,17 +96,7 @@ AND deletedAt IS NULL
 
   const url = `${baseUrl}/blogs/${blog.slug}`;
 
-  let image = "/no-image.png";
-
-  if (blog.featuredImage) {
-
-    if (blog.featuredImage.startsWith("http")) {
-      image = blog.featuredImage;
-    } else {
-      image = `${baseUrl}${blog.featuredImage}`;
-    }
-
-  }
+ const image = blog.featuredImage || "/no-image.png";
 
   return {
     title,
