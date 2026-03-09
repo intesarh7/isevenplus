@@ -6,14 +6,23 @@ import Link from "next/link";
    Utility Functions
 ========================= */
 
-function readingTime(html: string) {
+function readingTime(html: string = "") {
+
   const text = html.replace(/<[^>]+>/g, "");
-  const words = text.trim().split(/\s+/).length;
-  return Math.ceil(words / 200);
+
+  const words = text.trim()
+    ? text.trim().split(/\s+/).length
+    : 0;
+
+  return Math.ceil(words / 200) || 1;
 }
 
-function generateTOC(html: string) {
+function generateTOC(html: string = "") {
+
+  if (!html) return [];
+
   const regex = /<h2.*?>(.*?)<\/h2>/g;
+
   const matches = [...html.matchAll(regex)];
 
   return matches.map((m, i) => ({
@@ -22,15 +31,20 @@ function generateTOC(html: string) {
   }));
 }
 
-function extractFAQs(html: string) {
+function extractFAQs(html: string = "") {
+
+  if (!html) return [];
+
   const regex = /<div class="faq-item">([\s\S]*?)<\/div>/g;
+
   const matches = [...html.matchAll(regex)];
 
   const faqs: any[] = [];
 
   matches.forEach((m) => {
-    const q = m[1].match(/<h3>(.*?)<\/h3>/)?.[1];
-    const a = m[1].match(/<p>(.*?)<\/p>/)?.[1];
+
+    const q = m[1]?.match(/<h3>(.*?)<\/h3>/)?.[1];
+    const a = m[1]?.match(/<p>(.*?)<\/p>/)?.[1];
 
     if (q && a) {
       faqs.push({
@@ -42,6 +56,7 @@ function extractFAQs(html: string) {
         }
       });
     }
+
   });
 
   return faqs;
@@ -126,7 +141,13 @@ function addHeadingAnchors(html: string) {
    Blog Page
 ========================= */
 
-export default async function BlogDetail({ params }: any) {
+export default async function BlogDetail({ params }: { params: { slug: string } }) {
+
+  const slug = params?.slug;
+
+  if (!slug) {
+    return notFound();
+  }
 
   const [rows]: any = await db.query(
 `
@@ -143,12 +164,12 @@ WHERE blogs.slug=?
 AND blogs.status='published'
 AND blogs.deletedAt IS NULL
 `,
-[params.slug]
+[slug]
 );
   if (!rows.length) return notFound();
 
   const blog = rows[0];
-
+console.log("BLOG DATA:", blog);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
   const blogUrl = `${baseUrl}/blog/${blog.slug}`;
