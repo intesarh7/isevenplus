@@ -78,7 +78,7 @@ export default function AdminTools() {
   const handleSubmit = async () => {
     const url = editingId
       ? "/api/admin/tools/update"
-      : "/api/admin/tools";
+      : "/api/admin/tools/create";
 
     await fetch(url, {
       method: "POST",

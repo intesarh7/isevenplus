@@ -202,6 +202,17 @@ import PaintCalculator from "@/app/components/homeanddailylife/PaintCalculator";
 import TileCalculator from "@/app/components/homeanddailylife/TileCalculator";
 import RoomAreaCalculator from "@/app/components/homeanddailylife/RoomAreaCalculator";
 import BreadcrumbSchema from "@/app/components/BreadcrumbSchema";
+import AdsenseEarningCalculator from "@/app/components/marketingcalculators/AdsenseEarningsCalculator";
+import AdsenseIncomeEstimator from "@/app/components/marketingcalculators/AdsenseIncomeEstimator";
+import AdsenseRPMCalculator from "@/app/components/marketingcalculators/AdsenseRPMCalculator";
+import AdsensePageRPMCalculator from "@/app/components/marketingcalculators/AdsensePageRPMCalculator";
+import AdsenseDailyEarningsCalculator from "@/app/components/marketingcalculators/AdsenseDailyEarningsCalculator";
+import AdsenseMonthlyIncomeCalculator from "@/app/components/marketingcalculators/AdsenseMonthlyIncomeCalculator";
+import AdsenseTrafficIncomeCalculator from "@/app/components/marketingcalculators/AdsenseTrafficIncomeCalculator";
+import AdsenseRevenuePerVisitorCalculator from "@/app/components/marketingcalculators/AdsenseRevenuePerVisitorCalculator";
+import AdsenseClickEarningsCalculator from "@/app/components/marketingcalculators/AdsenseClickEarningsCalculator";
+import AdsenseAdImpressionRevenueCalculator from "@/app/components/marketingcalculators/AdsenseAdImpressionRevenueCalculator";
+import WebsiteAdRevenueCalculator from "@/app/components/marketingcalculators/WebsiteAdRevenueCalculator";
 
 /* =========================================================
    ✅ SEO METADATA (Dynamic Title + Keywords + OG + Canonical)
@@ -565,6 +576,17 @@ export default async function ToolPage({
           {tool.slug === "paint-calculator" && <PaintCalculator />}
           {tool.slug === "tile-calculator" && <TileCalculator />}
           {tool.slug === "room-area-calculator" && <RoomAreaCalculator />}
+          {tool.slug === "adsense-earnings-calculator" && <AdsenseEarningCalculator />}
+          {tool.slug === "adsense-income-estimator" && <AdsenseIncomeEstimator />}
+          {tool.slug === "adsense-rpm-calculator" && <AdsenseRPMCalculator />}
+          {tool.slug === "adsense-page-rpm-calculator" && <AdsensePageRPMCalculator />}
+          {tool.slug === "adsense-daily-earnings-calculator" && <AdsenseDailyEarningsCalculator />}
+          {tool.slug === "adsense-monthly-income-calculator" && <AdsenseMonthlyIncomeCalculator />}
+          {tool.slug === "adsense-traffic-income-calculator" && <AdsenseTrafficIncomeCalculator />}
+          {tool.slug === "adsense-revenue-per-visitor-calculator" && <AdsenseRevenuePerVisitorCalculator />}
+          {tool.slug === "adsense-click-earnings-calculator" && <AdsenseClickEarningsCalculator />}
+          {tool.slug === "adsense-ad-impression-revenue-calculator" && <AdsenseAdImpressionRevenueCalculator />}
+          {tool.slug === "website-ad-revenue-calculator" && <WebsiteAdRevenueCalculator />}
 
 
 
