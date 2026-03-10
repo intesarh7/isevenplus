@@ -7,7 +7,6 @@ import db from "@/app/lib/db";
  */
 
 export async function POST(req: Request) {
-
   try {
 
     const body = await req.json();
@@ -22,6 +21,7 @@ export async function POST(req: Request) {
       isActive
     } = body;
 
+    // required validation
     if (!name || !slug) {
       return NextResponse.json(
         { error: "Name and slug are required" },
@@ -29,13 +29,13 @@ export async function POST(req: Request) {
       );
     }
 
-    // check slug duplicate
-    const [existing]: any = await db.query(
+    // duplicate slug check
+    const [rows]: any = await db.query(
       `SELECT id FROM tools WHERE slug = ? LIMIT 1`,
       [slug]
     );
 
-    if (existing.length > 0) {
+    if (rows && rows.length > 0) {
       return NextResponse.json(
         { error: "Slug already exists" },
         { status: 400 }
@@ -59,10 +59,10 @@ export async function POST(req: Request) {
       [
         name,
         slug,
-        metaTitle,
-        metaDescription,
-        description,
-        categoryId,
+        metaTitle || "",
+        metaDescription || "",
+        description || "",
+        categoryId ? Number(categoryId) : null,
         isActive ?? 1
       ]
     );
@@ -72,12 +72,15 @@ export async function POST(req: Request) {
       message: "Tool created successfully"
     });
 
-  } catch (error) {
+  } catch (error: any) {
 
     console.error("Create tool error:", error);
 
     return NextResponse.json(
-      { error: "Failed to create tool" },
+      {
+        error: "Failed to create tool",
+        details: error.message
+      },
       { status: 500 }
     );
   }
