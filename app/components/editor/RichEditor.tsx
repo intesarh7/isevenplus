@@ -14,7 +14,7 @@ export default function RichEditor({ value, onChange }: Props) {
 <div className="border rounded-xl overflow-hidden bg-white">
 
 <Editor
-
+apiKey="a9odya4051y6ltkl9vmjkn2r6flwner8rd221h1rfks4mce8"
 value={value}
 
 onEditorChange={(content) => {
