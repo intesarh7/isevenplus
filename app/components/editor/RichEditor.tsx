@@ -1,288 +1,67 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
-import { useState } from "react";
-import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
-import Link from "@tiptap/extension-link";
-import CodeBlock from "@tiptap/extension-code-block";
-import Youtube from "@tiptap/extension-youtube";
-import Heading from "@tiptap/extension-heading";
-import Placeholder from "@tiptap/extension-placeholder";
-import InternalLinkModal from "./InternalLinkModal";
+import { Editor } from "@tinymce/tinymce-react";
 
 interface Props {
   value: string;
   onChange: (content: string) => void;
 }
 
-
-
 export default function RichEditor({ value, onChange }: Props) {
-
-  const [linkModal, setLinkModal] = useState(false);
-
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Heading.configure({ levels: [1, 2, 3] }),
-      Image.configure({
-        HTMLAttributes: {
-          class: "rounded-lg"
-        }
-      }),
-      Link.configure({
-        openOnClick: false
-      }),
-      CodeBlock,
-      Youtube.configure({
-        controls: true
-      }),
-      Placeholder.configure({
-        placeholder: "Write your blog content..."
-      })
-    ],
-
-    content: value,
-
-    immediatelyRender: false,
-
-    onUpdate({ editor }) {
-      onChange(editor.getHTML());
-    }
-  });
-
-  function insertHTML() {
-
-    if (!editor) return;
-
-    const html = prompt("Paste HTML code");
-
-    if (html) {
-      editor.chain().focus().insertContent(html).run();
-    }
-
-  }
-
-  /* ======================
-    Internal Link Insert Function
-  ====================== */
-
-  function insertInternalLink(url: string) {
-
-    if (!editor) return;
-
-    editor.chain().focus().setLink({
-      href: url
-    }).run();
-
-  }
-
-  if (!editor) return null;
-
-  /* ======================
-     Add Image with ALT
-  ====================== */
-
-  function addImage() {
-
-    if (!editor) return;
-
-    const url = prompt("Image URL");
-    const alt = prompt("Image ALT text");
-
-    if (url) {
-      editor.chain().focus().setImage({
-        src: url,
-        alt: alt || ""
-      }).run();
-    }
-
-  }
-
-  /* ======================
-     Add YouTube
-  ====================== */
-
-  function addYoutube() {
-
-    if (!editor) return;
-
-    const url = prompt("YouTube URL");
-
-    if (url) {
-      editor.commands.setYoutubeVideo({
-        src: url
-      });
-    }
-
-  }
-
-  /* ======================
-    Internal Link
- ====================== */
-
-  function addLink() {
-
-    if (!editor) return;
-
-    const url = prompt("Enter URL");
-
-    if (url) {
-      editor.chain().focus().setLink({ href: url }).run();
-    }
-
-  }
-
-  /* ======================
-     FAQ Generator
-  ====================== */
-  function addFAQ() {
-
-    if (!editor) return;
-
-    const q = prompt("FAQ Question");
-    const a = prompt("FAQ Answer");
-
-    if (!q || !a) return;
-
-    const faqHTML = `
-<div class="faq-item">
-<h3>${q}</h3>
-<p>${a}</p>
-</div>
-`;
-
-    editor.chain().focus().insertContent(faqHTML).run();
-  }
-  /* ======================
-     Table of Contents
-  ====================== */
-
-  function insertTOC() {
-
-    if (!editor) return;
-
-    const tocHTML = `
-<div class="table-of-contents">
-<h2>Table of Contents</h2>
-<ul>
-<li><a href="#section1">Section 1</a></li>
-<li><a href="#section2">Section 2</a></li>
-<li><a href="#section3">Section 3</a></li>
-</ul>
-</div>
-`;
-
-    editor.chain().focus().insertContent(tocHTML).run();
-  }
 
   return (
 
-    <div className="border rounded-xl overflow-hidden">
+<div className="border rounded-xl overflow-hidden bg-white">
 
-      {/* Toolbar */}
+<Editor
 
-      <div className="flex flex-wrap gap-2 border-b p-2 bg-gray-50">
+value={value}
 
-        <button
-          onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          Bold
-        </button>
+onEditorChange={(content) => {
+  onChange(content);
+}}
 
-        <button
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          Italic
-        </button>
+init={{
 
-        <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          H2
-        </button>
+height: 600,
 
-        <button
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          H3
-        </button>
+menubar: true,
 
-        <button
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          List
-        </button>
+plugins: [
+"advlist",
+"autolink",
+"lists",
+"link",
+"image",
+"media",
+"table",
+"code",
+"fullscreen",
+"wordcount"
+],
 
-        <button
-          onClick={() => setLinkModal(true)}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          Internal Link
-        </button>
+toolbar:
+"undo redo | blocks | bold italic underline | \
+alignleft aligncenter alignright alignjustify | \
+bullist numlist outdent indent | link image media table | code fullscreen",
 
-        <button
-          onClick={addImage}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          Image
-        </button>
+paste_data_images: true,
 
-        <button
-          onClick={addYoutube}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          YouTube
-        </button>
+valid_elements: "*[*]",
+extended_valid_elements: "*[*]",
 
-        <button
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          Code
-        </button>
-        <button
-          onClick={insertHTML}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          HTML
-        </button>
+content_style: `
+body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+`
 
-        <button
-          onClick={addFAQ}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          FAQ
-        </button>
+}}
 
-        <button
-          onClick={insertTOC}
-          className="px-3 py-1 border rounded text-sm"
-        >
-          TOC
-        </button>
+ />
 
-      </div>
-
-      {/* Editor */}
-
-      <EditorContent
-        editor={editor}
-        className="p-4 min-h-87.5 prose max-w-none"
-      />
-      <InternalLinkModal
-        open={linkModal}
-        onClose={() => setLinkModal(false)}
-        onSelect={insertInternalLink}
-      />
-
-    </div>
+</div>
 
   );
 

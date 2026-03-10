@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@tailwindcss/line-clamp": "^0.4.4",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tinymce/tinymce-react": "^4.3.2",
     "@tiptap/extension-code-block": "^3.20.1",
     "@tiptap/extension-heading": "^3.20.1",
     "@tiptap/extension-image": "^3.20.1",
@@ -19,9 +21,8 @@
     "@tiptap/extension-table-cell": "^3.20.1",
     "@tiptap/extension-table-header": "^3.20.1",
     "@tiptap/extension-table-row": "^3.20.1",
+    "@tiptap/extension-text-style": "^3.20.1",
     "@tiptap/extension-youtube": "^3.20.1",
-    "@tiptap/react": "^3.20.1",
-    "@tiptap/starter-kit": "^3.20.1",
     "@vercel/blob": "^2.3.1",
     "bcryptjs": "^3.0.3",
     "canvas-confetti": "^1.9.4",
@@ -32,10 +33,11 @@
     "mysql2": "^3.18.2",
     "next": "14.2.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "tinymce": "^6.8.6"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.2.1",
     "@types/canvas-confetti": "^1.9.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",

@@ -54,6 +54,7 @@ export async function GET() {
       "sitemap-tools.xml",
       "sitemap-states.xml",
       "sitemap-cities.xml",
+      "blog-sitemap.xml",
     ];
 
     const staticXml = staticSitemaps

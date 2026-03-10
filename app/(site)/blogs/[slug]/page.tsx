@@ -2,6 +2,7 @@ import db from "@/app/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
+
 /* =========================
    Utility Functions
 ========================= */
@@ -16,7 +17,6 @@ function readingTime(html: string = "") {
 
   return Math.ceil(words / 200) || 1;
 }
-
 function generateTOC(html: string = "") {
 
   if (!html) return [];
@@ -173,7 +173,9 @@ AND blogs.deletedAt IS NULL
   if (!rows.length) return notFound();
 
   const blog = rows[0];
-  console.log("BLOG DATA:", blog);
+
+  //console.log("BLOG DATA:", blog);
+  
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
   const blogUrl = `${baseUrl}/blogs/${blog.slug}`;
@@ -410,8 +412,10 @@ LIMIT 4
       {/* Article Content */}
 
       <div
-        className="prose prose-lg max-w-none prose-headings:font-semibold prose-img:rounded-lg"
-        dangerouslySetInnerHTML={{ __html: processedContent || "" }}
+        className="blog-content"
+        dangerouslySetInnerHTML={{
+          __html: processedContent || ""
+        }}
       />
 
       <div className="mt-16 border rounded-xl p-6 bg-gray-50">
