@@ -76,30 +76,37 @@ export default function AdminTools() {
 
   // 🔥 Create / Update
   const handleSubmit = async () => {
-    const url = editingId
-      ? "/api/admin/tools/update"
-      : "/api/admin/tools/create";
 
-    await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(
-        editingId ? { ...form, id: editingId } : form
-      ),
-    });
+  const url = editingId
+    ? "/api/admin/tools/update"
+    : "/api/admin/tools/create";
 
-    setForm({
-      name: "",
-      slug: "",
-      description: "",
-      metaTitle: "",
-      metaDescription: "",
-      categoryId: "",
-      isActive: true,
-    });
+  await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...form,
+      categoryId: Number(form.categoryId),
+      ...(editingId ? { id: editingId } : {}),
+    }),
+  });
 
-    setEditingId(null);
-    fetchTools();
-  };
+  setForm({
+    name: "",
+    slug: "",
+    description: "",
+    metaTitle: "",
+    metaDescription: "",
+    categoryId: "",
+    isActive: true,
+  });
+
+  setEditingId(null);
+
+  await fetchTools();
+};
 
   const handleDelete = async (id: number) => {
     await fetch("/api/admin/tools/delete", {
@@ -272,8 +279,8 @@ export default function AdminTools() {
                   <button
                     onClick={() => handleToggle(tool)}
                     className={`px-3 py-1 rounded text-white ${tool.isActive
-                        ? "bg-green-600"
-                        : "bg-gray-500"
+                      ? "bg-green-600"
+                      : "bg-gray-500"
                       }`}
                   >
                     {tool.isActive ? "Active" : "Inactive"}
@@ -309,8 +316,8 @@ export default function AdminTools() {
               key={i}
               onClick={() => setCurrentPage(i + 1)}
               className={`px-3 py-1 rounded ${currentPage === i + 1
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200"
                 }`}
             >
               {i + 1}

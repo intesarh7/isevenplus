@@ -5,8 +5,10 @@ import db from "@/app/lib/db";
  * GET - Fetch all tools for admin panel
  * URL: /api/admin/tools/list
  */
+
 export async function GET() {
   try {
+
     const [rows]: any = await db.query(`
       SELECT 
         id,
@@ -24,9 +26,14 @@ export async function GET() {
       ORDER BY createdAt DESC
     `);
 
-    return NextResponse.json(rows);
+    return NextResponse.json(rows, {
+      headers: {
+        "Cache-Control": "no-store"
+      }
+    });
 
   } catch (error) {
+
     console.error("Tools list error:", error);
 
     return NextResponse.json(
