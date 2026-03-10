@@ -363,15 +363,15 @@ LIMIT 8
 
           <div className="grid md:grid-cols-3 gap-6">
 
-            <Link href="/blog/how-to-find-your-area-pincode" className="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+            <Link href="/blogs/how-to-find-your-area-pincode" className="bg-white p-6 rounded-xl shadow hover:shadow-lg">
               How to Find Your Area Pincode
             </Link>
 
-            <Link href="/blog/what-is-a-postal-code" className="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+            <Link href="/blogs/what-is-a-postal-code" className="bg-white p-6 rounded-xl shadow hover:shadow-lg">
               What is a Postal Code?
             </Link>
 
-            <Link href="/blog/how-post-offices-work-in-india" className="bg-white p-6 rounded-xl shadow hover:shadow-lg">
+            <Link href="/blogs/how-post-offices-work-in-india" className="bg-white p-6 rounded-xl shadow hover:shadow-lg">
               How Post Offices Work in India
             </Link>
 
