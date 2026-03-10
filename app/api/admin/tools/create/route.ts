@@ -7,6 +7,7 @@ import db from "@/app/lib/db";
  */
 
 export async function POST(req: Request) {
+
   try {
 
     const body = await req.json();
@@ -18,10 +19,10 @@ export async function POST(req: Request) {
       metaDescription,
       description,
       categoryId,
-      isActive
+      isActive,
+      icon
     } = body;
 
-    // required validation
     if (!name || !slug) {
       return NextResponse.json(
         { error: "Name and slug are required" },
@@ -29,13 +30,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // duplicate slug check
     const [rows]: any = await db.query(
       `SELECT id FROM tools WHERE slug = ? LIMIT 1`,
       [slug]
     );
 
-    if (rows && rows.length > 0) {
+    if (rows.length > 0) {
       return NextResponse.json(
         { error: "Slug already exists" },
         { status: 400 }
@@ -48,22 +48,34 @@ export async function POST(req: Request) {
       (
         name,
         slug,
+        description,
         metaTitle,
         metaDescription,
-        description,
         categoryId,
-        isActive
+        icon,
+        isActive,
+        usageCount,
+        rating,
+        ratingCount,
+        isDeleted,
+        createdAt,
+        updatedAt
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
       `,
       [
         name,
         slug,
+        description || "",
         metaTitle || "",
         metaDescription || "",
-        description || "",
         categoryId ? Number(categoryId) : null,
-        isActive ?? 1
+        icon || null,
+        isActive ?? 1,
+        0,
+        0,
+        0,
+        0
       ]
     );
 
