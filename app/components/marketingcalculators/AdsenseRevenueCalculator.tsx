@@ -38,7 +38,7 @@ export default function AdsenseRevenueCalculator() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto bg-white shadow-md rounded-xl p-6 md:p-8">
+        <div className="bg-white shadow-md rounded-xl p-6 md:p-8">
 
             {/* Title */}
             <h2 className="text-2xl font-bold flex items-center gap-2 mb-6">
