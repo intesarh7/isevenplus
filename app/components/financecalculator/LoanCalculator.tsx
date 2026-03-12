@@ -144,6 +144,37 @@ export default function LoanCalculator() {
 
       </div>
 
+      {/* Result */}
+
+      {emi !== null && (
+
+        <div className="bg-gray-50 border rounded-xl p-6 mt-6 space-y-3 text-lg">
+
+          <div className="flex justify-between">
+            <span>Monthly EMI</span>
+            <span className="font-semibold text-indigo-600">
+              ₹ {emi.toFixed(2)}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span>Total Interest</span>
+            <span className="font-semibold">
+              ₹ {interest?.toFixed(2)}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span>Total Payment</span>
+            <span className="font-semibold">
+              ₹ {total?.toFixed(2)}
+            </span>
+          </div>
+
+        </div>
+
+      )}
+
 
       {/* SEO ARTICLE */}
 
