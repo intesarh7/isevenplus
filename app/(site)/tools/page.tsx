@@ -117,42 +117,9 @@ export default async function ToolsPage({
         {/* ================= SIDEBAR ================= */}
         <aside className="md:w-1/4 mb-8 md:mb-0">
 
-          <div className="sticky top-24 border p-4 rounded bg-white shadow-sm">
-
-            <h3 className="font-semibold mb-4">Filter Tools</h3>
-
-            <form className="flex flex-col gap-4">
-
-              <input
-                name="search"
-                defaultValue={search}
-                placeholder="Search..."
-                className="border p-2 rounded"
-              />
-
-              <select
-                name="category"
-                defaultValue={category}
-                className="border p-2 rounded"
-              >
-                <option value="">All Categories</option>
-                {(categories as any[]).map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-
-              <button className="bg-blue-600 text-white py-2 rounded">
-                Apply Filter
-              </button>
-
-            </form>
-
-          </div>
 
           {/* 🔥 POPULAR TOOLS */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-10">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             {(popular as any[]).length > 0 && (
               <>
                 {/* HEADER */}
@@ -190,6 +157,41 @@ export default async function ToolsPage({
 
         {/* ================= MAIN CONTENT ================= */}
         <main className="md:w-3/4">
+
+          <div className="sticky top-20 border p-4 rounded-xl bg-white shadow-sm mb-5">
+
+            <h3 className="font-semibold mb-4">Filter Tools</h3>
+
+            <form className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+              <input
+                name="search"
+                defaultValue={search}
+                placeholder="Search..."
+                className="border p-2 rounded"
+              />
+
+              <select
+                name="category"
+                defaultValue={category}
+                className="border p-2 rounded"
+              >
+                <option value="">All Categories</option>
+                {(categories as any[]).map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+
+              <button className="bg-blue-600 text-white py-2 rounded">
+                Apply Filter
+              </button>
+
+            </form>
+
+          </div>
+
 
           {/* 🔥 TOOL GRID */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
