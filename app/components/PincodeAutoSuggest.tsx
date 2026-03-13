@@ -50,6 +50,7 @@ export default function PincodeAutoSuggest({
         <Search size={18} className="mr-2 text-gray-500" />
         <input
           type="text"
+          name="q"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Enter Pincode / City / State"

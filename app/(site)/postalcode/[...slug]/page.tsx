@@ -1,11 +1,12 @@
 import db from "@/app/lib/db";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { RowDataPacket } from "mysql2";
 import Link from "next/link";
-import { MapPin, ArrowRight } from "lucide-react";
+import { MapPin, ArrowRight, Search, ChevronRight, Home } from "lucide-react";
+import PincodeAutoSuggest from "@/app/components/PincodeAutoSuggest";
 
 /* =========================================================
-   🔥 HELPER
+   HELPER
 ========================================================= */
 function formatSlug(text: string) {
   return text
@@ -17,13 +18,15 @@ function formatSlug(text: string) {
 }
 
 /* =========================================================
-   🔥 BUILD SEO URL
+   BUILD SEO URL
 ========================================================= */
 function buildPostalUrl(data: any) {
+
   const country = formatSlug(data.country_code);
   const state = formatSlug(data.admin1 || "");
   const city = formatSlug(data.place_name || "");
-  const postal = data.postal_code.replace(/\s+/g, "");
+
+  const postal = data.postal_code.split(" ")[0];
 
   const parts = ["postalcode", country];
 
@@ -36,19 +39,16 @@ function buildPostalUrl(data: any) {
 }
 
 /* =========================================================
-   🔥 METADATA (SEO Optimized)
+   METADATA
 ========================================================= */
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string[] };
-}) {
+export async function generateMetadata({ params }: { params: { slug: string[] } }) {
+
   const postal = params.slug[params.slug.length - 1];
   const cleanCode = decodeURIComponent(postal).trim();
 
   const [rows] = await db.query<RowDataPacket[]>(
-    `SELECT * FROM worldwide_postal_codes 
-     WHERE REPLACE(postal_code, ' ', '') = REPLACE(?, ' ', '')
+    `SELECT * FROM worldwide_postal_codes
+     WHERE postal_code LIKE CONCAT(?, '%')
      LIMIT 1`,
     [cleanCode]
   );
@@ -56,184 +56,341 @@ export async function generateMetadata({
   if (!rows.length) return {};
 
   const data = rows[0];
+
+  const firstPostal = data.postal_code.split(" ")[0];
+
+  if (cleanCode !== firstPostal) {
+    redirect(buildPostalUrl(data));
+  }
+
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
     "https://www.isevenplus.com";
 
-  const canonicalPath = buildPostalUrl(data);
-
   return {
-    title: `${data.postal_code} Postal Code - ${data.place_name}, ${data.country_code} | iSevenPlus`,
-    description: `Complete details of postal code ${data.postal_code} in ${data.place_name}, ${data.country_code}. View coordinates and regional information.`,
+    title: `${data.postal_code} Postal Code - ${data.place_name}, ${data.country_code}`,
+    description: `Complete details of postal code ${data.postal_code} in ${data.place_name}, ${data.country_code}.`,
     alternates: {
-      canonical: baseUrl + canonicalPath,
+      canonical: baseUrl + buildPostalUrl(data),
     },
   };
 }
 
 /* =========================================================
-   🔥 MAIN PAGE
+   MAIN PAGE
 ========================================================= */
 export default async function WorldDetail({
   params,
+  searchParams
 }: {
-  params: { slug: string[] };
+  params: { slug: string[] }
+  searchParams?: { q?: string }
 }) {
+
+
+
+  const query = searchParams?.q?.toString() ?? "";
+
   const postal = params.slug[params.slug.length - 1];
   const cleanCode = decodeURIComponent(postal).trim();
 
   const [rows] = await db.query<RowDataPacket[]>(
-    `SELECT * FROM worldwide_postal_codes 
-     WHERE REPLACE(postal_code, ' ', '') = REPLACE(?, ' ', '')
+    `SELECT * FROM worldwide_postal_codes
+     WHERE postal_code LIKE ?
      LIMIT 1`,
-    [cleanCode]
+    [`${cleanCode}%`]
   );
 
   if (!rows.length) return notFound();
 
   const data = rows[0];
+
+  const firstPostal = data.postal_code.split(" ")[0];
+
+  if (cleanCode !== firstPostal) {
+    redirect(buildPostalUrl(data));
+  }
+
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
     "https://www.isevenplus.com";
 
   const currentUrl = baseUrl + buildPostalUrl(data);
 
-  /* =========================================================
-     🔥 RELATED POSTAL CODES
-  ========================================================= */
+  /* RELATED POSTAL */
   const [related] = await db.query<RowDataPacket[]>(
-    `SELECT * 
-     FROM worldwide_postal_codes 
+    `SELECT * FROM worldwide_postal_codes
      WHERE country_code=? 
-     AND REPLACE(postal_code, ' ', '') != REPLACE(?, ' ', '')
-     LIMIT 6`,
-    [data.country_code, cleanCode]
+     AND postal_code NOT LIKE ?
+     LIMIT 12`,
+    [data.country_code, `${cleanCode}%`]
   );
 
-  /* =========================================================
-     🔥 JSON-LD PostalAddress
-  ========================================================= */
-  const postalSchema = {
-    "@context": "https://schema.org",
-    "@type": "PostalAddress",
-    postalCode: data.postal_code,
-    addressLocality: data.place_name,
-    addressRegion: data.admin1,
-    addressCountry: data.country_code,
-  };
+  /* NEARBY */
+  const [nearby] = await db.query<RowDataPacket[]>(
+    `SELECT * FROM worldwide_postal_codes
+     WHERE admin1=? 
+     AND postal_code NOT LIKE ?
+     LIMIT 10`,
+    [data.admin1, `${cleanCode}%`]
+  );
 
-  /* =========================================================
-     🔥 Breadcrumb Schema
-  ========================================================= */
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: baseUrl,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "World Postal Codes",
-        item: `${baseUrl}/pincode?type=world`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: data.postal_code,
-        item: currentUrl,
-      },
-    ],
-  };
+
+
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12">
+    <div className="max-w-6xl mx-auto px-4 py-10">
 
-      {/* Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(postalSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
+      {/* Breadcrumb */}
+      <nav className="flex flex-wrap items-center text-sm text-gray-600 mb-4 gap-1">
 
-      {/* Header */}
-      <div className="text-center mb-12">
-        <MapPin className="w-10 h-10 mx-auto text-indigo-600 mb-4" />
-        <h1 className="text-4xl font-bold mb-3">
-          {data.postal_code} Postal Code Details
-        </h1>
-        <p className="text-gray-600">
-          {data.place_name}, {data.admin1 && `${data.admin1},`}{" "}
+        <Link
+          href="/"
+          className="flex items-center gap-1 text-indigo-600 hover:underline"
+        >
+          <Home size={16} />
+          Home
+        </Link>
+
+        <ChevronRight size={16} />
+
+        <Link
+          href="/pincode?type=world"
+          className="text-indigo-600 hover:underline"
+        >
+          World Postal Codes
+        </Link>
+
+        <ChevronRight size={16} />
+
+        <Link
+          href={`/country/${formatSlug(data.country_code)}`}
+          className="text-indigo-600 hover:underline"
+        >
           {data.country_code}
-        </p>
-      </div>
+        </Link>
 
-      {/* Main Card */}
-      <div className="bg-white shadow-xl rounded-3xl p-8 mb-12">
-        <div className="grid md:grid-cols-2 gap-6 text-gray-700">
-          <p><strong>Place:</strong> {data.place_name}</p>
-          <p><strong>State/Region:</strong> {data.admin1 || "N/A"}</p>
-          <p><strong>Country:</strong> {data.country_code}</p>
-          <p><strong>Latitude:</strong> {data.latitude}</p>
-          <p><strong>Longitude:</strong> {data.longitude}</p>
-        </div>
+        {data.admin1 && (
+          <>
+            <ChevronRight size={16} />
 
-        <div className="mt-8">
-          <a
-            href={`https://www.google.com/maps?q=${data.latitude},${data.longitude}`}
-            target="_blank"
-            className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl"
+            <Link
+              href={`/world-state/${formatSlug(data.admin1)}`}
+              className="text-indigo-600 hover:underline"
+            >
+              {data.admin1}
+            </Link>
+          </>
+        )}
+
+        <ChevronRight size={16} />
+
+        <Link
+          href={`/world-city/${formatSlug(data.place_name)}`}
+          className="text-indigo-600 hover:underline"
+        >
+          {data.place_name}
+        </Link>
+
+        <ChevronRight size={16} />
+
+        <span className="text-gray-900 font-semibold">
+          {firstPostal}
+        </span>
+
+      </nav>
+
+      {/* Title */}
+      <h1 className="text-3xl font-bold mb-6">
+        {firstPostal} Postal Code - {data.place_name}, {data.country_code}
+      </h1>
+
+      {/* Search */}
+      <form method="GET" className="bg-white p-6 rounded-2xl shadow mb-10">
+        <div className="flex flex-col md:flex-row gap-4">
+
+
+          <PincodeAutoSuggest defaultValue={query} />
+
+          <button
+            type="submit"
+            className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-xl"
           >
-            View on Google Maps
-            <ArrowRight size={16} />
-          </a>
+            <Search size={18} />
+            Search
+          </button>
         </div>
+      </form>
+
+      {/* DETAILS */}
+      <div className="bg-white shadow rounded-2xl p-6 mb-10">
+
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          {firstPostal} Postal Code Details
+        </h2>
+
+        <table className="w-full text-left">
+          <tbody className="divide-y">
+
+            <tr>
+              <td className="py-2 font-semibold">Place</td>
+              <td>{data.place_name}</td>
+            </tr>
+
+            <tr>
+              <td className="py-2 font-semibold">State / Region</td>
+              <td>{data.admin1}</td>
+            </tr>
+
+            <tr>
+              <td className="py-2 font-semibold">Country</td>
+              <td>{data.country_code}</td>
+            </tr>
+
+            <tr>
+              <td className="py-2 font-semibold">Latitude</td>
+              <td>{data.latitude}</td>
+            </tr>
+
+            <tr>
+              <td className="py-2 font-semibold">Longitude</td>
+              <td>{data.longitude}</td>
+            </tr>
+
+          </tbody>
+        </table>
+
       </div>
 
-      {/* Related Postal Codes */}
-      {related.length > 0 && (
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-6">
-            Other Postal Codes in {data.country_code}
+      {/* AREAS COVERED */}
+      <div className="mb-10">
+
+        <h2 className="text-xl font-bold mb-4">
+          Areas Covered by {firstPostal}
+        </h2>
+
+        <div className="flex flex-wrap gap-3">
+          <span className="border px-3 py-1 rounded-lg">{data.place_name}</span>
+          {data.admin1 && (
+            <span className="border px-3 py-1 rounded-lg">{data.admin1}</span>
+          )}
+        </div>
+
+      </div>
+
+      {/* NEARBY */}
+      {nearby.length > 0 && (
+        <div className="mb-10">
+
+          <h2 className="text-xl font-bold mb-4">
+            Nearby Postal Codes
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-4">
-            {related.map((item: any) => (
+          <div className="flex flex-wrap gap-3">
+
+            {nearby.map((n: any) => (
+
               <Link
-                key={item.postal_code}
-                href={buildPostalUrl(item)}
-                className="border rounded-xl p-4 hover:shadow-lg transition text-center"
+                key={n.postal_code}
+                href={buildPostalUrl(n)}
+                className="border px-3 py-1 rounded-lg hover:bg-gray-100"
               >
-                {item.postal_code}
+                {n.postal_code.split(" ")[0]}
               </Link>
+
             ))}
+
           </div>
+
         </div>
       )}
 
-      {/* SEO Content */}
-      <section className="bg-indigo-50 p-8 rounded-3xl">
-        <h2 className="text-2xl font-bold mb-4">
-          About {data.postal_code} Postal Code
+      {/* MAP */}
+      <div className="mb-12">
+
+        <h2 className="text-xl font-bold mb-4">
+          Location Map
         </h2>
 
-        <p className="text-gray-700 leading-relaxed mb-4">
-          The postal code {data.postal_code} belongs to {data.place_name} in {data.country_code}.
-          This location lies at latitude {data.latitude} and longitude {data.longitude}.
-        </p>
+        <iframe
+          width="100%"
+          height="350"
+          loading="lazy"
+          src={`https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=13&output=embed`}
+          className="rounded-xl border"
+        />
+
+      </div>
+
+      {/* RELATED */}
+      {related.length > 0 && (
+        <div className="mb-12">
+
+          <h2 className="text-xl font-bold mb-4">
+            Related Postal Codes in {data.country_code}
+          </h2>
+
+          <div className="flex flex-wrap gap-3">
+
+            {related.map((item: any) => (
+
+              <Link
+                key={item.postal_code}
+                href={buildPostalUrl(item)}
+                className="border px-3 py-1 rounded-lg hover:bg-gray-100"
+              >
+                {item.postal_code.split(" ")[0]}
+              </Link>
+
+            ))}
+
+          </div>
+
+        </div>
+      )}
+
+      {/* FAQ */}
+      <div className="mb-12">
+
+        <h2 className="text-2xl font-bold mb-6">
+          Frequently Asked Questions
+        </h2>
+
+        <div className="space-y-4 text-gray-700">
+
+          <p>
+            <strong>What is the postal code of {data.place_name}?</strong><br />
+            The postal code of {data.place_name} is {firstPostal}.
+          </p>
+
+          <p>
+            <strong>Which country does {firstPostal} belong to?</strong><br />
+            This postal code belongs to {data.country_code}.
+          </p>
+
+          <p>
+            <strong>Where is {firstPostal} located?</strong><br />
+            It is located in {data.place_name}, {data.admin1}.
+          </p>
+
+        </div>
+
+      </div>
+
+      {/* ABOUT */}
+      <div className="bg-indigo-50 rounded-2xl p-6">
+
+        <h2 className="text-2xl font-bold mb-4">
+          About {firstPostal} Postal Code
+        </h2>
 
         <p className="text-gray-700 leading-relaxed">
-          Use this information for international shipping, courier services,
-          address verification and global logistics planning.
+          The postal code {firstPostal} belongs to {data.place_name}, {data.admin1} in {data.country_code}.
+          Postal codes are used worldwide to identify specific delivery areas for mail,
+          courier services, and logistics operations.
         </p>
-      </section>
+
+      </div>
 
     </div>
   );
