@@ -125,6 +125,7 @@ body {
 
 .blog-content li {
   margin-bottom: 6px;
+  list-style: disc;
 }
 
 /* links */
@@ -144,7 +145,10 @@ body {
 /* ==============================
    TABLE DESIGN
 ================================ */
-
+.blog-content table {
+  display: block;
+  overflow-x: auto;
+}
 .blog-content table {
   width: 100%;
   border-collapse: collapse;
