@@ -13,7 +13,9 @@ export default function AdminSidebar() {
     { name: "Add Categories", href: "/admin/categories" },
     { name: "Pincodes", href: "/admin/pincode" },
     { name: "Ads", href: "/admin/ads" },
-     { name: "Blogs", href: "/admin/blogs" },
+    { name: "Blogs", href: "/admin/blogs" },
+    { name: "SEO Tools", href: "/admin/seotools" },
+    { name: "SEO Categories", href: "/admin/seo-tools-categories" },
   ];
 
  const handleLogout = async () => {

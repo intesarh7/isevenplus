@@ -1,7 +1,6 @@
 export async function GET() {
   const sitemaps = [
     "https://www.isevenplus.com/sitemap.xml",
-    "https://www.isevenplus.com/sitemap-world-index.xml",
   ];
 
   try {

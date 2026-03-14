@@ -26,6 +26,7 @@
     "@vercel/blob": "^2.3.1",
     "bcryptjs": "^3.0.3",
     "canvas-confetti": "^1.9.4",
+    "cheerio": "^1.2.0",
     "html2canvas": "^1.4.1",
     "jsonwebtoken": "^9.0.3",
     "jspdf": "^4.2.0",
