@@ -213,6 +213,16 @@ import AdsenseRevenuePerVisitorCalculator from "@/app/components/marketingcalcul
 import AdsenseClickEarningsCalculator from "@/app/components/marketingcalculators/AdsenseClickEarningsCalculator";
 import AdsenseAdImpressionRevenueCalculator from "@/app/components/marketingcalculators/AdsenseAdImpressionRevenueCalculator";
 import WebsiteAdRevenueCalculator from "@/app/components/marketingcalculators/WebsiteAdRevenueCalculator";
+import BlinkitCommissionCalculator from "@/app/components/ecommercecalculators/BlinkitCommissionCalculator";
+import ZeptoCommissionCalculator from "@/app/components/ecommercecalculators/ZeptoCommissionCalculator";
+import SwiggyInstamartCalculator from "@/app/components/ecommercecalculators/SwiggyInstamartCalculator";
+import MeeshoSellerCommissionCalculator from "@/app/components/ecommercecalculators/MeeshoSellerCommissionCalculator";
+import AmazonSellerFeesCalculator from "@/app/components/ecommercecalculators/AmazonSellerFeesCalculator";
+import FlipkartSellerProfitCalculator from "@/app/components/ecommercecalculators/FlipkartSellerProfitCalculator";
+import AmazonFBAProfitCalculator from "@/app/components/ecommercecalculators/AmazonFBAProfitCalculator";
+import GoogleAdsEarningCalculator from "@/app/components/ecommercecalculators/GoogleAdsEarningCalculator";
+import GoogleAdRevenueCalculator from "@/app/components/ecommercecalculators/GoogleAdRevenueCalculator";
+import GSTProfitMarginCalculator from "@/app/components/financecalculator/GSTProfitMarginCalculator";
 
 /* =========================================================
    ✅ SEO METADATA (Dynamic Title + Keywords + OG + Canonical)
@@ -587,6 +597,16 @@ export default async function ToolPage({
           {tool.slug === "adsense-click-earnings-calculator" && <AdsenseClickEarningsCalculator />}
           {tool.slug === "adsense-ad-impression-revenue-calculator" && <AdsenseAdImpressionRevenueCalculator />}
           {tool.slug === "website-ad-revenue-calculator" && <WebsiteAdRevenueCalculator />}
+          {tool.slug === "blinkit-seller-commission-calculator" && <BlinkitCommissionCalculator />}
+          {tool.slug === "zepto-seller-commission-calculator" && (<><ZeptoCommissionCalculator /></>)}
+          {tool.slug === "swiggy-instamart-seller-calculator" && (<><SwiggyInstamartCalculator /></>)}
+          {tool.slug === "meesho-seller-commission-calculator" && (<MeeshoSellerCommissionCalculator />)}
+          {tool.slug === "amazon-seller-fees-calculator" && (<AmazonSellerFeesCalculator/>)}
+          {tool.slug === "flipkart-seller-profit-calculator" && (<FlipkartSellerProfitCalculator/>)}
+          {tool.slug === "amazon-fba-profit-calculator" && (<AmazonFBAProfitCalculator/>)}
+          {tool.slug === "google-ads-earning-calculator" && (<GoogleAdsEarningCalculator/>)}
+          {tool.slug === "google-ad-revenue-calculator" && (<GoogleAdRevenueCalculator/>)}
+          {tool.slug === "gst-profit-margin-calculator" && (<GSTProfitMarginCalculator/>)}
 
 
 
