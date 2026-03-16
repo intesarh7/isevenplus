@@ -1,0 +1,683 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import {
+    Search,
+    Copy,
+    Download,
+    TrendingUp,
+    ArrowUp,
+    ArrowDown,
+    ArrowUpDown
+} from "lucide-react";
+
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    Tooltip,
+    ResponsiveContainer,
+    CartesianGrid
+} from "recharts";
+
+export default function KeywordSuggestionTool() {
+
+    const [keyword, setKeyword] = useState("");
+    const [limit, setLimit] = useState(20);
+    const [country, setCountry] = useState("us");
+    const [type, setType] = useState("all");
+    const [outline, setOutline] = useState<string[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [results, setResults] = useState<any[]>([]);
+    const [questions, setQuestions] = useState<string[]>([]);
+    const [serp, setSerp] = useState<any[]>([]);
+    const [sortField, setSortField] = useState<string | null>(null);
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+    const [year, setYear] = useState(new Date().getFullYear());
+
+    const generateKeywords = async () => {
+
+        if (!keyword) return;
+
+        setLoading(true);
+
+        const res = await fetch(
+            `/api/seotools/keyword-suggestions?keyword=${encodeURIComponent(keyword)}&limit=${limit}&country=${country}`
+        );
+
+        const data = await res.json();
+
+        setResults(data.suggestions || []);
+        setQuestions(data.questions || []);
+
+        setLoading(false);
+
+    };
+
+    const copyAll = () => {
+
+        navigator.clipboard.writeText(
+            results.map(r => r.keyword).join("\n")
+        );
+
+    };
+
+    const exportCSV = () => {
+
+        const csv =
+            "Keyword,Volume,CPC,Intent,Cluster,Difficulty,SERP\n" +
+
+            results.map(r =>
+                `${r.keyword},${r.volume},${r.cpc},${r.intent},${r.cluster},${r.difficulty},${r.serpCompetition}`
+            ).join("\n");
+
+        const blob = new Blob([csv], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+
+        a.href = url;
+        a.download = "keywords.csv";
+        a.click();
+
+    };
+
+    const fetchSERP = async () => {
+        if (!keyword) return;
+        const res = await fetch(`/api/seotools/serp?keyword=${encodeURIComponent(keyword)}`);
+
+        const data = await res.json();
+        console.log("SERP DATA:", data);
+        setSerp(data.results || []);
+
+    };
+
+    const generateOutline = async () => {
+
+        const res = await fetch("/api/seotools/content-outline", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ keyword })
+        });
+
+        const data = await res.json();
+
+        setOutline(data.outline || []);
+
+    };
+    const getSortIcon = (field: string) => {
+
+        if (sortField !== field) {
+            return <ArrowUpDown size={14} />;
+        }
+
+        return sortOrder === "asc"
+            ? <ArrowUp size={14} />
+            : <ArrowDown size={14} />;
+
+    };
+
+    const handleSort = (field: string) => {
+
+        if (sortField === field) {
+
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+
+        } else {
+
+            setSortField(field);
+            setSortOrder("asc");
+
+        }
+
+    };
+
+    const filteredResults = results.filter(k => {
+
+        if (type === "short") return k.keyword.split(" ").length <= 2;
+        if (type === "long") return k.keyword.split(" ").length > 2;
+
+        return true;
+
+    });
+
+    const sortedResults = useMemo(() => {
+
+        if (!sortField) return filteredResults;
+
+        return [...filteredResults].sort((a, b) => {
+
+            if (a[sortField] < b[sortField]) return sortOrder === "asc" ? -1 : 1;
+            if (a[sortField] > b[sortField]) return sortOrder === "asc" ? 1 : -1;
+
+            return 0;
+
+        });
+
+    }, [filteredResults, sortField, sortOrder]);
+
+    const volumeBadge = (v: number) => {
+
+        if (v < 3000) return "bg-red-100 text-red-700";
+        if (v < 10000) return "bg-yellow-100 text-yellow-700";
+
+        return "bg-green-100 text-green-700";
+
+    };
+
+    const difficultyColor = (d: number) => {
+
+        if (d < 30) return "bg-green-500";
+        if (d < 60) return "bg-yellow-500";
+
+        return "bg-red-500";
+
+    };
+
+    const serpBadge = (s: number) => {
+
+        if (s < 30) return "bg-green-100 text-green-700";
+        if (s < 60) return "bg-yellow-100 text-yellow-700";
+
+        return "bg-red-100 text-red-700";
+
+    };
+
+    const generateTrendData = (year: number) => {
+
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth();
+
+        const months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+
+        return months
+            .map((m, i) => ({
+
+                month: m,
+                value: Math.floor(Math.random() * 2500) + 200
+
+            }))
+            .filter((m, i) => {
+
+                if (year === currentYear) {
+
+                    return i <= currentMonth;
+
+                }
+
+                return true;
+
+            });
+
+    };
+
+    const trendData = generateTrendData(year);
+
+    const clusters = useMemo(() => {
+
+        const map: any = {};
+
+        results.forEach(k => {
+
+            if (!map[k.cluster]) map[k.cluster] = [];
+
+            map[k.cluster].push(k.keyword);
+
+        });
+
+        return map;
+
+    }, [results]);
+
+    return (
+
+        <div className="space-y-10">
+
+            <div className="p-6 border rounded-xl bg-white shadow space-y-4">
+
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <Search size={22} /> Keyword Suggestion Tool
+                </h2>
+
+                <input
+                    value={keyword}
+                    onChange={e => setKeyword(e.target.value)}
+                    placeholder="Enter keyword"
+                    className="w-full border rounded-lg px-4 py-2"
+                />
+
+                <div className="flex gap-4 flex-wrap">
+
+                    <div>
+                        <label className="text-sm">Keyword Count</label>
+                        <input
+                            type="number"
+                            value={limit}
+                            onChange={e => setLimit(Number(e.target.value))}
+                            className="border rounded-lg px-3 py-2 w-24"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-sm">Country</label>
+
+                        <select
+                            value={country}
+                            onChange={e => setCountry(e.target.value)}
+                            className="border rounded-lg px-3 py-2"
+                        >
+
+                            <option value="us">United States</option>
+                            <option value="in">India</option>
+                            <option value="uk">United Kingdom</option>
+                            <option value="ca">Canada</option>
+                            <option value="au">Australia</option>
+
+                        </select>
+
+                    </div>
+
+                    <div>
+                        <label className="text-sm">Keyword Type</label>
+
+                        <select
+                            value={type}
+                            onChange={e => setType(e.target.value)}
+                            className="border rounded-lg px-3 py-2"
+                        >
+
+                            <option value="all">All</option>
+                            <option value="short">Short Keywords</option>
+                            <option value="long">Long Tail Keywords</option>
+
+                        </select>
+
+                    </div>
+
+
+
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+
+                    <button
+                        onClick={generateKeywords}
+                        className="flex items-center justify-center cursor-pointer gap-2 w-full sm:flex-1 bg-indigo-600 text-white py-2 rounded-lg"
+                    >
+                        <Search size={16} /> Generate
+                    </button>
+
+                    <button
+                        onClick={copyAll}
+                        className="flex items-center justify-center cursor-pointer gap-2 w-full sm:flex-1 bg-blue-600 text-white py-2 rounded-lg"
+                    >
+                        <Copy size={16} /> Copy
+                    </button>
+
+                    <button
+                        onClick={exportCSV}
+                        className="flex items-center justify-center cursor-pointer gap-2 w-full sm:flex-1 bg-green-600 text-white py-2 rounded-lg"
+                    >
+                        <Download size={16} /> CSV
+                    </button>
+
+                    <button
+                        onClick={generateOutline}
+                        className="flex items-center justify-center cursor-pointer gap-2 w-full sm:flex-1 bg-purple-600 text-white py-2 rounded-lg"
+                    >
+                        Generate Content Outline
+                    </button>
+                    <button
+                        onClick={fetchSERP}
+                        className="flex items-center justify-center cursor-pointer gap-2 w-full sm:flex-1 bg-orange-600 text-white py-2 rounded-lg"
+                    >
+                        Analyze SERP
+                    </button>
+
+                </div>
+
+            </div>
+
+            {loading && (
+                <div className="text-center text-gray-600">
+                    Generating SEO keyword data...
+                </div>
+            )}
+
+            {sortedResults.length > 0 && (
+
+                <div className="overflow-x-auto border rounded-xl bg-white shadow">
+
+                    <table className="w-full text-sm">
+
+                        <thead className="bg-gray-100">
+
+                            <tr>
+
+                                <th className="p-3 text-left cursor-pointer" onClick={() => handleSort("keyword")}>
+                                    <div className="flex items-center gap-1">
+                                        Keyword {getSortIcon("keyword")}
+                                    </div>
+                                </th>
+
+                                <th className="cursor-pointer" onClick={() => handleSort("volume")}>
+                                    <div className="flex items-center gap-1 justify-center">
+                                        Volume {getSortIcon("volume")}
+                                    </div>
+                                </th>
+
+                                <th className="cursor-pointer" onClick={() => handleSort("cpc")}>
+                                    <div className="flex items-center gap-1 justify-center">
+                                        CPC {getSortIcon("cpc")}
+                                    </div>
+                                </th>
+
+                                <th className="cursor-pointer" onClick={() => handleSort("intent")}>
+                                    <div className="flex items-center gap-1 justify-center">
+                                        Intent {getSortIcon("intent")}
+                                    </div>
+                                </th>
+
+                                <th className="cursor-pointer" onClick={() => handleSort("cluster")}>
+                                    <div className="flex items-center gap-1 justify-center">
+                                        Cluster {getSortIcon("cluster")}
+                                    </div>
+                                </th>
+
+                                <th className="cursor-pointer" onClick={() => handleSort("difficulty")}>
+                                    <div className="flex items-center gap-1 justify-center">
+                                        Difficulty {getSortIcon("difficulty")}
+                                    </div>
+                                </th>
+                                <th
+                                    className="cursor-pointer"
+                                    onClick={() => handleSort("opportunity")}
+                                >
+                                    <div className="flex items-center gap-1 justify-center">
+                                        Opportunity
+                                        {getSortIcon("opportunity")}
+                                    </div>
+                                </th>
+
+                                <th className="cursor-pointer" onClick={() => handleSort("serpCompetition")}>
+                                    <div className="flex items-center gap-1 justify-center">
+                                        SERP {getSortIcon("serpCompetition")}
+                                    </div>
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {sortedResults.map((k, i) => (
+
+                                <tr key={i} className="border-t hover:bg-gray-50">
+
+                                    <td className="p-3 font-medium">{k.keyword}</td>
+
+                                    <td>
+                                        <span className={`px-2 py-1 rounded text-xs ${volumeBadge(k.volume)}`}>
+                                            {k.volume}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
+                                            ${k.cpc}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs">
+                                            {k.intent}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs">
+                                            {k.cluster}
+                                        </span>
+                                    </td>
+
+                                    <td>
+
+                                        <div className="flex items-center gap-2">
+
+                                            <div className="w-full bg-gray-200 h-2 rounded">
+
+                                                <div
+                                                    className={`${difficultyColor(k.difficulty)} h-2 rounded`}
+                                                    style={{ width: `${k.difficulty}%` }}
+                                                />
+
+                                            </div>
+
+                                            <span className="text-xs">{k.difficulty}</span>
+
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <span className={`px-2 py-1 rounded text-xs ${k.opportunity > 70
+                                            ? "bg-green-100 text-green-700"
+                                            : k.opportunity > 40
+                                                ? "bg-yellow-100 text-yellow-700"
+                                                : "bg-red-100 text-red-700"
+                                            }`}>
+                                            {k.opportunity}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span className={`px-2 py-1 rounded text-xs ${serpBadge(k.serpCompetition)}`}>
+                                            {k.serpCompetition}
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                            ))}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            )}
+
+            {serp.length > 0 ? (
+
+                <div className="p-6 border rounded-xl bg-white shadow">
+
+                    <h3 className="text-xl font-semibold mb-4">
+                        SERP Analysis
+                    </h3>
+
+                    <table className="w-full text-sm">
+
+                        <thead className="bg-gray-100">
+
+                            <tr>
+                                <th className="p-3 font-bold">Rank</th>
+                                <th className="p-3 font-bold text-left">Title</th>
+                                <th className="p-3 font-bold">Domain</th>
+                                <th className="p-3 font-bold">Backlinks</th>
+                                <th className="p-3 font-bold">DA</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {serp.map((s, i) => (
+                                <tr key={i} className="border-t">
+
+                                    <td className="p-3 font-medium">{s.rank}</td>
+                                    <td className="p-3 font-medium">{s.title}</td>
+                                    <td className="p-3 font-medium">{s.domain}</td>
+                                    <td className="p-3 font-medium">{s.backlinks}</td>
+                                    <td className="p-3 font-medium">{s.da}</td>
+
+                                </tr>
+                            ))}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            ) : (
+
+                <div className="text-gray-500 text-sm">
+                    No SERP results found.
+                </div>
+
+            )}
+
+            {outline.length > 0 && (
+
+                <div className="p-6 border rounded-xl bg-white shadow">
+
+                    <h3 className="text-xl font-semibold mb-4">
+                        Content Outline
+                    </h3>
+
+                    <ul className="list-disc ml-6 space-y-2">
+
+                        {outline.map((o, i) => (
+                            <li key={i}>{o}</li>
+                        ))}
+
+                    </ul>
+
+                </div>
+
+            )}
+
+            {results.length > 0 && (
+
+                <div className="p-6 border rounded-xl bg-white shadow">
+
+                    <div className="flex justify-between items-center mb-4">
+
+                        <h3 className="text-xl font-semibold flex items-center gap-2">
+                            <TrendingUp size={20} /> Keyword Trend ({year})
+                        </h3>
+
+                        <select
+                            value={year}
+                            onChange={(e) => setYear(Number(e.target.value))}
+                            className="border rounded-lg px-3 py-2 text-sm"
+                        >
+
+                            {[0, 1, 2, 3, 4].map(i => {
+
+                                const y = new Date().getFullYear() - i;
+
+                                return (
+                                    <option key={y} value={y}>{y}</option>
+                                );
+
+                            })}
+
+                        </select>
+
+                    </div>
+
+                    <ResponsiveContainer width="100%" height={250}>
+
+                        <LineChart data={trendData}>
+
+                            <CartesianGrid strokeDasharray="3 3" />
+
+                            <XAxis dataKey="month" />
+
+                            <YAxis />
+
+                            <Tooltip labelFormatter={(label) => `${label} ${year}`} />
+
+                            <Line
+                                type="monotone"
+                                dataKey="value"
+                                stroke="#6366f1"
+                                strokeWidth={3}
+                                dot={{ r: 4 }}
+                                activeDot={{ r: 6 }}
+                            />
+
+                        </LineChart>
+
+                    </ResponsiveContainer>
+
+                </div>
+
+            )}
+
+            {Object.keys(clusters).length > 0 && (
+
+                <div className="p-6 border rounded-xl bg-white shadow">
+
+                    <h3 className="text-xl font-semibold mb-4">
+                        Keyword Clusters
+                    </h3>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+
+                        {Object.entries(clusters).map(([name, words]: any) => (
+
+                            <div key={name} className="border rounded-lg p-4">
+
+                                <h4 className="font-semibold mb-2">{name}</h4>
+
+                                <ul className="text-sm space-y-1">
+
+                                    {words.map((w: any, i: number) => (
+                                        <li key={i}>{w}</li>
+                                    ))}
+
+                                </ul>
+
+                            </div>
+
+                        ))}
+
+                    </div>
+
+                </div>
+
+            )}
+
+            {questions.length > 0 && (
+
+                <div className="p-6 border rounded-xl bg-white shadow">
+
+                    <h3 className="text-xl font-semibold mb-4">
+                        People Also Ask
+                    </h3>
+
+                    <ul className="list-disc ml-6 space-y-2">
+
+                        {questions.map((q, i) => (
+                            <li key={i}>{q}</li>
+                        ))}
+
+                    </ul>
+
+                </div>
+
+            )}
+
+        </div>
+
+    );
+
+}
