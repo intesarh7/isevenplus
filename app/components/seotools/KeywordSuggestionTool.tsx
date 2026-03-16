@@ -8,7 +8,11 @@ import {
     TrendingUp,
     ArrowUp,
     ArrowDown,
-    ArrowUpDown
+    ArrowUpDown,
+    BarChart3,
+    Tag,
+    Rocket,
+    Lightbulb
 } from "lucide-react";
 
 import {
@@ -33,13 +37,20 @@ export default function KeywordSuggestionTool() {
     const [questions, setQuestions] = useState<string[]>([]);
     const [serp, setSerp] = useState<any[]>([]);
     const [sortField, setSortField] = useState<string | null>(null);
+    const [serpSearched, setSerpSearched] = useState(false);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [error, setError] = useState("");
 
     const [year, setYear] = useState(new Date().getFullYear());
 
     const generateKeywords = async () => {
 
-        if (!keyword) return;
+        if (!keyword.trim()) {
+            setError("Please enter a keyword");
+            return;
+        }
+
+        setError("");
 
         setLoading(true);
 
@@ -58,6 +69,11 @@ export default function KeywordSuggestionTool() {
 
     const copyAll = () => {
 
+        if (results.length === 0) {
+            setError("Generate keywords first");
+            return;
+        }
+
         navigator.clipboard.writeText(
             results.map(r => r.keyword).join("\n")
         );
@@ -65,6 +81,11 @@ export default function KeywordSuggestionTool() {
     };
 
     const exportCSV = () => {
+
+        if (results.length === 0) {
+            setError("No keywords available to export");
+            return;
+        }
 
         const csv =
             "Keyword,Volume,CPC,Intent,Cluster,Difficulty,SERP\n" +
@@ -85,16 +106,26 @@ export default function KeywordSuggestionTool() {
     };
 
     const fetchSERP = async () => {
-        if (!keyword) return;
+
+        if (!keyword.trim()) {
+            setError("Please enter a keyword first");
+            return;
+        }
+
         const res = await fetch(`/api/seotools/serp?keyword=${encodeURIComponent(keyword)}`);
 
         const data = await res.json();
-        console.log("SERP DATA:", data);
+
         setSerp(data.results || []);
+        setSerpSearched(true);
 
     };
 
     const generateOutline = async () => {
+        if (!keyword.trim()) {
+            setError("Enter keyword before generating outline");
+            return;
+        }
 
         const res = await fetch("/api/seotools/content-outline", {
             method: "POST",
@@ -250,11 +281,16 @@ export default function KeywordSuggestionTool() {
                     placeholder="Enter keyword"
                     className="w-full border rounded-lg px-4 py-2"
                 />
+                {error && (
+                    <div className="text-red-500 text-sm">
+                        {error}
+                    </div>
+                )}
 
-                <div className="flex gap-4 flex-wrap">
+                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-4">
 
                     <div>
-                        <label className="text-sm">Keyword Count</label>
+                        <label className="text-sm">Keyword Count </label>
                         <input
                             type="number"
                             value={limit}
@@ -264,7 +300,7 @@ export default function KeywordSuggestionTool() {
                     </div>
 
                     <div>
-                        <label className="text-sm">Country</label>
+                        <label className="text-sm">Country </label>
 
                         <select
                             value={country}
@@ -283,7 +319,7 @@ export default function KeywordSuggestionTool() {
                     </div>
 
                     <div>
-                        <label className="text-sm">Keyword Type</label>
+                        <label className="text-sm">Keyword Type </label>
 
                         <select
                             value={type}
@@ -303,11 +339,12 @@ export default function KeywordSuggestionTool() {
 
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
 
                     <button
                         onClick={generateKeywords}
-                        className="flex items-center justify-center cursor-pointer gap-2 w-full sm:flex-1 bg-indigo-600 text-white py-2 rounded-lg"
+                        disabled={loading}
+                        className="flex items-center justify-center cursor-pointer gap-2 w-full bg-indigo-600 text-white py-2 rounded-lg disabled:opacity-50"
                     >
                         <Search size={16} /> Generate
                     </button>
@@ -334,7 +371,8 @@ export default function KeywordSuggestionTool() {
                     </button>
                     <button
                         onClick={fetchSERP}
-                        className="flex items-center justify-center cursor-pointer gap-2 w-full sm:flex-1 bg-orange-600 text-white py-2 rounded-lg"
+                        disabled={loading}
+                        className="flex items-center justify-center cursor-pointer gap-2 w-full sm:flex-1 bg-orange-600 text-white py-2 rounded-lg disabled:opacity-50"
                     >
                         Analyze SERP
                     </button>
@@ -351,9 +389,9 @@ export default function KeywordSuggestionTool() {
 
             {sortedResults.length > 0 && (
 
-                <div className="overflow-x-auto border rounded-xl bg-white shadow">
+                <div className="overflow-x-auto w-full border rounded-xl bg-white shadow">
 
-                    <table className="w-full text-sm">
+                    <table className="min-w-175 w-full text-sm">
 
                         <thead className="bg-gray-100">
 
@@ -493,53 +531,55 @@ export default function KeywordSuggestionTool() {
 
             )}
 
-            {serp.length > 0 ? (
+            {serpSearched && (
 
-                <div className="p-6 border rounded-xl bg-white shadow">
+                serp.length > 0 ? (
 
-                    <h3 className="text-xl font-semibold mb-4">
-                        SERP Analysis
-                    </h3>
+                    <div className="">
 
-                    <table className="w-full text-sm">
+                        <h3 className="text-xl font-semibold mb-4">
+                            SERP Analysis
+                        </h3>
+                        <div className="overflow-x-auto w-full border rounded-xl bg-white shadow">
+                            <table className="min-w-175 w-full text-sm">
+                                <thead className="bg-gray-100">
+                                    <tr>
+                                        <th className="p-3 font-bold">Rank</th>
+                                        <th className="p-3 font-bold text-left">Title</th>
+                                        <th className="p-3 font-bold">Domain</th>
+                                        <th className="p-3 font-bold">Backlinks</th>
+                                        <th className="p-3 font-bold">DA</th>
+                                    </tr>
 
-                        <thead className="bg-gray-100">
+                                </thead>
 
-                            <tr>
-                                <th className="p-3 font-bold">Rank</th>
-                                <th className="p-3 font-bold text-left">Title</th>
-                                <th className="p-3 font-bold">Domain</th>
-                                <th className="p-3 font-bold">Backlinks</th>
-                                <th className="p-3 font-bold">DA</th>
-                            </tr>
+                                <tbody>
 
-                        </thead>
+                                    {serp.map((s, i) => (
+                                        <tr key={i} className="border-t">
 
-                        <tbody>
+                                            <td className="p-3 font-medium">{s.rank}</td>
+                                            <td className="p-3 font-medium">{s.title}</td>
+                                            <td className="p-3 font-medium">{s.domain}</td>
+                                            <td className="p-3 font-medium">{s.backlinks}</td>
+                                            <td className="p-3 font-medium">{s.da}</td>
 
-                            {serp.map((s, i) => (
-                                <tr key={i} className="border-t">
+                                        </tr>
+                                    ))}
 
-                                    <td className="p-3 font-medium">{s.rank}</td>
-                                    <td className="p-3 font-medium">{s.title}</td>
-                                    <td className="p-3 font-medium">{s.domain}</td>
-                                    <td className="p-3 font-medium">{s.backlinks}</td>
-                                    <td className="p-3 font-medium">{s.da}</td>
+                                </tbody>
 
-                                </tr>
-                            ))}
+                            </table>
 
-                        </tbody>
+                        </div>
+                    </div>
+                ) : (
 
-                    </table>
+                    <div className="text-gray-500 text-sm">
+                        No SERP results found.
+                    </div>
 
-                </div>
-
-            ) : (
-
-                <div className="text-gray-500 text-sm">
-                    No SERP results found.
-                </div>
+                )
 
             )}
 
@@ -624,7 +664,7 @@ export default function KeywordSuggestionTool() {
 
             {Object.keys(clusters).length > 0 && (
 
-                <div className="p-6 border rounded-xl bg-white shadow">
+                <div className="">
 
                     <h3 className="text-xl font-semibold mb-4">
                         Keyword Clusters
@@ -675,6 +715,212 @@ export default function KeywordSuggestionTool() {
                 </div>
 
             )}
+
+            {/* SEO CONTENT */}
+
+            <div className="space-y-10">
+
+                <section>
+
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                        <Lightbulb size={20} /> About Keyword Suggestion Tool
+                    </h2>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        A <strong>Keyword Suggestion Tool</strong> is one of the most essential tools for anyone working in search engine optimization (SEO), digital marketing, blogging, affiliate marketing, or content creation. It helps you discover the exact keywords that people are typing into search engines like Google, Bing, and DuckDuckGo. By analyzing search behavior and generating keyword variations, a keyword suggestion tool allows you to uncover hidden opportunities that can drive organic traffic to your website.
+                    </p>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        When you start with a single seed keyword, the tool automatically generates multiple keyword ideas including short-tail keywords, long-tail keywords, and semantic variations. These keyword suggestions can be used to create blog posts, landing pages, product descriptions, and marketing campaigns. Instead of guessing what people search for, you can rely on data-driven keyword suggestions to improve your content strategy.
+                    </p>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        Modern SEO strategies rely heavily on keyword research. Search engines prioritize relevant content that answers user intent. By using a reliable <strong>SEO keyword suggestion tool</strong>, you can identify the search queries that have high search volume, low competition, and strong ranking potential. This means you can target keywords that bring real traffic rather than wasting time on topics that nobody searches for.
+                    </p>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        Our <strong>free keyword suggestion tool</strong> is designed to make keyword research simple, fast, and effective. With just one keyword input, you can generate dozens or even hundreds of keyword ideas instantly. These ideas can help you discover trending topics, niche opportunities, and high-traffic search terms that can significantly boost your website’s SEO performance.
+                    </p>
+
+                </section>
+
+                <section>
+
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                        <Rocket size={20} /> How Keyword Suggestion Tool Works
+                    </h2>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        The keyword suggestion process starts with a seed keyword. Once you enter a keyword into the tool, the system analyzes search patterns and generates multiple keyword combinations that users frequently search online. The goal is to expand a single keyword into a large list of keyword ideas that can be used for SEO campaigns.
+                    </p>
+
+                    <ul className="list-disc ml-6 mt-4 text-gray-700 space-y-2 leading-relaxed">
+
+                        <li>
+                            <strong>Seed Keyword Analysis:</strong> The process begins when you enter a base keyword such as “SEO tools” or “digital marketing”. This keyword acts as the foundation for generating new search queries.
+                        </li>
+
+                        <li>
+                            <strong>Autocomplete Expansion:</strong> The tool fetches search suggestions similar to Google autocomplete results. These suggestions represent real search queries typed by users.
+                        </li>
+
+                        <li>
+                            <strong>Long-Tail Keyword Generation:</strong> Long-tail keywords are extended versions of the main keyword. These keywords usually have lower competition and higher conversion potential.
+                        </li>
+
+                        <li>
+                            <strong>Keyword Intent Detection:</strong> The tool identifies the search intent behind each keyword such as informational, commercial, transactional, or navigational queries.
+                        </li>
+
+                        <li>
+                            <strong>Keyword Clustering:</strong> Related keywords are grouped into clusters. This helps you build topical authority by creating multiple pieces of content around the same topic.
+                        </li>
+
+                        <li>
+                            <strong>Opportunity Score Calculation:</strong> The system evaluates search volume, difficulty, and competition to estimate the ranking opportunity of each keyword.
+                        </li>
+
+                    </ul>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        By combining all these methods, the keyword suggestion tool creates a powerful keyword database that helps you build an SEO strategy based on real user demand.
+                    </p>
+
+                </section>
+
+                <section>
+
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                        <Tag size={20} /> Benefits of Using Keyword Suggestion Tool
+                    </h2>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        Using a professional <strong>SEO keyword generator</strong> provides several advantages for bloggers, marketers, and business owners. Instead of randomly choosing topics, you can make strategic decisions based on search demand and keyword performance.
+                    </p>
+
+                    <ul className="list-disc ml-6 mt-4 text-gray-700 space-y-2 leading-relaxed">
+
+                        <li>
+                            <strong>Discover Long-Tail Keywords:</strong> Long-tail keywords often have lower competition and higher conversion rates. These keywords are easier to rank for in search engines.
+                        </li>
+
+                        <li>
+                            <strong>Improve Content Planning:</strong> Keyword suggestions help you plan blog posts, guides, and articles that match what users are searching for online.
+                        </li>
+
+                        <li>
+                            <strong>Increase Organic Traffic:</strong> By targeting relevant search queries, your website can attract more visitors from organic search results.
+                        </li>
+
+                        <li>
+                            <strong>Understand Search Intent:</strong> Identifying the purpose behind a keyword helps you create content that satisfies user expectations.
+                        </li>
+
+                        <li>
+                            <strong>Generate Unlimited Topic Ideas:</strong> With hundreds of keyword suggestions, you can build a content calendar filled with SEO-optimized topics.
+                        </li>
+
+                        <li>
+                            <strong>Competitive SEO Advantage:</strong> Finding low-competition keywords allows new websites to compete with established websites in search rankings.
+                        </li>
+
+                        <li>
+                            <strong>Better Keyword Targeting:</strong> Instead of focusing only on high-volume keywords, you can target a balanced mix of short and long keywords.
+                        </li>
+
+                    </ul>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        In simple terms, keyword research is the backbone of SEO success. Without proper keyword analysis, even high-quality content may fail to reach its audience.
+                    </p>
+
+                </section>
+
+                <section>
+
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                        <TrendingUp size={20} /> Why Keyword Research Is Important for SEO
+                    </h2>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        Search engines rely on keywords to understand the content of a webpage. When you optimize your content with relevant keywords, search engines can match your page with user search queries. This improves the chances of appearing in search engine results pages (SERPs).
+                    </p>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        Effective keyword research allows you to identify search opportunities before creating content. Instead of writing articles randomly, you can target keywords that already have demand. This dramatically increases your chances of ranking higher in Google search results.
+                    </p>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        Another benefit of keyword research is understanding market trends. By analyzing trending keywords and search volume patterns, you can identify what topics are currently popular among users. This allows you to create timely content that attracts immediate traffic.
+                    </p>
+
+                </section>
+
+                <section>
+
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                        <BarChart3 size={20} /> Tips for Choosing the Best SEO Keywords
+                    </h2>
+
+                    <ul className="list-disc ml-6 mt-4 text-gray-700 space-y-2 leading-relaxed">
+
+                        <li>Focus on keywords with moderate search volume and lower competition.</li>
+
+                        <li>Use long-tail keywords for easier ranking opportunities.</li>
+
+                        <li>Analyze search intent before creating content.</li>
+
+                        <li>Combine informational and commercial keywords.</li>
+
+                        <li>Create topic clusters around related keywords.</li>
+
+                        <li>Track keyword performance regularly.</li>
+
+                        <li>Update existing content with new keyword opportunities.</li>
+
+                    </ul>
+
+                    <p className="mt-3 text-gray-700 leading-relaxed">
+                        Following these keyword research strategies will help you build a strong SEO foundation and improve your chances of ranking in competitive search results.
+                    </p>
+
+                </section>
+
+                <section>
+
+                    <h2 className="text-xl font-bold">Related Search Tags</h2>
+
+                    <div className="flex flex-wrap gap-2 mt-4">
+
+                        {[
+                            "keyword suggestion tool",
+                            "keyword research tool",
+                            "seo keyword generator",
+                            "long tail keyword generator",
+                            "google keyword suggestions",
+                            "free keyword research tool",
+                            "keyword ideas generator",
+                            "seo keyword finder",
+                            "keyword planner alternative",
+                            "best keyword research tool",
+                            "seo keyword ideas",
+                            "keyword generator for seo"
+                        ].map(tag => (
+
+                            <span
+                                key={tag}
+                                className="bg-gray-100 px-3 py-1 rounded-full text-sm"
+                            >
+                                {tag}
+                            </span>
+
+                        ))}
+
+                    </div>
+
+                </section>
+
+            </div>
 
         </div>
 
