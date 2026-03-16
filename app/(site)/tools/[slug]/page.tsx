@@ -615,6 +615,7 @@ export default async function ToolPage({
 
 
 
+
           <AdSlot location="tool_middle" />
 
           {/* About Section */}
