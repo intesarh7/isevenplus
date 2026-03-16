@@ -7,6 +7,7 @@ import ImageAltTagChecker from "./ImageAltTagChecker";
 import ImageSitemapGenerator from "./ImageSitemapGenerator";
 import InternalLinksChecker from "./InternalLinksChecker";
 import KeywordDensityChecker from "./KeywordDensityChecker";
+import KeywordDifficultyChecker from "./KeywordDifficultyChecker";
 import KeywordSuggestionTool from "./KeywordSuggestionTool";
 import MetaDescriptionChecker from "./MetaDescriptionChecker";
 import MetaTagAnalyzer from "./MetaTagAnalyzer";
@@ -46,6 +47,7 @@ export const seoToolComponents: Record<string, any> = {
   "url-encoder-decoder": UrlEncoderDecoder,
   "website-screenshot-generator": WebsiteScreenshotGenerator,
   "keyword-suggestion-tool": KeywordSuggestionTool,
+  "keyword-difficulty-checker": KeywordDifficultyChecker,
   
 
 };
