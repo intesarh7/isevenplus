@@ -137,6 +137,37 @@ export default async function PincodeDetail({
   );
 
   /* =========================================================
+🔥 SAME PINCODE OTHER OFFICES
+========================================================= */
+
+  const [otherSamePin] = await db.query<RowDataPacket[]>(
+    `SELECT office_name,district,state,pincode 
+   FROM indian_pincodes 
+   WHERE pincode=? 
+   AND office_name!=?
+   ORDER BY office_name`,
+    [pincode, data.office_name]
+  );
+
+
+  /* =========================================================
+  🔥 SIMILAR NAME POST OFFICES
+  ========================================================= */
+
+  const officeKeyword = data.office_name
+    ?.replace(/post office|bo|so|ho/gi, "")
+    ?.trim();
+
+  const [similarNames] = await db.query<RowDataPacket[]>(
+    `SELECT office_name,district,state,pincode
+   FROM indian_pincodes
+   WHERE office_name LIKE ?
+   AND pincode!=?
+   LIMIT 20`,
+    [`%${officeKeyword}%`, pincode]
+  );
+
+  /* =========================================================
      🔥 RELATED PINCODES
   ========================================================= */
   const [related] = await db.query<RowDataPacket[]>(
@@ -295,6 +326,104 @@ export default async function PincodeDetail({
         </table>
 
       </div>
+
+      {/* ================= SAME PINCODE OTHER OFFICES ================= */}
+
+      {otherSamePin.length > 0 && (
+
+        <div className="mb-12">
+
+          <h2 className="text-2xl font-bold mb-6">
+            Other ({otherSamePin.length}) Post Offices with Same PIN Code ({data.pincode}) in {data.district}
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-4">
+
+            {otherSamePin.map((item: any, index: number) => {
+
+              const url = buildPincodeUrl(item)
+
+              return (
+
+                <Link
+                  key={index}
+                  href={url}
+                  className="flex justify-between items-center border rounded-xl px-4 py-3 hover:bg-indigo-50 transition"
+                >
+
+                  <div>
+
+                    <div className="font-medium">
+                      {item.office_name}
+                    </div>
+
+                    <div className="text-sm text-gray-500">
+                      {item.district}, {item.state}
+                    </div>
+
+                  </div>
+
+                  <ArrowRight size={18} />
+
+                </Link>
+
+              )
+
+            })}
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* ================= SIMILAR NAME POST OFFICES ================= */}
+
+      {similarNames.length > 0 && (
+
+        <div className="mb-12">
+
+          <h2 className="text-2xl font-bold mb-6">
+            Other ({similarNames.length}) Post Offices with Similar Name
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-4">
+
+            {similarNames.map((item: any, index: number) => {
+
+              const url = buildPincodeUrl(item)
+
+              return (
+
+                <Link
+                  key={index}
+                  href={url}
+                  className="border rounded-xl p-4 hover:bg-indigo-50 transition"
+                >
+
+                  <div className="font-semibold">
+                    {item.office_name}
+                  </div>
+
+                  <div className="text-sm text-gray-500 mt-1">
+                    {item.district}, {item.state}
+                  </div>
+
+                  {/* <div className="text-indigo-600 text-sm mt-2">
+                    PIN: {item.pincode}
+                  </div> */}
+
+                </Link>
+
+              )
+
+            })}
+
+          </div>
+
+        </div>
+
+      )}
 
       {/* ================= POST OFFICES ================= */}
 

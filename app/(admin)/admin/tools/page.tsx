@@ -3,7 +3,7 @@
 import { slugify } from "@/app/lib/slugify";
 import { useEffect, useMemo, useState } from "react";
 
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 10;
 
 export default function AdminTools() {
   const [tools, setTools] = useState<any[]>([]);
@@ -77,36 +77,36 @@ export default function AdminTools() {
   // 🔥 Create / Update
   const handleSubmit = async () => {
 
-  const url = editingId
-    ? "/api/admin/tools/update"
-    : "/api/admin/tools/create";
+    const url = editingId
+      ? "/api/admin/tools/update"
+      : "/api/admin/tools/create";
 
-  await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      ...form,
-      categoryId: Number(form.categoryId),
-      ...(editingId ? { id: editingId } : {}),
-    }),
-  });
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...form,
+        categoryId: Number(form.categoryId),
+        ...(editingId ? { id: editingId } : {}),
+      }),
+    });
 
-  setForm({
-    name: "",
-    slug: "",
-    description: "",
-    metaTitle: "",
-    metaDescription: "",
-    categoryId: "",
-    isActive: true,
-  });
+    setForm({
+      name: "",
+      slug: "",
+      description: "",
+      metaTitle: "",
+      metaDescription: "",
+      categoryId: "",
+      isActive: true,
+    });
 
-  setEditingId(null);
+    setEditingId(null);
 
-  await fetchTools();
-};
+    await fetchTools();
+  };
 
   const handleDelete = async (id: number) => {
     await fetch("/api/admin/tools/delete", {
@@ -309,22 +309,80 @@ export default function AdminTools() {
       </div>
 
       {/* PAGINATION */}
-      {totalPages > 1 && (
-        <div className="flex gap-2 mt-4">
-          {Array.from({ length: totalPages }).map((_, i) => (
+
+      {totalPages > 1 && (() => {
+
+        const groupSize = 3
+
+        const currentGroup = Math.floor((currentPage - 1) / groupSize)
+
+        const start = currentGroup * groupSize + 1
+
+        const end = Math.min(start + groupSize - 1, totalPages)
+
+        const pages = []
+
+        for (let i = start; i <= end; i++) {
+          pages.push(i)
+        }
+
+        return (
+
+          <div className="flex items-center justify-center gap-2 mt-6">
+
+            {/* PREVIOUS GROUP */}
+
             <button
-              key={i}
-              onClick={() => setCurrentPage(i + 1)}
-              className={`px-3 py-1 rounded ${currentPage === i + 1
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200"
+              onClick={() => setCurrentPage(start - groupSize)}
+              disabled={start === 1}
+              className={`px-3 py-1 rounded border
+        ${start === 1
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-white hover:bg-gray-100"
                 }`}
             >
-              {i + 1}
+              {"<"}
             </button>
-          ))}
-        </div>
-      )}
+
+
+            {/* PAGE NUMBERS */}
+
+            {pages.map((page) => (
+
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`px-3 py-1 rounded border
+          ${currentPage === page
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white hover:bg-gray-100"
+                  }`}
+              >
+                {page}
+              </button>
+
+            ))}
+
+
+            {/* NEXT GROUP */}
+
+            <button
+              onClick={() => setCurrentPage(end + 1)}
+              disabled={end >= totalPages}
+              className={`px-3 py-1 rounded border
+        ${end >= totalPages
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-white hover:bg-gray-100"
+                }`}
+            >
+              {">"}
+            </button>
+
+          </div>
+
+        )
+
+      })()}
     </div>
   );
 }

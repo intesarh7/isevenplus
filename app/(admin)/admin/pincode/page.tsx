@@ -3,29 +3,29 @@
 import { useEffect, useState } from "react";
 
 interface PostalItem {
-  id: number;
+    id: number;
 
-  // Indian
-  pincode?: string;
-  office_name?: string;
-  branch_type?: string;
-  delivery_status?: string;
-  district?: string;
-  division?: string;
-  region?: string;
-  taluk?: string;
-  circle?: string;
-  state?: string;
+    // Indian
+    pincode?: string;
+    office_name?: string;
+    branch_type?: string;
+    delivery_status?: string;
+    district?: string;
+    division?: string;
+    region?: string;
+    taluk?: string;
+    circle?: string;
+    state?: string;
 
-  // World
-  postal_code?: string;
-  place_name?: string;
-  country_code?: string;
-  admin1?: string;
-  admin2?: string;
-  admin3?: string;
-  latitude?: number;
-  longitude?: number;
+    // World
+    postal_code?: string;
+    place_name?: string;
+    country_code?: string;
+    admin1?: string;
+    admin2?: string;
+    admin3?: string;
+    latitude?: number;
+    longitude?: number;
 }
 
 export default function PostalAdminPage() {
@@ -270,61 +270,238 @@ export default function PostalAdminPage() {
 
             </div>
             {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-xl w-full max-w-lg">
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-6">
 
-                        <h2 className="text-xl font-semibold mb-4">
-                            {editingItem ? "Edit Postal Code" : "Add Postal Code"}
-                        </h2>
+                    <div className="bg-white w-full max-w-3xl rounded-2xl shadow-2xl border overflow-hidden">
 
-                        <input
-                            className="border p-2 rounded w-full mb-3"
-                            placeholder="Office Name"
-                            defaultValue={editingItem?.office_name}
-                            id="office_name"
-                        />
+                        {/* Header */}
+                        <div className="flex justify-between items-center px-6 py-4 border-b bg-gray-50">
+                            <h2 className="text-xl font-bold">
+                                {editingItem ? "Edit Postal Code" : "Add Postal Code"}
+                            </h2>
 
-                        <input
-                            className="border p-2 rounded w-full mb-3"
-                            placeholder="Pincode"
-                            defaultValue={editingItem?.pincode}
-                            id="pincode"
-                        />
-
-                        <div className="flex justify-end gap-3 mt-4">
                             <button
                                 onClick={() => setShowModal(false)}
-                                className="px-4 py-2 bg-gray-300 rounded">
+                                className="text-gray-500 hover:text-black text-lg">
+                                ✕
+                            </button>
+                        </div>
+
+
+                        {/* Form Body */}
+                        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto">
+
+                            {/* INDIA FIELDS */}
+
+                            {tab === "india" && (
+                                <>
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Pincode</label>
+                                        <input className="border p-2 rounded w-full"
+                                            placeholder="Enter Pincode"
+                                            defaultValue={editingItem?.pincode}
+                                            id="pincode" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Office Name</label>
+                                        <input className="border p-2 rounded w-full"
+                                            placeholder="Enter Office Name"
+                                            defaultValue={editingItem?.office_name}
+                                            id="office_name" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Branch Type</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.branch_type}
+                                            id="branch_type" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Delivery Status</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.delivery_status}
+                                            id="delivery_status" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">District</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.district}
+                                            id="district" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Division</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.division}
+                                            id="division" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Region</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.region}
+                                            id="region" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Taluk</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.taluk}
+                                            id="taluk" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Circle</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.circle}
+                                            id="circle" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">State</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.state}
+                                            id="state" />
+                                    </div>
+                                </>
+                            )}
+
+
+                            {/* WORLD FIELDS */}
+
+                            {tab === "world" && (
+                                <>
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Postal Code</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.postal_code}
+                                            id="postal_code" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Place Name</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.place_name}
+                                            id="place_name" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Country Code</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.country_code}
+                                            id="country_code" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Admin1 (State)</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.admin1}
+                                            id="admin1" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Admin2 (District)</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.admin2}
+                                            id="admin2" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Admin3</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.admin3}
+                                            id="admin3" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Latitude</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.latitude}
+                                            id="latitude" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <label className="text-sm font-semibold">Longitude</label>
+                                        <input className="border p-2 rounded w-full"
+                                            defaultValue={editingItem?.longitude}
+                                            id="longitude" />
+                                    </div>
+                                </>
+                            )}
+
+                        </div>
+
+
+                        {/* Footer Buttons */}
+
+                        <div className="flex justify-between items-center px-6 py-4 border-t bg-gray-50">
+
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 font-medium">
                                 Cancel
                             </button>
 
                             <button
                                 onClick={async () => {
-                                    const payload = {
-                                        office_name: (document.getElementById("office_name") as HTMLInputElement).value,
-                                        pincode: (document.getElementById("pincode") as HTMLInputElement).value,
-                                    };
+
+                                    const payload: any = {};
+
+                                    if (tab === "india") {
+
+                                        payload.pincode = (document.getElementById("pincode") as HTMLInputElement)?.value;
+                                        payload.office_name = (document.getElementById("office_name") as HTMLInputElement)?.value;
+                                        payload.branch_type = (document.getElementById("branch_type") as HTMLInputElement)?.value;
+                                        payload.delivery_status = (document.getElementById("delivery_status") as HTMLInputElement)?.value;
+                                        payload.district = (document.getElementById("district") as HTMLInputElement)?.value;
+                                        payload.division = (document.getElementById("division") as HTMLInputElement)?.value;
+                                        payload.region = (document.getElementById("region") as HTMLInputElement)?.value;
+                                        payload.taluk = (document.getElementById("taluk") as HTMLInputElement)?.value;
+                                        payload.circle = (document.getElementById("circle") as HTMLInputElement)?.value;
+                                        payload.state = (document.getElementById("state") as HTMLInputElement)?.value;
+
+                                    } else {
+
+                                        payload.postal_code = (document.getElementById("postal_code") as HTMLInputElement)?.value;
+                                        payload.place_name = (document.getElementById("place_name") as HTMLInputElement)?.value;
+                                        payload.country_code = (document.getElementById("country_code") as HTMLInputElement)?.value;
+                                        payload.admin1 = (document.getElementById("admin1") as HTMLInputElement)?.value;
+                                        payload.admin2 = (document.getElementById("admin2") as HTMLInputElement)?.value;
+                                        payload.admin3 = (document.getElementById("admin3") as HTMLInputElement)?.value;
+                                        payload.latitude = (document.getElementById("latitude") as HTMLInputElement)?.value;
+                                        payload.longitude = (document.getElementById("longitude") as HTMLInputElement)?.value;
+
+                                    }
 
                                     if (editingItem) {
-                                        await fetch(`/api/admin/indian-postal/${editingItem.id}`, {
+
+                                        await fetch(`/api/admin/${tab === "india" ? "indian-pincode" : "world-postal"}/${editingItem.id}`, {
                                             method: "PUT",
                                             headers: { "Content-Type": "application/json" },
                                             body: JSON.stringify(payload),
                                         });
+
                                     } else {
-                                        await fetch(`/api/admin/indian-postal`, {
+
+                                        await fetch(`/api/admin/${tab === "india" ? "indian-pincode" : "world-postal"}`, {
                                             method: "POST",
                                             headers: { "Content-Type": "application/json" },
                                             body: JSON.stringify(payload),
                                         });
+
                                     }
 
                                     setShowModal(false);
                                     fetchData();
+
                                 }}
-                                className="px-4 py-2 bg-indigo-600 text-white rounded">
-                                Save
+                                className="px-6 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 font-semibold shadow">
+                                Save Postal Code
                             </button>
+
                         </div>
 
                     </div>
