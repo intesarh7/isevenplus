@@ -74,7 +74,7 @@ export default function WorkingDaysCalculator() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl p-8">
+    <div className="mx-auto bg-white shadow-xl rounded-2xl p-8">
 
       {/* Heading */}
       <div className="flex items-center gap-3 mb-6">

@@ -138,13 +138,49 @@ export default function Section80CCalculator() {
                 </h2>
 
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                    Section 80C of the Income Tax Act allows individuals to claim
-                    deductions up to ₹1,50,000 per financial year on eligible investments.
+                    The Section 80C Calculator is a powerful financial planning tool that helps
+                    taxpayers estimate how much tax they can save under Section 80C of the
+                    Income Tax Act. Section 80C is one of the most popular tax-saving provisions
+                    in India and allows individuals and Hindu Undivided Families (HUFs) to claim
+                    deductions up to ₹1,50,000 per financial year by investing in approved
+                    instruments. Using a calculator simplifies tax planning by showing how
+                    different investments contribute to your total deduction and how they reduce
+                    your taxable income.
+                </p>
+
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                    Many taxpayers invest in various savings schemes without fully understanding
+                    how these investments affect their tax liability. A Section 80C Calculator
+                    solves this problem by quickly calculating the total eligible deduction and
+                    the resulting tax savings. By entering the amounts invested in different
+                    instruments, you can instantly see whether you have reached the ₹1,50,000
+                    deduction limit and how much additional investment may still be required to
+                    maximize your tax benefits.
                 </p>
 
                 <h3 className="text-xl font-semibold mt-6 mb-3 text-gray-800">
-                    Eligible Investments Under 80C
+                    What is Section 80C?
                 </h3>
+
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                    Section 80C of the Income Tax Act provides deductions from your gross total
+                    income when you invest in specific financial instruments or spend on certain
+                    eligible expenses. The maximum deduction allowed under this section is
+                    ₹1,50,000 in a financial year. By reducing your taxable income, these
+                    deductions directly lower the total income tax you have to pay. This makes
+                    Section 80C an essential component of financial planning for salaried
+                    individuals and professionals.
+                </p>
+
+                <h3 className="text-xl font-semibold mt-6 mb-3 text-gray-800">
+                    Eligible Investments Under Section 80C
+                </h3>
+
+                <p className="text-gray-600 mb-4 leading-relaxed">
+                    A variety of investments and expenses qualify for deductions under Section
+                    80C. These options allow taxpayers to combine tax savings with long-term
+                    financial security and wealth creation.
+                </p>
 
                 <ul className="list-disc pl-6 text-gray-600 space-y-2">
                     <li>EPF (Employee Provident Fund)</li>
@@ -153,7 +189,64 @@ export default function Section80CCalculator() {
                     <li>Life Insurance Premium</li>
                     <li>Home Loan Principal Repayment</li>
                     <li>Children’s Tuition Fees</li>
+                    <li>Tax Saving Fixed Deposits (5-year lock-in)</li>
+                    <li>National Savings Certificate (NSC)</li>
+                    <li>Sukanya Samriddhi Yojana (SSY)</li>
+                    <li>Senior Citizens Savings Scheme (SCSS)</li>
                 </ul>
+
+                <h3 className="text-xl font-semibold mt-6 mb-3 text-gray-800">
+                    How the Section 80C Calculator Works
+                </h3>
+
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                    The Section 80C Calculator works by adding up all eligible investments made
+                    during a financial year and applying the maximum deduction limit of
+                    ₹1,50,000. Once the total eligible deduction is calculated, the tool shows
+                    how much your taxable income will be reduced. This helps you estimate your
+                    tax liability and understand whether your current investments are sufficient
+                    to take full advantage of the deduction limit.
+                </p>
+
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                    For example, if your taxable income before deductions is ₹8,00,000 and you
+                    invest ₹1,50,000 in eligible Section 80C instruments, your taxable income
+                    becomes ₹6,50,000. This reduction in taxable income can significantly lower
+                    your total tax payable depending on your income tax slab.
+                </p>
+
+                <h3 className="text-xl font-semibold mt-6 mb-3 text-gray-800">
+                    Benefits of Using a Section 80C Calculator
+                </h3>
+
+                <ul className="list-disc pl-6 text-gray-600 space-y-2 mb-6">
+                    <li>Quickly estimate your total tax deduction.</li>
+                    <li>Understand how investments reduce taxable income.</li>
+                    <li>Plan investments efficiently before the financial year ends.</li>
+                    <li>Ensure you fully utilize the ₹1,50,000 deduction limit.</li>
+                    <li>Compare different tax-saving investment options.</li>
+                </ul>
+
+                <h3 className="text-xl font-semibold mt-6 mb-3 text-gray-800">
+                    Tips to Maximize Your Section 80C Benefits
+                </h3>
+
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                    To get the maximum benefit from Section 80C, start planning your investments
+                    early in the financial year instead of rushing at the end. Diversify your
+                    investments across instruments such as PPF, ELSS, and life insurance to
+                    balance risk and long-term returns. If you have a home loan, ensure that the
+                    principal repayment is properly accounted for under Section 80C deductions.
+                    Parents can also include tuition fees paid for their children as part of the
+                    deduction.
+                </p>
+
+                <p className="text-gray-600 leading-relaxed">
+                    Using a Section 80C Calculator regularly helps you stay on track with your
+                    tax planning goals. By monitoring your investments and deductions throughout
+                    the year, you can optimize your savings, reduce tax liability, and build a
+                    stronger financial future.
+                </p>
             </section>
 
         </div>

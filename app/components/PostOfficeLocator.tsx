@@ -17,11 +17,13 @@ export default function PostOfficeLocator() {
             .then(data => setStates(data));
     }, []);
 
+
     // Load districts when state changes
     useEffect(() => {
+
         if (!selectedState) return;
 
-        fetch(`/api/locator/districts?state=${selectedState}`)
+        fetch(`/api/locator/districts?state=${encodeURIComponent(selectedState)}`)
             .then(res => res.json())
             .then(data => {
                 setDistricts(data);
@@ -29,30 +31,30 @@ export default function PostOfficeLocator() {
                 setSelectedDistrict("");
                 setSelectedOffice(null);
             });
+
     }, [selectedState]);
+
 
     // Load offices when district changes
     useEffect(() => {
+
         if (!selectedDistrict) return;
 
-        fetch(`/api/locator/offices?district=${selectedDistrict}`)
+        fetch(`/api/locator/offices?state=${encodeURIComponent(selectedState)}&district=${encodeURIComponent(selectedDistrict)}`)
             .then(res => res.json())
             .then(data => {
                 setOffices(data);
                 setSelectedOffice(null);
             });
+
     }, [selectedDistrict]);
 
     return (
-        <div className="bg-white shadow-lg p-6 rounded-xl max-w-3xl mx-auto">
-
-            <h2 className="text-2xl font-bold mb-6 text-orange-600">
-                Pincode / Post Office Locator Tool
-            </h2>
+        <div className="mx-auto">
 
             {/* State */}
             <select
-                className="border p-3 rounded-xl mb-4"
+                className="border p-3 rounded-xl w-full"
                 value={selectedState}
                 onChange={(e) => setSelectedState(e.target.value)}
             >
@@ -69,23 +71,23 @@ export default function PostOfficeLocator() {
             {/* District */}
             {districts.length > 0 && (
                 <select
-                    className="border p-3 rounded-xl mb-4"
+                    className="border p-3 rounded-xl mt-4 w-full"
                     value={selectedDistrict}
                     onChange={(e) => setSelectedDistrict(e.target.value)}
                 >
                     <option value="">Select District</option>
                     {districts
-                    .filter((d) => d.district && d.district.trim() !== "")
-                    .map((d, i) => (
-                        <option key={i} value={d.district}>{d.district}</option>
-                    ))}
+                        .filter((d) => d.district && d.district.trim() !== "")
+                        .map((d, i) => (
+                            <option key={i} value={d.district}>{d.district}</option>
+                        ))}
                 </select>
             )}
 
             {/* Post Office */}
             {offices.length > 0 && (
                 <select
-                    className="border p-3 rounded-xl mb-4"
+                    className="border p-3 rounded-xl mt-4 w-full"
                     onChange={(e) => {
                         const office = offices.find(o => o.office_name === e.target.value);
                         setSelectedOffice(office);
@@ -93,20 +95,73 @@ export default function PostOfficeLocator() {
                 >
                     <option value="">Select Post Office</option>
                     {offices
-                    .filter((o) => o.office_name && o.office_name.trim() !== "")                    
-                    .map((o, i) => (
-                        <option key={i} value={o.office_name}>{o.office_name}</option>
-                    ))}
+                        .filter((o) => o.office_name && o.office_name.trim() !== "")
+                        .map((o, i) => (
+                            <option key={i} value={o.office_name}>{o.office_name}</option>
+                        ))}
                 </select>
             )}
 
             {/* Final Details */}
             {selectedOffice && (
-                <div className="mt-6 border p-4 rounded bg-gray-50">
-                    <h3 className="font-bold text-lg mb-2">{selectedOffice.office_name}</h3>
-                    <p><strong>Pincode:</strong> {selectedOffice.pincode}</p>
-                    <p><strong>District:</strong> {selectedOffice.district}</p>
-                    <p><strong>State:</strong> {selectedOffice.state}</p>
+                <div className="mt-6 bg-white border rounded-xl shadow-sm p-6">
+
+                    <h3 className="text-xl font-bold mb-4 text-indigo-600">
+                        {selectedOffice.office_name}
+                    </h3>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full border border-gray-200">
+                            <tbody className="text-sm">
+
+                                <tr className="border-b">
+                                    <th className="p-3 bg-gray-50">Pincode</th>
+                                    <td className="p-3">{selectedOffice.pincode}</td>
+                                </tr>
+
+                                <tr className="border-b">
+                                    <th className="p-3 bg-gray-50">Branch Type</th>
+                                    <td className="p-3">{selectedOffice.branch_type || "-"}</td>
+                                </tr>
+
+                                <tr className="border-b">
+                                    <th className="p-3 bg-gray-50">Delivery Status</th>
+                                    <td className="p-3">{selectedOffice.delivery_status || "-"}</td>
+                                </tr>
+
+                                <tr className="border-b">
+                                    <th className="p-3 bg-gray-50">District</th>
+                                    <td className="p-3">{selectedOffice.district}</td>
+                                </tr>
+
+                                <tr className="border-b">
+                                    <th className="p-3 bg-gray-50">Division</th>
+                                    <td className="p-3">{selectedOffice.division || "-"}</td>
+                                </tr>
+
+                                <tr className="border-b">
+                                    <th className="p-3 bg-gray-50">Region</th>
+                                    <td className="p-3">{selectedOffice.region || "-"}</td>
+                                </tr>
+
+                                <tr className="border-b">
+                                    <th className="p-3 bg-gray-50">Taluk</th>
+                                    <td className="p-3">{selectedOffice.taluk || "-"}</td>
+                                </tr>
+
+                                <tr className="border-b">
+                                    <th className="p-3 bg-gray-50">Circle</th>
+                                    <td className="p-3">{selectedOffice.circle || "-"}</td>
+                                </tr>
+
+                                <tr>
+                                    <th className="p-3 bg-gray-50">State</th>
+                                    <td className="p-3">{selectedOffice.state}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
         </div>

@@ -10,9 +10,11 @@ import {
   HelpCircle,
   ArrowRight,
   Search,
+  FileText,
 } from "lucide-react";
 import PostOfficeLocator from "../components/PostOfficeLocator";
 import PincodeAutoSuggest from "../components/PincodeAutoSuggest";
+import PincodeTabs from "../components/PincodeTabs";
 
 export const dynamic = "auto";
 
@@ -30,6 +32,13 @@ export default async function HomePage() {
   let popularCities: any[] = [];
   let popularStates: any[] = [];
   let topPincodes: any[] = [];
+
+  let totalTools = 0;
+  let totalSeoTools = 0;
+  let totalPincodes = 0;
+  let totalBlogs = 0;
+
+
 
   try {
     /* Popular Calculators */
@@ -90,11 +99,38 @@ LIMIT 8
     console.error("Homepage DB Error:", err);
   }
 
+  /* TOTAL TOOLS */
+  const [toolCount] = await db.query<RowDataPacket[]>(`
+SELECT COUNT(*) as total FROM tools WHERE isActive=1 AND isDeleted=0
+`);
+  totalTools = toolCount[0].total;
+
+  /* SEO TOOLS COUNT */
+  const [seoCount] = await db.query<RowDataPacket[]>(`
+SELECT COUNT(*) AS total
+FROM seo_tools
+WHERE isActive = 1
+`);
+
+  totalSeoTools = seoCount[0]?.total || 0;
+
+  /* PINCODES */
+  const [pinCount] = await db.query<RowDataPacket[]>(`
+SELECT COUNT(DISTINCT pincode) as total FROM indian_pincodes
+`);
+  totalPincodes = pinCount[0].total;
+
+  /* BLOGS */
+  const [blogCount] = await db.query<RowDataPacket[]>(`
+SELECT COUNT(*) as total FROM blogs
+`);
+  totalBlogs = blogCount[0].total;
+
   return (
-    <main className="bg-gray-50">
+    <main className="">
 
       {/* 1️⃣ HERO */}
-      <section className="text-center py-20 bg-white">
+      <section className="text-center pt-10 bg-white">
         <h1 className="text-4xl sm:text-5xl font-bold mb-4">
           Smart Online Calculators & Tools
         </h1>
@@ -107,25 +143,115 @@ LIMIT 8
         >
           Explore Tools
         </Link>
+        <section className="mx-auto p-5">
+          <PincodeTabs />
       </section>
-      <section className="max-w-6xl mx-auto py-16 px-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
-          <div className="bg-white shadow-lg p-6 rounded-xl max-w-3xl mx-auto">
+      </section>
+
+      {/* DASHBOARD CARDS */}
+
+      <section className="max-w-6xl mx-auto px-6 py-12">
+
+        <div className="grid md:grid-cols-4 gap-6">
+
+          {/* Calculator Tools */}
+          <Link
+            href="/tools"
+            className="group bg-orange-50 border border-orange-200 p-6 rounded-xl hover:shadow-lg transition transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <Calculator className="w-8 h-8 text-orange-600" />
+            </div>
+
+            <h3 className="font-semibold text-lg mb-2">
+              Calculator Tools
+            </h3>
+
+            <p className="text-2xl font-bold text-gray-900">
+              {totalTools}
+            </p>
+
+            <p className="text-sm text-gray-500">
+              Online calculators available
+            </p>
+          </Link>
 
 
-            <h2 className="text-2xl font-bold mb-6 text-orange-600">
-              Pincode Search by City, District or State
-            </h2>
-            <PincodeAutoSuggest />
+          {/* SEO Tools */}
+          <Link
+            href="/seotools"
+            className="group bg-green-50 border border-green-200 p-6 rounded-xl hover:shadow-lg transition transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <Search className="w-8 h-8 text-green-600" />
+            </div>
+
+            <h3 className="font-semibold text-lg mb-2">
+              SEO Tools
+            </h3>
+
+            <p className="text-2xl font-bold text-gray-900">
+              {totalSeoTools}
+            </p>
+
+            <p className="text-sm text-gray-500">
+              Free SEO tools available
+            </p>
+          </Link>
 
 
-          </div>
-          <PostOfficeLocator />
+          {/* Pincode Database */}
+          <Link
+            href="/pincode"
+            className="group bg-blue-50 border border-blue-200 p-6 rounded-xl hover:shadow-lg transition transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <MapPin className="w-8 h-8 text-blue-600" />
+            </div>
+
+            <h3 className="font-semibold text-lg mb-2">
+              Pincode Database
+            </h3>
+
+            <p className="text-2xl font-bold text-gray-900">
+              {totalPincodes}
+            </p>
+
+            <p className="text-sm text-gray-500">
+              Indian pincodes indexed
+            </p>
+          </Link>
+
+
+          {/* Blog Articles */}
+          <Link
+            href="/blogs"
+            className="group bg-yellow-50 border border-yellow-200 p-6 rounded-xl hover:shadow-lg transition transform hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <Layers className="w-8 h-8 text-yellow-600" />
+            </div>
+
+            <h3 className="font-semibold text-lg mb-2">
+              Blog Articles
+            </h3>
+
+            <p className="text-2xl font-bold text-gray-900">
+              {totalBlogs}
+            </p>
+
+            <p className="text-sm text-gray-500">
+              Guides & tutorials
+            </p>
+          </Link>
+
         </div>
+
       </section>
+
 
       {/* 2️⃣ CATEGORIES */}
-      <section className="max-w-6xl mx-auto py-16 px-6">
+      <section className="max-w-6xl mx-auto py-16 px-6 bg-gray-50">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
           <h2 className="text-3xl font-bold">
             Popular Categories
