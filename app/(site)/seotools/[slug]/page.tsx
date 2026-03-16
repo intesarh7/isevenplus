@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: any) {
       tool.meta_description ||
       `Use the ${tool.name} tool to analyze and optimize your website SEO.`,
     alternates: {
-      canonical: `https://www.isevenplus.com/seotools/${params.slug}`,
+      canonical: `https://www.isevenplus.com/seotools/${params.slug}/`,
     },
   };
 }

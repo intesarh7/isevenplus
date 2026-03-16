@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: any) {
             `Explore powerful ${category.name} tools to improve your website SEO and performance.`,
 
         alternates: {
-            canonical: `https://www.isevenplus.com/seotools/category/${params.slug}`,
+            canonical: `https://www.isevenplus.com/seotools/category/${params.slug}/`,
         },
 
     };

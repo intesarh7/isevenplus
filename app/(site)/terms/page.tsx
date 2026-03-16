@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "Read the Terms & Conditions of iSevenPlus governing the use of our online calculators, Indian pincode finder, worldwide postal code search and SEO tools.",
   alternates: {
-    canonical: `${BASE_URL}/terms-and-conditions`,
+    canonical: `${BASE_URL}/terms-and-conditions/`,
   },
   openGraph: {
     title: "Terms & Conditions – iSevenPlus",

@@ -59,19 +59,36 @@ export async function generateMetadata({ params }: { params: { slug: string[] } 
 
   const firstPostal = data.postal_code.split(" ")[0];
 
-  if (cleanCode !== firstPostal) {
-    redirect(buildPostalUrl(data));
-  }
-
+  /* Clean base URL */
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
     "https://www.isevenplus.com";
 
+  /* Build path */
+  let canonicalPath = buildPostalUrl(data);
+
+  /* Ensure starting slash */
+  if (!canonicalPath.startsWith("/")) {
+    canonicalPath = "/" + canonicalPath;
+  }
+
+  /* Ensure trailing slash */
+  canonicalPath = canonicalPath.replace(/\/?$/, "/");
+
+  /* Redirect if postal code not clean */
+  if (cleanCode !== firstPostal) {
+    redirect(canonicalPath);
+  }
+
+  const canonical = `${baseUrl}${canonicalPath}`;
+
   return {
     title: `${data.postal_code} Postal Code - ${data.place_name}, ${data.country_code}`,
+
     description: `Complete details of postal code ${data.postal_code} in ${data.place_name}, ${data.country_code}.`,
+
     alternates: {
-      canonical: baseUrl + buildPostalUrl(data),
+      canonical,
     },
   };
 }

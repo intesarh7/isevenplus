@@ -11,13 +11,13 @@ export const metadata: Metadata = {
   description:
     "Learn about iSevenPlus – a powerful platform offering smart online calculators, Indian pincode search, worldwide postal codes lookup, and professional SEO tools.",
   alternates: {
-    canonical: `${BASE_URL}/about`,
+    canonical: `${BASE_URL}/about/`,
   },
   openGraph: {
     title: "About iSevenPlus – Smart Tools & Pincode Finder",
     description:
       "Discover iSevenPlus – your trusted source for calculators, Indian pincodes, world postal codes and SEO tools.",
-    url: `${BASE_URL}/about`,
+    url: `${BASE_URL}/about/`,
     siteName: "iSevenPlus",
     type: "website",
   },

@@ -230,9 +230,10 @@ import GSTProfitMarginCalculator from "@/app/components/financecalculator/GSTPro
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
+
+  const { slug } = params;
 
   const [rows]: any = await db.query(
     `SELECT tools.*, tool_categories.name as categoryName
@@ -243,7 +244,7 @@ export async function generateMetadata({
     [slug]
   );
 
-  const tool = rows[0];
+  const tool = rows?.[0];
   if (!tool) return {};
 
   return generateToolSEO({
@@ -252,17 +253,17 @@ export async function generateMetadata({
     description: tool.metaDescription,
     category: tool.categoryName,
   });
-}
 
+}
 export default async function ToolPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
 
-  const { slug } = await params;
+  const { slug } = params;
 
-  // ✅ Get Tool + Category Slug
+  /* Get Tool + Category */
   const [rows] = await db.query(
     `SELECT tools.*, 
             tool_categories.name as categoryName,
@@ -277,25 +278,24 @@ export default async function ToolPage({
   const tool = (rows as any[])[0];
   if (!tool) return notFound();
 
-  /* =========================================================
-      ✅ USAGE COUNTER (SEO Behavioral Signal)
-   ========================================================= */
+  /* Usage Counter */
   await db.query(
     "UPDATE tools SET usageCount = usageCount + 1 WHERE slug=?",
     [slug]
   );
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  /* Clean base URL */
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+    "https://www.isevenplus.com";
 
-  /* =========================================================
-     ✅ STRUCTURED DATA SCHEMAS
-  ========================================================= */
+  /* Structured Data */
   const faqSchema = getCalculatorFAQSchema(tool.slug, tool.name);
 
   const softwareSchema = generateToolSchema({
     name: tool.name,
     description: tool.metaDescription,
-    url: `${baseUrl}/tools/${tool.slug}`,
+    url: `${baseUrl}/tools/${tool.slug}/`,
   });
 
 

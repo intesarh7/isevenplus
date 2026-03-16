@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description:
     "Read the Privacy Policy of iSevenPlus to understand how we collect, use, and protect your data while using our calculators, pincode finder, and SEO tools.",
   alternates: {
-    canonical: `${BASE_URL}/privacy-policy`,
+    canonical: `${BASE_URL}/privacy-policy/`,
   },
   openGraph: {
     title: "Privacy Policy – iSevenPlus",

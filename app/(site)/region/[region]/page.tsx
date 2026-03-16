@@ -20,13 +20,21 @@ export async function generateMetadata({
 
     const regionName = params.region.replace(/-/g, " ").toUpperCase();
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+    /* Clean base URL */
+    const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+        "https://www.isevenplus.com";
+
+    /* Build canonical path safely */
+    const canonical = `${baseUrl}/region/${params.region}/`;
 
     return {
         title: `${regionName} Region Pincode List - Postal Codes & Post Offices | iSevenPlus`,
+
         description: `Find all pincodes in the ${regionName} postal region of India. Browse district-wise post office lists, branch types and delivery status.`,
+
         alternates: {
-            canonical: `${baseUrl}/region/${params.region}`,
+            canonical,
         },
     };
 }

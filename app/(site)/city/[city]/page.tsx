@@ -44,7 +44,7 @@ export async function generateMetadata({
     title: `${cityName} Pincode List (${year}) - (${stateName}) -All Post Office & ZIP Codes`,
     description: `Find the complete ${cityName} pincode list with post office names, branch types, delivery status and postal codes in ${stateName}, India.`,
     alternates: {
-      canonical: `${baseUrl}/city/${city}`,
+      canonical: `${baseUrl}/city/${encodeURIComponent(city)}/`,
     },
   };
 }

@@ -35,7 +35,7 @@ export async function generateMetadata({
 
   const canonical = query
     ? `${baseUrl}/pincode?q=${encodeURIComponent(query)}&type=${type}`
-    : `${baseUrl}/pincode`;
+    : `${baseUrl}/pincode/`;
 
   return {
     title,

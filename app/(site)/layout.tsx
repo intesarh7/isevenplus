@@ -16,10 +16,6 @@ const BASE_URL = isProd
 export const metadata = {
   metadataBase: new URL(BASE_URL),
 
-  alternates: {
-    canonical: "/",
-  },
-
   title: {
     default: "iSevenPlus - Smart Online Tools & Pincode Finder",
     template: "%s | iSevenPlus",

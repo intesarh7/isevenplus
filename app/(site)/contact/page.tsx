@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description:
     "Get in touch with iSevenPlus for support, feedback, partnership, or inquiries related to calculators, pincode search, postal code data, and SEO tools.",
   alternates: {
-    canonical: `${BASE_URL}/contact`,
+    canonical: `${BASE_URL}/contact/`,
   },
   openGraph: {
     title: "Contact iSevenPlus",

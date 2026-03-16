@@ -15,7 +15,7 @@ export function generateToolSEO({
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 
   const title = `${name} – Free Online ${category} Tool | iSevenPlus`;
-  const url = `${baseUrl}/tools/${slug}`;
+  const url = `${baseUrl}/tools/${slug}/`;
 
   const keywords = generateKeywords(name, category);
 

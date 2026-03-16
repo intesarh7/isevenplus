@@ -24,18 +24,26 @@ const year = new Date().getFullYear();
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ state: string }>;
+  params: { state: string };
 }) {
 
-  const { state } = await params;
+  const { state } = params;
+
   const stateName = deslugify(state);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+    "https://www.isevenplus.com";
+
+  const canonical = `${baseUrl}/state/${state}/`;
 
   return {
     title: `${stateName} Pincode List (${year}) - District Wise Post Offices & ZIP Codes | iSevenPlus`,
+
     description: `Find the complete ${stateName} pincode list with district wise post offices, delivery status, branch types and postal codes in India. Updated postal database on iSevenPlus.`,
+
     alternates: {
-      canonical: `${baseUrl}/state/${state}`,
+      canonical,
     },
   };
 }
@@ -154,7 +162,7 @@ export default async function StatePage({
       </div>
 
       {/* District Grid */}
-       
+
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
         {districtRows.map((row) => (

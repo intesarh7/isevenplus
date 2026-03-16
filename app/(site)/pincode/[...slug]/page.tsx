@@ -63,13 +63,26 @@ export async function generateMetadata({
     process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
     "https://www.isevenplus.com";
 
-  const canonicalPath = buildPincodeUrl(data);
+  /* Build canonical path */
+  let canonicalPath = buildPincodeUrl(data);
+
+  /* ensure starting slash */
+  if (!canonicalPath.startsWith("/")) {
+    canonicalPath = "/" + canonicalPath;
+  }
+
+  /* ensure trailing slash */
+  canonicalPath = canonicalPath.replace(/\/?$/, "/");
+
+  const canonical = `${baseUrl}${canonicalPath}`;
 
   return {
     title: `${data.pincode} Pincode - ${data.district}, ${data.state}, India | Post Office Details | iSevenPlus`,
+
     description: `Complete details of ${data.pincode} pincode in ${data.district}, ${data.state}, India. Office name, branch type, delivery status and more.`,
+
     alternates: {
-      canonical: baseUrl + canonicalPath,
+      canonical,
     },
   };
 }
