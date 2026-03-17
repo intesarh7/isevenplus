@@ -21,6 +21,11 @@ export const metadata = {
   },
   description:
     "Find smart calculators, pincodes, and useful tools instantly.",
+  verification: {
+    bing: {
+      "msvalidate.01": "355F9526F1FA6716B94F6FD3ADE9B3DA",
+    },
+  },
 };
 
 export default function RootLayout({
@@ -31,6 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <meta name="google-site-verification" content="JzIfzUsG3INxXqkQyVOFVOjm-Htlv49E44OMCobqkUo" />
+      <meta name="msvalidate.01" content="355F9526F1FA6716B94F6FD3ADE9B3DA" />
       <meta name="google-adsense-account" content="ca-pub-5131122927046742" />
       <body className={inter.className}>{children}</body>
     </html>
