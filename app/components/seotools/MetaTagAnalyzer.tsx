@@ -37,11 +37,11 @@ export default function MetaTagAnalyzer() {
 
   return (
 
-    <div className="max-w-5xl mx-auto">
+    <div className="">
 
       {/* INPUT */}
 
-      <div className="bg-white shadow rounded-2xl p-6 mb-8">
+      <div className="mb-8">
 
         <h2 className="text-xl font-semibold mb-4">
           Analyze Website Meta Tags
