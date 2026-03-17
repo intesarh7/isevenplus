@@ -35,9 +35,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <meta name="google-site-verification" content="JzIfzUsG3INxXqkQyVOFVOjm-Htlv49E44OMCobqkUo" />
-      <meta name="msvalidate.01" content="355F9526F1FA6716B94F6FD3ADE9B3DA" />
-      <meta name="google-adsense-account" content="ca-pub-5131122927046742" />
+      <head>
+        <meta name="google-site-verification" content="JzIfzUsG3INxXqkQyVOFVOjm-Htlv49E44OMCobqkUo" />
+        <meta name="google-adsense-account" content="ca-pub-5131122927046742" />
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );
