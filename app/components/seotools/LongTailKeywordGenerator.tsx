@@ -164,13 +164,13 @@ export default function LongTailKeywordGenerator() {
 
     return (
 
-        <div className="max-w-7xl mx-auto p-6 space-y-10">
+        <div className="max-w-7xl mx-auto space-y-10">
 
             <h1 className="text-3xl font-bold">
                 Long Tail Keyword Generator
             </h1>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
 
                 <input
                     className="border p-3 rounded w-full"
@@ -193,7 +193,7 @@ export default function LongTailKeywordGenerator() {
 
                 <button
                     onClick={generate}
-                    className="bg-indigo-600 text-white px-6 rounded flex items-center gap-2"
+                    className="bg-indigo-600 text-white px-6 py-3 rounded flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
 
                     <Search size={18} />
@@ -205,15 +205,14 @@ export default function LongTailKeywordGenerator() {
 
             {/* Filters */}
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
 
                 <input
                     type="number"
                     placeholder="Min Volume"
                     value={minVolume === 0 ? "" : minVolume}
-                    className="border p-2 rounded"
+                    className="border p-2 rounded w-full sm:w-45"
                     onChange={(e) => {
-
                         const v = e.target.value
 
                         if (v === "") {
@@ -222,7 +221,6 @@ export default function LongTailKeywordGenerator() {
                         }
 
                         setMinVolume(Number(v))
-
                     }}
                 />
 
@@ -230,9 +228,8 @@ export default function LongTailKeywordGenerator() {
                     type="number"
                     placeholder="Max Difficulty"
                     value={maxDifficulty === 100 ? "" : maxDifficulty}
-                    className="border p-2 rounded"
+                    className="border p-2 rounded w-full sm:w-45"
                     onChange={(e) => {
-
                         const v = e.target.value
 
                         if (v === "") {
@@ -241,20 +238,17 @@ export default function LongTailKeywordGenerator() {
                         }
 
                         setMaxDifficulty(Number(v))
-
                     }}
                 />
 
                 <select
-                    className="border p-2 rounded"
+                    className="border p-2 rounded w-full sm:w-50"
                     onChange={(e) => setIntentFilter(e.target.value)}
                 >
-
                     <option value="all">All Intent</option>
                     <option value="Informational">Informational</option>
                     <option value="Commercial">Commercial</option>
                     <option value="Transactional">Transactional</option>
-
                 </select>
 
                 <button
@@ -263,7 +257,7 @@ export default function LongTailKeywordGenerator() {
                         setMaxDifficulty(100)
                         setIntentFilter("all")
                     }}
-                    className="border px-3 py-2 rounded text-sm"
+                    className="border px-3 py-2 rounded text-sm w-full sm:w-auto"
                 >
                     Reset Filters
                 </button>

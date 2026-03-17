@@ -11,9 +11,9 @@ import {
   ArrowRight,
   Search,
   FileText,
+  Sparkles,
+  Wrench,
 } from "lucide-react";
-import PostOfficeLocator from "../components/PostOfficeLocator";
-import PincodeAutoSuggest from "../components/PincodeAutoSuggest";
 import PincodeTabs from "../components/PincodeTabs";
 
 export const dynamic = "auto";
@@ -47,7 +47,7 @@ export default async function HomePage() {
   FROM tools
   WHERE isActive=1 AND isDeleted=0
   ORDER BY usageCount DESC
-  LIMIT 8
+  LIMIT 20
 `);
     popularCalculators = popularCalc;
 
@@ -57,7 +57,7 @@ export default async function HomePage() {
   FROM indian_pincodes
   GROUP BY district
   ORDER BY total DESC
-  LIMIT 8
+  LIMIT 20
 `);
     popularCities = cities;
 
@@ -67,7 +67,7 @@ export default async function HomePage() {
   FROM indian_pincodes
   GROUP BY state
   ORDER BY total DESC
-  LIMIT 8
+  LIMIT 20
 `);
     popularStates = states;
 
@@ -78,21 +78,21 @@ FROM indian_pincodes
 WHERE pincode REGEXP '^[0-9]{6}$'
 GROUP BY pincode
 ORDER BY COUNT(*) DESC
-LIMIT 8
+LIMIT 20
 `);
     topPincodes = pincodes;
     const [cat] = await db.query<RowDataPacket[]>(
-      "SELECT * FROM tool_categories LIMIT 6"
+      "SELECT * FROM tool_categories LIMIT 12"
     );
     categories = cat;
 
     const [feat] = await db.query<RowDataPacket[]>(
-      "SELECT * FROM tools WHERE isActive=1 AND isDeleted=0 ORDER BY usageCount DESC LIMIT 8"
+      "SELECT * FROM tools WHERE isActive=1 AND isDeleted=0 ORDER BY usageCount DESC LIMIT 12"
     );
     featuredTools = feat;
 
     const [trend] = await db.query<RowDataPacket[]>(
-      "SELECT * FROM tools WHERE isActive=1 AND isDeleted=0 ORDER BY rating DESC LIMIT 6"
+      "SELECT * FROM tools WHERE isActive=1 AND isDeleted=0 ORDER BY rating DESC LIMIT 12"
     );
     trendingTools = trend;
   } catch (err) {
@@ -143,14 +143,14 @@ SELECT COUNT(*) as total FROM blogs
         >
           Explore Tools
         </Link>
-        <section className="mx-auto p-5">
+        <section className="mx-auto">
           <PincodeTabs />
-      </section>
+        </section>
       </section>
 
       {/* DASHBOARD CARDS */}
 
-      <section className="max-w-6xl mx-auto px-6 py-12">
+      <section className="max-w-6xl mx-auto py-12">
 
         <div className="grid md:grid-cols-4 gap-6">
 
@@ -251,7 +251,7 @@ SELECT COUNT(*) as total FROM blogs
 
 
       {/* 2️⃣ CATEGORIES */}
-      <section className="max-w-6xl mx-auto py-16 px-6 bg-gray-50">
+      <section className="p-3 py-16 bg-gray-50">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
           <h2 className="text-3xl font-bold">
             Popular Categories
@@ -280,7 +280,7 @@ SELECT COUNT(*) as total FROM blogs
       </section>
 
       {/* 3️⃣ FEATURED */}
-      <section className="bg-white py-16 px-6">
+      <section className="bg-white py-16">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
             <h2 className="text-3xl font-bold">
@@ -314,7 +314,7 @@ SELECT COUNT(*) as total FROM blogs
       </section>
 
       {/* 4️⃣ TRENDING */}
-      <section className="py-16 px-6 bg-gray-100">
+      <section className="py-16 p-3 bg-gray-100">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
             <h2 className="text-3xl font-bold">
@@ -345,7 +345,7 @@ SELECT COUNT(*) as total FROM blogs
       </section>
 
       {/* POPULAR CALCULATORS */}
-      <section className="py-16 px-6 bg-white">
+      <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto">
 
           <h2 className="text-3xl font-bold mb-8">
@@ -369,7 +369,7 @@ SELECT COUNT(*) as total FROM blogs
       </section>
 
       {/* 5️⃣ PINCODE */}
-      <section className="py-16 px-6 bg-indigo-50 text-center">
+      <section className="py-16 bg-indigo-50 text-center">
         <MapPin className="w-10 h-10 mx-auto text-indigo-600 mb-4" />
         <h2 className="text-3xl font-bold mb-4">
           Indian & Worldwide Pincode Search
@@ -383,7 +383,7 @@ SELECT COUNT(*) as total FROM blogs
       </section>
 
       {/* POPULAR CITY PINCODES */}
-      <section className="py-16 px-6 bg-gray-50">
+      <section className="py-16 p-3 bg-gray-50">
 
         <div className="max-w-6xl mx-auto">
 
@@ -409,7 +409,7 @@ SELECT COUNT(*) as total FROM blogs
       </section>
 
       {/* PINCODE BY STATE */}
-      <section className="py-16 px-6 bg-white">
+      <section className="py-16 bg-white">
 
         <div className="max-w-6xl mx-auto">
 
@@ -435,7 +435,7 @@ SELECT COUNT(*) as total FROM blogs
       </section>
 
       {/* TOP PINCODES */}
-      <section className="py-16 px-6 bg-gray-50">
+      <section className="py-16 p-3 bg-gray-50">
 
         <div className="max-w-6xl mx-auto">
 
@@ -461,26 +461,49 @@ SELECT COUNT(*) as total FROM blogs
       </section>
 
       {/* 6️⃣ WHY */}
-      <section className="max-w-6xl mx-auto py-16 px-6 text-center">
+      <section className="max-w-6xl mx-auto py-16 text-center">
         <h2 className="text-3xl font-bold mb-10">Why Choose iSevenPlus?</h2>
-        <div className="grid md:grid-cols-3 gap-8">
+
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-8">
+
+          {/* Existing */}
           <div>
             <Star className="w-8 h-8 mx-auto text-indigo-600 mb-4" />
             <h3 className="font-semibold">Accurate Calculations</h3>
           </div>
+
           <div>
             <Calculator className="w-8 h-8 mx-auto text-indigo-600 mb-4" />
             <h3 className="font-semibold">100% Free</h3>
           </div>
+
           <div>
             <TrendingUp className="w-8 h-8 mx-auto text-indigo-600 mb-4" />
             <h3 className="font-semibold">Fast & Responsive</h3>
           </div>
+
+          {/* 🆕 NEW BLOCKS */}
+
+          <div>
+            <Search className="w-8 h-8 mx-auto text-green-600 mb-4" />
+            <h3 className="font-semibold">Free Pincode Search</h3>
+          </div>
+
+          <div>
+            <Sparkles className="w-8 h-8 mx-auto text-purple-600 mb-4" />
+            <h3 className="font-semibold">Free SEO Tools</h3>
+          </div>
+
+          <div>
+            <Wrench className="w-8 h-8 mx-auto text-orange-600 mb-4" />
+            <h3 className="font-semibold">All Tools Free</h3>
+          </div>
+
         </div>
       </section>
 
       {/* GUIDES */}
-      <section className="py-16 px-6 bg-gray-100">
+      <section className="py-16 p-3 bg-gray-100">
         <div className="max-w-6xl mx-auto">
 
           <h2 className="text-3xl font-bold mb-8">
@@ -507,7 +530,7 @@ SELECT COUNT(*) as total FROM blogs
       </section>
 
       {/* 7️⃣ FAQ */}
-      <section className="py-20 px-6 bg-white text-center">
+      <section className="py-20 bg-white text-center">
 
         <HelpCircle className="w-10 h-10 mx-auto text-indigo-600 mb-4" />
 
@@ -515,7 +538,7 @@ SELECT COUNT(*) as total FROM blogs
           Frequently Asked Questions
         </h2>
 
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
+        <div className="mx-auto space-y-8 text-left">
 
           <div>
             <h3 className="font-semibold text-lg">

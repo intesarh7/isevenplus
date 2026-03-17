@@ -33,7 +33,7 @@ export default async function ToolsPage({
   );
 
   let query = `
-    SELECT tools.*, tool_categories.name AS categoryName
+    SELECT tools.*, tools.usageCount, tool_categories.name AS categoryName
     FROM tools
     LEFT JOIN tool_categories 
     ON tools.categoryId = tool_categories.id
@@ -59,25 +59,19 @@ export default async function ToolsPage({
 
   const [tools] = await db.query(query, values);
 
+  const groupedTools = (tools as any[]).reduce((acc: any, tool: any) => {
+    const category = tool.categoryName || "Other Tools";
+
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+
+    acc[category].push(tool);
+    return acc;
+  }, {});
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
-      <BreadcrumbSchema
-        items={[
-          { name: "Home", url: "https://www.isevenplus.com" },
-          { name: "Tools", url: "https://www.isevenplus.com/tools" },
-          ...(category
-            ? [
-              {
-                name:
-                  (categories as any[]).find(
-                    (c) => c.id === Number(category)
-                  )?.name || "",
-                url: `https://www.isevenplus.com/tools?category=${category}`,
-              },
-            ]
-            : []),
-        ]}
-      />
+    <>
       <nav className="text-sm text-gray-500 mb-4">
         <Link href="/" className="hover:underline">
           Home
@@ -101,157 +95,169 @@ export default async function ToolsPage({
           </>
         )}
         {/* PAGE TITLE */}
-        <h1 className="text-3xl font-bold mb-8">
+        <h1 className="text-3xl font-bold mb-2">
           All Calculators & Tools
         </h1>
       </nav>
+      <div className="max-w-7xl mx-auto">
+        <BreadcrumbSchema
+          items={[
+            { name: "Home", url: "https://www.isevenplus.com" },
+            { name: "Tools", url: "https://www.isevenplus.com/tools" },
+            ...(category
+              ? [
+                {
+                  name:
+                    (categories as any[]).find(
+                      (c) => c.id === Number(category)
+                    )?.name || "",
+                  url: `https://www.isevenplus.com/tools?category=${category}`,
+                },
+              ]
+              : []),
+          ]}
+        />
 
 
-      {/* TOOL COUNT */}
-      <p className="mb-6 text-gray-600 text-right">
-        Showing {(tools as any[]).length} tools
-      </p>
 
-      <div className="md:flex gap-8">
+        {/* TOOL COUNT */}
+        <p className="mb-6 text-gray-600 text-right">
+          Showing {(tools as any[]).length} tools
+        </p>
 
-        {/* ================= SIDEBAR ================= */}
-        <aside className="md:w-1/4 mb-8 md:mb-0">
+        <div className="w-full">
 
 
-          {/* 🔥 POPULAR TOOLS */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            {(popular as any[]).length > 0 && (
-              <>
-                {/* HEADER */}
-                <div className="flex items-center gap-2 px-5 py-4 bg-gray-50 border-b border-gray-100">
-                  <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-                    <Flame size={18} className="text-orange-500" /> Popular Tools
-                  </h3>
-                </div>
+          {/* ================= MAIN CONTENT ================= */}
+          <main className="w-full">
 
-                <div className="p-4">
-                  <ul className="space-y-2">
-                    {(popular as any[]).map((tool) => (
-                      <li key={tool.slug}>
-                        <Link
-                          key={tool.slug}
-                          href={`/tools/${tool.slug}`}
-                          className="group flex items-center justify-between text-sm text-gray-600 hover:text-blue-600 transition"
-                        >
-                          <span className="truncate">
-                            {tool.name}
-                          </span>
-                          <ChevronRight
-                            size={14}
-                            className="opacity-0 group-hover:opacity-100 transition"
-                          />
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </>
-            )}
-          </div>
-        </aside>
+            <div className="sticky top-20 z-30 border p-4 rounded-xl bg-white shadow-md backdrop-blur supports-[backdrop-filter]:bg-white/90 mb-5">
 
-        {/* ================= MAIN CONTENT ================= */}
-        <main className="md:w-3/4">
+              <h3 className="font-semibold mb-4">Filter Tools</h3>
 
-          <div className="sticky top-20 border p-4 rounded-xl bg-white shadow-sm mb-5">
+              <form className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            <h3 className="font-semibold mb-4">Filter Tools</h3>
+                <input
+                  name="search"
+                  defaultValue={search}
+                  placeholder="Search..."
+                  className="border p-2 rounded"
+                />
 
-            <form className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-              <input
-                name="search"
-                defaultValue={search}
-                placeholder="Search..."
-                className="border p-2 rounded"
-              />
-
-              <select
-                name="category"
-                defaultValue={category}
-                className="border p-2 rounded"
-              >
-                <option value="">All Categories</option>
-                {(categories as any[]).map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-
-              <button className="bg-blue-600 text-white py-2 rounded">
-                Apply Filter
-              </button>
-
-            </form>
-
-          </div>
-
-
-          {/* 🔥 TOOL GRID */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            {(tools as any[]).length > 0 ? (
-
-              (tools as any[]).map((tool) => (
-                <Link
-                  key={tool.id}
-                  href={`/tools/${tool.slug}`}
-                  className="border rounded-xl p-5 hover:shadow-lg transition"
+                <select
+                  name="category"
+                  defaultValue={category}
+                  className="border p-2 rounded"
                 >
-                  <h2 className="font-semibold text-lg mb-2">
-                    {tool.name}
-                  </h2>
+                  <option value="">All Categories</option>
+                  {(categories as any[]).map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
 
-                  <p className="text-sm text-gray-600 line-clamp-3">
-                    {tool.description}
-                  </p>
+                <button className="bg-blue-600 text-white py-2 rounded">
+                  Apply Filter
+                </button>
 
-                  <div className="mt-3 text-xs text-blue-600 font-medium">
-                    {tool.categoryName}
+              </form>
+
+            </div>
+
+            {/* 🔥 CATEGORY QUICK NAV */}
+            <div className="mb-6 flex flex-wrap gap-2">
+
+              {Object.keys(groupedTools).map((cat) => {
+                const slug = `cat-${cat.replace(/\s+/g, "-").toLowerCase()}`;
+
+                return (
+                  <a
+                    key={cat}
+                    href={`#${slug}`}
+                    className="text-xs sm:text-sm px-3 py-1.5 rounded-full border bg-white hover:bg-indigo-50 text-gray-600 hover:text-indigo-600 transition"
+                  >
+                    {cat}
+                  </a>
+                );
+              })}
+
+            </div>
+
+
+            {/* 🔥 TOOL GRID */}
+            {Object.keys(groupedTools).length > 0 ? (
+
+              <div className="space-y-10">
+
+                {Object.entries(groupedTools).map(([categoryName, toolsList]: any) => (
+
+                  <div key={categoryName} id={`cat-${categoryName.replace(/\s+/g, "-").toLowerCase()}`}>
+
+                    {/* CATEGORY HEADER */}
+                    <div className="flex items-center justify-between mb-4 px-4 py-3 rounded-xl bg-linear-to-r from-indigo-50 to-blue-50 border border-indigo-100 shadow-sm">
+
+                      <h2 className="text-lg md:text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                        {categoryName}
+                      </h2>
+
+                      <span className="text-xs md:text-sm bg-white px-3 py-1 rounded-full border text-gray-500">
+                        {toolsList.length} tools
+                      </span>
+
+                    </div>
+
+                    {/* TOOLS GRID */}
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                      {toolsList.map((tool: any) => (
+                        <Link
+                          key={tool.id}
+                          href={`/tools/${tool.slug}`}
+                          className="relative border rounded-xl p-5 hover:shadow-lg transition bg-white"
+                        >
+
+                          {/* 🔥 TRENDING BADGE */}
+                          {tool.usageCount > 50 && (
+                            <div className="absolute top-2 right-2 z-10">
+                              <span className="flex items-center gap-1 text-xs bg-orange-500 text-white px-2 py-1 rounded-full shadow">
+                                <Flame size={12} /> Trending
+                              </span>
+                            </div>
+                          )}
+
+                          <h3 className="font-semibold text-lg mb-2">
+                            {tool.name}
+                          </h3>
+
+                          <p className="text-sm text-gray-600 line-clamp-3">
+                            {tool.description}
+                          </p>
+
+                        </Link>
+                      ))}
+
+                    </div>
+
                   </div>
-                </Link>
-              ))
+
+                ))}
+
+              </div>
 
             ) : (
 
-              <div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
-
+              <div className="flex flex-col items-center justify-center py-16 text-center">
                 <div className="text-5xl mb-4">🔎</div>
 
-                {search !== "" ? (
-                  <>
-                    <h3 className="text-xl font-semibold mb-2">
-                      No tools found for "{search}"
-                    </h3>
-                    <p className="text-gray-500 mb-4">
-                      Try different keywords or remove filters.
-                    </p>
-                  </>
-                ) : category !== "" ? (
-                  <>
-                    <h3 className="text-xl font-semibold mb-2">
-                      No tools available in this category
-                    </h3>
-                    <p className="text-gray-500 mb-4">
-                      This category is currently empty.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <h3 className="text-xl font-semibold mb-2">
-                      No tools available
-                    </h3>
-                    <p className="text-gray-500 mb-4">
-                      Tools will appear here once added.
-                    </p>
-                  </>
-                )}
+                <h3 className="text-xl font-semibold mb-2">
+                  No tools available
+                </h3>
+
+                <p className="text-gray-500 mb-4">
+                  Tools will appear here once added.
+                </p>
 
                 <a
                   href="/tools"
@@ -259,17 +265,15 @@ export default async function ToolsPage({
                 >
                   Reset Filters
                 </a>
-
               </div>
 
             )}
 
-          </div>
+          </main>
 
-        </main>
+        </div>
 
       </div>
-
-    </div>
+    </>
   );
 }

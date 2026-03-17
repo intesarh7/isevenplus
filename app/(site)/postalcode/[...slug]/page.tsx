@@ -156,7 +156,7 @@ export default async function WorldDetail({
 
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
+    <div className="max-w-6xl mx-auto py-10">
 
       {/* Breadcrumb */}
       <nav className="flex flex-wrap items-center text-sm text-gray-600 mb-4 gap-1">

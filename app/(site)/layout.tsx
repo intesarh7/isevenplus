@@ -55,48 +55,78 @@ export default async function SiteLayout({
   let popular: any[] = [];
   let recent: any[] = [];
   let categories: any[] = [];
+  let seoTools: any[] = []; // ✅ yaha shift karo
+
   try {
 
     /* Popular Tools */
     const [pop] = await db.query<RowDataPacket[]>(`
-    SELECT name, slug 
-    FROM tools 
-    WHERE isActive=1 AND isDeleted=0
-    ORDER BY usageCount DESC
-    LIMIT 10
-  `);
+      SELECT name, slug, createdAt, 'tools' as type 
+      FROM tools 
+      WHERE isActive=1 AND isDeleted=0
+      ORDER BY usageCount DESC
+      LIMIT 10
+    `);
     popular = pop;
 
-    /* Recently Added Tools */
+    /* Recently Added (TOOLS + SEO_TOOLS) */
     const [rec] = await db.query<RowDataPacket[]>(`
-    SELECT name, slug 
-    FROM tools 
-    WHERE isActive=1 AND isDeleted=0
-    ORDER BY createdAt DESC
-    LIMIT 10
-  `);
+(
+  SELECT 
+    name COLLATE utf8mb4_unicode_ci as name,
+    slug COLLATE utf8mb4_unicode_ci as slug,
+    createdAt,
+    'tool' as type 
+  FROM tools 
+  WHERE isActive=1 AND isDeleted=0
+)
+UNION ALL
+(
+  SELECT 
+    name COLLATE utf8mb4_unicode_ci as name,
+    slug COLLATE utf8mb4_unicode_ci as slug,
+    createdAt,
+    'seo' as type 
+  FROM seo_tools 
+  WHERE isActive=1
+)
+ORDER BY createdAt DESC
+LIMIT 10
+`);
     recent = rec;
+
+    /* SEO Tools (Latest 10) */
+    const [seo] = await db.query<RowDataPacket[]>(`
+      SELECT name, slug 
+      FROM seo_tools
+      WHERE isActive=1
+      ORDER BY createdAt DESC
+      LIMIT 10
+    `);
+    seoTools = seo;
 
     /* Categories */
     const [cat] = await db.query<RowDataPacket[]>(`
-    SELECT name, slug 
-    FROM tool_categories
-    LIMIT 10
-  `);
+      SELECT name, slug 
+      FROM tool_categories
+      LIMIT 10
+    `);
     categories = cat;
 
   } catch (err) {
     console.error("Sidebar DB Error:", err);
   }
 
+   
+
   return (
     <>
       {/* ================= SEO PERFORMANCE ================= */}
 
       {/* Preconnect for faster ads */}
-      
+
       {/* Adsense Global Script */}
-       
+
 
       {/* Organization Schema */}
       <Script
@@ -145,6 +175,12 @@ export default async function SiteLayout({
                 title="Popular Tools"
                 icon={<Flame size={18} className="text-orange-500" />}
                 items={popular as any}
+              />
+              <SidebarCard
+                title="SEO Tools"
+                icon={<Sparkles size={18} className="text-green-500" />}
+                items={seoTools as any}
+                basePath="/seotools"
               />
 
               <SidebarCard

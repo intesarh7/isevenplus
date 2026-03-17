@@ -2,6 +2,7 @@ import db from "@/app/lib/db";
 import Link from "next/link";
 import SeoToolSearch from "@/app/components/SeoToolSearch"
 import { RowDataPacket } from "mysql2";
+import { CheckCircle, Crown, Flame } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,8 @@ export const metadata = {
   description:
     "Use 50+ powerful free SEO tools like Meta Tag Analyzer, Keyword Density Checker, XML Sitemap Generator, Robots.txt Generator and more to improve your website ranking.",
 };
+
+
 
 /* ===============================
    PAGE
@@ -137,7 +140,7 @@ export default async function SeoToolsPage({
      LIMIT 8`
 
   );
-
+const allTools = categoryList.flatMap((c: any) => c.tools);
   /* ===============================
      SCHEMA
   ================================= */
@@ -193,7 +196,7 @@ export default async function SeoToolsPage({
           SEO Tools
         </h1>
 
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <p className="text-gray-600 mx-auto">
           Improve your website ranking using powerful SEO tools.
           Analyze keywords, meta tags, backlinks, sitemap and technical SEO easily.
         </p>
@@ -203,8 +206,23 @@ export default async function SeoToolsPage({
 
       {/* SEARCH */}
 
-      <div className="mb-12 max-w-2xl mx-auto">
-        <SeoToolSearch />
+      <div className="mb-5 mx-auto">
+       <SeoToolSearch tools={allTools} />
+      </div>
+
+      {/* 🔥 CATEGORY QUICK NAV */}
+      <div className="sticky top-20 z-30 backdrop-blur mb-5 flex flex-wrap gap-2">
+
+        {categoryList.map((cat: any) => (
+          <a
+            key={cat.id}
+            href={`#cat-${cat.slug}`}
+            className="text-xs sm:text-sm px-3 py-1.5 rounded-full border bg-white hover:bg-indigo-50 text-gray-600 hover:text-indigo-600 transition whitespace-nowrap"
+          >
+            {cat.name}
+          </a>
+        ))}
+
       </div>
 
 
@@ -214,11 +232,20 @@ export default async function SeoToolsPage({
       {
         categoryList.map((cat: any) => (
 
-          <div key={cat.id} className="mb-16">
+          <div key={cat.id} id={`cat-${cat.slug}`} className="mb-8 scroll-mt-28">
 
-            <h2 className="text-2xl font-bold mb-6">
-              {cat.name}
-            </h2>
+            <div className="flex items-center justify-between mb-6 px-4 py-3 rounded-xl bg-linear-to-r from-indigo-50 to-blue-50 border border-indigo-100 shadow-sm">
+
+              <h2 className="text-lg md:text-xl font-bold text-gray-800 flex items-center gap-2">
+                <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                {cat.name}
+              </h2>
+
+              <span className="text-xs md:text-sm bg-white px-3 py-1 rounded-full border text-gray-500">
+                {cat.tools.length} tools
+              </span>
+
+            </div>
 
             {cat.tools.length === 0 ? (
 
@@ -241,47 +268,59 @@ export default async function SeoToolsPage({
 
                 {cat.tools.map((tool: any) => {
 
-                  const isPaid = tool.isPaid == 1
+                  const isPaid = tool.isPaid == 1;
 
                   const Card = (
 
-                    <div className={`border rounded-2xl p-6 transition bg-white relative
-        ${isPaid ? "opacity-80 cursor-not-allowed" : "hover:shadow-lg"}
-        `}>
+                    <div className={`relative border rounded-2xl p-5 pt-10 bg-white transition overflow-hidden
+                      ${isPaid ? "opacity-80 cursor-not-allowed" : "hover:shadow-lg hover:-translate-y-1"}
+                    `}>
 
-                      <div className="flex justify-between items-start mb-2">
+                      {/* 🔥 LEFT BADGE (Trending) */}
+                      {tool.usageCount > 50 && (
+                        <div className="absolute top-3 left-3">
+                          <span className="flex items-center gap-1 text-[11px] font-medium bg-orange-100 text-orange-600 px-2 py-1 rounded-full">
+                            <Flame size={12} className="text-orange-500" />
+                            Trending
+                          </span>
+                        </div>
+                      )}
 
-                        <h3 className="text-lg font-semibold">
+                      {/* 💰 RIGHT BADGE (Free/Paid) */}
+                      <div className="absolute top-3 right-3">
+                        {isPaid ? (
+                          <span className="flex items-center gap-1 text-[11px] font-medium bg-purple-100 text-purple-600 px-2 py-1 rounded-full">
+                            <Crown size={12} className="text-purple-500" />
+                            Paid
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1 text-[11px] font-medium bg-green-100 text-green-600 px-2 py-1 rounded-full">
+                            <CheckCircle size={12} className="text-green-500" />
+                            Free
+                          </span>
+                        )}
+                      </div>
+
+                      {/* CONTENT */}
+                      <div className="mt-1">
+
+                        <h3 className="text-base font-semibold text-gray-800 mb-2 line-clamp-2">
                           {tool.name}
                         </h3>
 
-                        {isPaid ? (
+                        <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                          {tool.description}
+                        </p>
 
-                          <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded">
-                            Paid
-                          </span>
-
-                        ) : (
-
-                          <span className="bg-green-600 text-white text-xs px-2 py-1 rounded">
-                            Free
-                          </span>
-
-                        )}
+                        <span className="text-indigo-600 text-sm font-medium">
+                          Open Tool →
+                        </span>
 
                       </div>
 
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                        {tool.description}
-                      </p>
-
-                      <span className="text-indigo-600 text-sm">
-                        Open Tool →
-                      </span>
-
                     </div>
 
-                  )
+                  );
 
                   return isPaid ? (
                     <div key={tool.id}>{Card}</div>
@@ -289,7 +328,7 @@ export default async function SeoToolsPage({
                     <Link key={tool.id} href={`/seotools/${tool.slug}`}>
                       {Card}
                     </Link>
-                  )
+                  );
 
                 })}
 

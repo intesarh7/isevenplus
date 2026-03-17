@@ -1,101 +1,95 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
+import { useState, useEffect, useRef } from "react";
+import { Search } from "lucide-react";
 
-export default function SeoToolSearch() {
+export default function SeoToolSearch({ tools = [] }: any) {
 
-    const [query, setQuery] = useState("")
-    const [results, setResults] = useState<any[]>([])
-    const [loading, setLoading] = useState(false)
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<any[]>([]);
+  const [open, setOpen] = useState(false);
 
-    useEffect(() => {
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
-        const delay = setTimeout(() => {
+  const handleChange = (value: string) => {
+    setQuery(value);
 
-            if (!query) {
-
-                setResults([])
-                return
-
-            }
-
-            searchTools()
-
-        }, 400)
-
-        return () => clearTimeout(delay)
-
-    }, [query])
-
-
-    async function searchTools() {
-
-        setLoading(true)
-
-        const res = await fetch(`/api/seotools/search?q=${query}`)
-
-        const data = await res.json()
-
-        setResults(data)
-
-        setLoading(false)
-
+    if (!value) {
+      setResults([]);
+      setOpen(false);
+      return;
     }
 
+    const filtered = tools.filter((t: any) =>
+      t.name.toLowerCase().includes(value.toLowerCase())
+    );
 
-    return (
+    setResults(filtered.slice(0, 6));
+    setOpen(true);
+  };
 
-        <div className="mb-10 relative">
+  /* 🔥 OUTSIDE CLICK CLOSE */
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
 
-            <input
-                type="text"
-                placeholder="Search SEO tools..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="border w-full p-4 rounded-xl"
-            />
+    document.addEventListener("mousedown", handleClickOutside);
 
-            {query && (
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
-                <div className="absolute left-0 right-0 bg-white border rounded-xl shadow-lg mt-2 max-h-96 overflow-y-auto z-20">
+  /* 🔥 ESC KEY CLOSE */
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
 
-                    {loading && (
-                        <div className="p-4 text-sm text-gray-500">
-                            Searching...
-                        </div>
-                    )}
+    document.addEventListener("keydown", handleEsc);
 
-                    {!loading && results.length === 0 && (
-                        <div className="p-4 text-sm text-gray-500">
-                            No tools found
-                        </div>
-                    )}
+    return () => {
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, []);
 
-                    {results.map(tool => (
-                        <Link
-                            key={tool.id}
-                            href={`/seotools/${tool.slug}`}
-                            className="block px-4 py-3 hover:bg-gray-100 border-b"
-                        >
+  return (
+    <div className="relative" ref={wrapperRef}>
 
-                            <div className="font-medium">
-                                {tool.name}
-                            </div>
+      <div className="flex items-center border rounded-xl px-3 py-2 bg-white shadow-sm">
+        <Search size={18} className="text-gray-400" />
 
-                            {/* <div className="text-xs text-gray-500 line-clamp-1">
-                                {tool.description}
-                            </div> */}
+        <input
+          value={query}
+          onChange={(e) => handleChange(e.target.value)}
+          placeholder="Search SEO tools..."
+          className="w-full ml-2 outline-none"
+        />
+      </div>
 
-                        </Link>
-                    ))}
+      {/* 🔥 DROPDOWN */}
+      {open && results.length > 0 && (
+        <div className="absolute left-0 right-0 mt-2 bg-white border rounded-xl shadow-lg z-50">
 
-                </div>
-
-            )}
+          {results.map((item) => (
+            <a
+              key={item.slug}
+              href={`/seotools/${item.slug}`}
+              className="block px-4 py-2 text-sm hover:bg-indigo-50"
+              onClick={() => setOpen(false)}
+            >
+              {item.name}
+            </a>
+          ))}
 
         </div>
+      )}
 
-    )
-
+    </div>
+  );
 }

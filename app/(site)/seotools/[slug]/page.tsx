@@ -255,7 +255,7 @@ LIMIT 10`
   return (
 
 
-    <div className="max-w-6xl mx-auto px-4 py-10">
+    <div className="max-w-6xl mx-auto py-10">
 
       {/* SCHEMA */}
       <script
@@ -314,7 +314,7 @@ LIMIT 10`
 
       {/* TOOL */}
 
-      <div className="bg-white rounded-2xl shadow p-6 mb-12">
+      <div className="bg-white rounded-2xl shadow p-4 mb-12">
         {ToolComponent ? (
           <ToolComponent />
         ) : (
