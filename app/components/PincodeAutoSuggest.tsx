@@ -154,13 +154,13 @@ export default function PincodeAutoSuggest({
 
                 const parts = ["pincode", state];
 
-                if (district) parts.push(district);
-                if (taluk) parts.push(taluk);
-                if (office) parts.push(office);
+if (district) parts.push(district);
+if (taluk) parts.push(taluk);
+if (office) parts.push(office);
 
-                parts.push(pincode);
+parts.push(pincode);
 
-                const finalUrl = `/${parts.join("/")}`;
+const finalUrl = `/${parts.join("/")}`;
 
                 return (
                   <div

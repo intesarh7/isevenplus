@@ -19,6 +19,8 @@ const generateSlug = (text: string) => {
     .trim();
 };
 
+
+
 /* ================= METADATA ================= */
 export async function generateMetadata({ searchParams }: any) {
   const query = searchParams?.q?.trim();
@@ -95,11 +97,16 @@ export default async function PincodePage({ searchParams }: any) {
   );
 
   /* ================= POPULAR SEARCHES ================= */
-  const [popularCities] = await db.query<RowDataPacket[]>(`
-  SELECT district, COUNT(*) as total
+ const [popularCities] = await db.query<RowDataPacket[]>(`
+  SELECT 
+    district, 
+    state, 
+    COUNT(*) as total
   FROM indian_pincodes
-  WHERE district IS NOT NULL AND district != ''
-  GROUP BY district
+  WHERE 
+    district IS NOT NULL AND district != ''
+    AND state IS NOT NULL AND state != ''
+  GROUP BY district, state
   ORDER BY total DESC
   LIMIT 20
 `);
@@ -203,7 +210,7 @@ export default async function PincodePage({ searchParams }: any) {
                 <Search size={18} /> Search
               </button>
 
-              
+
 
             </div>
           </form>
@@ -215,15 +222,21 @@ export default async function PincodePage({ searchParams }: any) {
             </h2>
 
             <div className="flex flex-wrap gap-3">
-              {popularCities.map((city: any, index: number) => (
-                <a
-                  key={index}
-                  href={`/pincode?q=${city.district}`}
-                  className="bg-gray-100 px-4 py-2 rounded-full text-sm hover:bg-indigo-100 transition"
-                >
-                  {city.district} Pincode
-                </a>
-              ))}
+              {popularCities.map((city: any, index: number) => {
+
+                const stateSlug = generateSlug(city.state);
+                const districtSlug = generateSlug(city.district);
+
+                return (
+                  <a
+                    key={index}
+                    href={`/pincode/${stateSlug}/${districtSlug}`}
+                    className="bg-gray-100 px-4 py-2 rounded-full text-sm hover:bg-indigo-100 transition"
+                  >
+                    {city.district} Pincode
+                  </a>
+                );
+              })}
             </div>
           </section>
 
