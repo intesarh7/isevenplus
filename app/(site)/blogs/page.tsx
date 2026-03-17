@@ -1,4 +1,5 @@
 import db from "@/app/lib/db";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function BlogPage({ searchParams }: any) {
@@ -89,8 +90,11 @@ LIMIT ? OFFSET ?
           className="block mb-12 rounded-xl overflow-hidden border hover:shadow-xl transition"
         >
 
-          <img
+          <Image
             src={blogs[0].featuredImage}
+            alt={blogs.title}
+            width={500}
+            height={300}
             className="w-full h-80 object-cover object-top"
           />
 

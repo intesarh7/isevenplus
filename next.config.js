@@ -1,9 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-};
 
-module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.vercel-storage.com",
+      },
+    ],
+  },
+
   async rewrites() {
     return [
       {
@@ -17,3 +24,5 @@ module.exports = {
     ];
   },
 };
+
+module.exports = nextConfig;
