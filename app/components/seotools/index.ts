@@ -8,6 +8,7 @@ import ImageSitemapGenerator from "./ImageSitemapGenerator";
 import InternalLinksChecker from "./InternalLinksChecker";
 import KeywordDensityChecker from "./KeywordDensityChecker";
 import KeywordDifficultyChecker from "./KeywordDifficultyChecker";
+import KeywordPositionChecker from "./KeywordPositionChecker";
 import KeywordSuggestionTool from "./KeywordSuggestionTool";
 import LongTailKeywordGenerator from "./LongTailKeywordGenerator";
 import MetaDescriptionChecker from "./MetaDescriptionChecker";
@@ -50,6 +51,7 @@ export const seoToolComponents: Record<string, any> = {
   "keyword-suggestion-tool": KeywordSuggestionTool,
   "keyword-difficulty-checker": KeywordDifficultyChecker,
   "long-tail-keyword-generator": LongTailKeywordGenerator,
+  "keyword-position-checker": KeywordPositionChecker,
   
 
 };

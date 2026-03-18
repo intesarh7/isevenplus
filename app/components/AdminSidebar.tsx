@@ -16,6 +16,7 @@ export default function AdminSidebar() {
     { name: "Blogs", href: "/admin/blogs" },
     { name: "SEO Tools", href: "/admin/seotools" },
     { name: "SEO Categories", href: "/admin/seo-tools-categories" },
+    { name: "SEO Setting", href: "/admin/seo-settings" },
   ];
 
  const handleLogout = async () => {
