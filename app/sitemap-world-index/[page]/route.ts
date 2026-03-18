@@ -4,12 +4,16 @@ import { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 
+const LIMIT = 5000; // 🔥 shared hosting safe
+
 /* =========================
-   HELPER (same as page)
+   HELPER
 ========================= */
 function formatSlug(text: string) {
+  if (!text) return "";
+
   return text
-    ?.toString()
+    .toString()
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, "")
     .trim()
@@ -17,15 +21,27 @@ function formatSlug(text: string) {
 }
 
 /* =========================
-   BUILD SEO URL
+   XML ESCAPE
+========================= */
+function escapeXml(str: string) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+/* =========================
+   BUILD URL
 ========================= */
 function buildPostalUrl(data: any) {
-
   const country = formatSlug(data.country_code);
   const state = formatSlug(data.admin1 || "");
   const city = formatSlug(data.place_name || "");
+  const postal = data.postal_code?.split(" ")[0];
 
-  const postal = data.postal_code.split(" ")[0];
+  if (!postal) return "";
 
   const parts = ["postalcode", country];
 
@@ -41,75 +57,72 @@ export async function GET(
   req: Request,
   { params }: { params: { page: string } }
 ) {
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+      "https://www.isevenplus.com";
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
-    "https://www.isevenplus.com";
+    // ✅ FIXED PAGE PARSE
+    const page = parseInt(params.page || "1");
 
-  const pageParam = params.page;
+    if (isNaN(page) || page < 1) {
+      return new NextResponse("Invalid page", { status: 400 });
+    }
 
-  const page = parseInt(
-    pageParam.replace("sitemap-world-", "").replace(".xml", "")
-  );
+    const offset = (page - 1) * LIMIT;
 
-  if (!page || page < 1) {
-    return new NextResponse("Invalid sitemap page", { status: 404 });
-  }
+    // ✅ FIXED QUERY (stable + safe)
+    const [rows] = await db.query<RowDataPacket[]>(
+      `SELECT postal_code,
+              country_code,
+              admin1,
+              place_name
+       FROM worldwide_postal_codes
+       ORDER BY id ASC
+       LIMIT ? OFFSET ?`,
+      [LIMIT, offset]
+    );
 
-  const limit = 50000;
-  const offset = (page - 1) * limit;
+    // 🔥 CRITICAL FIX
+    if (!rows || rows.length === 0) {
+      return new NextResponse("Not Found", { status: 404 });
+    }
 
-  /* =========================
-     IMPORTANT FIX
-     Add state + city columns
-  ========================= */
+    const now = new Date().toISOString();
 
-  const [rows] = await db.query<RowDataPacket[]>(
-    `SELECT postal_code,
-            country_code,
-            admin1,
-            place_name
-     FROM worldwide_postal_codes
-     LIMIT ? OFFSET ?`,
-    [limit, offset]
-  );
+    const urls = rows
+      .map((row) => {
+        const path = buildPostalUrl(row);
+        if (!path) return "";
 
-  if (!rows.length) {
-    return new NextResponse("Not Found", { status: 404 });
-  }
-
-  const now = new Date().toISOString();
-
-  const urls = rows
-    .map((row) => {
-
-      /* =========================
-         USE SAME URL BUILDER
-      ========================= */
-
-      const path = buildPostalUrl(row);
-
-      return `
+        return `
 <url>
-<loc>${baseUrl}${path}</loc>
+<loc>${escapeXml(baseUrl + path)}</loc>
 <lastmod>${now}</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.8</priority>
 </url>`;
-    })
-    .join("");
+      })
+      .filter(Boolean)
+      .join("");
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    if (!urls) {
+      return new NextResponse("Not Found", { status: 404 });
+    }
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 </urlset>`;
 
-  return new NextResponse(xml, {
-    headers: {
-      "Content-Type": "application/xml",
-      "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-      Pragma: "no-cache",
-      Expires: "0",
-    },
-  });
+    return new NextResponse(xml, {
+      headers: {
+        "Content-Type": "application/xml",
+        "Cache-Control": "public, max-age=3600",
+      },
+    });
+  } catch (error) {
+    console.error("World Sitemap Error:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
 }

@@ -4,7 +4,7 @@ import { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 
-const LIMIT = 50000;
+const LIMIT = 5000;
 
 // slug helper
 function slugify(text: any) {
@@ -36,6 +36,11 @@ export async function GET(
 ) {
   try {
     const page = parseInt(params.page) || 1;
+
+    if (isNaN(page) || page < 1) {
+      return new NextResponse("Invalid page", { status: 400 });
+    }
+
     const offset = (page - 1) * LIMIT;
 
     const rawBaseUrl =
@@ -44,6 +49,7 @@ export async function GET(
 
     const baseUrl = rawBaseUrl.replace(/\/+$/, "");
 
+    // ✅ FIXED QUERY (parameterized + stable order)
     const [rows] = await db.query<RowDataPacket[]>(
       `
       SELECT 
@@ -53,9 +59,18 @@ export async function GET(
         taluk,
         office_name
       FROM indian_pincodes
-      LIMIT ${LIMIT} OFFSET ${offset}
-      `
+      ORDER BY id ASC
+      LIMIT ? OFFSET ?
+      `,
+      [LIMIT, offset]
     );
+
+    // 🔥 CRITICAL FIX (empty page ko 404 karo)
+    if (!rows || rows.length === 0) {
+      return new NextResponse("Not Found", { status: 404 });
+    }
+
+    const now = new Date().toISOString();
 
     const urls = rows
       .map((item) => {
@@ -76,17 +91,25 @@ export async function GET(
 
         parts.push(pincode);
 
-        const finalUrl = `${baseUrl}/${parts.join("/")}`.replace(/\/{2,}/g, "/").replace(":/", "://");
+        const finalUrl = `${baseUrl}/${parts.join("/")}`
+          .replace(/\/{2,}/g, "/")
+          .replace(":/", "://");
 
         return `
   <url>
     <loc>${escapeXml(finalUrl)}</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
+    <lastmod>${now}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>`;
       })
+      .filter(Boolean) // 🔥 empty entries remove
       .join("");
+
+    // extra safety
+    if (!urls) {
+      return new NextResponse("Not Found", { status: 404 });
+    }
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -96,6 +119,7 @@ ${urls}
     return new NextResponse(xml, {
       headers: {
         "Content-Type": "application/xml",
+        "Cache-Control": "public, max-age=3600",
       },
     });
   } catch (error) {

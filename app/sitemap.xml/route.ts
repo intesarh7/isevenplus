@@ -3,33 +3,74 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-const LIMIT = 50000;
+const LIMIT = 5000;
+
+// ===============================
+// MEMORY CACHE (GLOBAL)
+// ===============================
+let cachedXml: string | null = null;
+let lastGenerated = 0;
+
+// ===============================
+// SMART PING (1 baar / 24h)
+// ===============================
+let lastPingTime = 0;
+
+async function pingSearchEngines(sitemapUrl: string) {
+  const now = Date.now();
+
+  // 24h throttle
+  if (now - lastPingTime < 1000 * 60 * 60 * 24) return;
+
+  lastPingTime = now;
+
+  try {
+    fetch(`https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`).catch(() => {});
+    fetch(`https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`).catch(() => {});
+  } catch {}
+}
 
 export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+    "https://www.isevenplus.com";
 
   try {
     // ===============================
-    // INDIA PINCODE SITEMAP
+    // CACHE HIT (FAST RETURN)
     // ===============================
-    const [[{ total }]]: any = await db.query(
+    if (cachedXml && Date.now() - lastGenerated < 1000 * 60 * 60) {
+      return new NextResponse(cachedXml, {
+        headers: {
+          "Content-Type": "application/xml",
+          "Cache-Control": "public, max-age=3600",
+        },
+      });
+    }
+
+    const now = new Date().toISOString();
+
+    // ===============================
+    // INDIA COUNT (FAST)
+    // ===============================
+    const [[{ total: indiaTotal }]]: any = await db.query(
       `SELECT COUNT(*) as total FROM indian_pincodes`
     );
 
-    const totalPages = Math.ceil(total / LIMIT);
+    const indiaPages = Math.ceil(indiaTotal / LIMIT);
 
     let indiaSitemaps = "";
 
-    for (let i = 1; i <= totalPages; i++) {
+    for (let i = 1; i <= indiaPages; i++) {
       indiaSitemaps += `
       <sitemap>
         <loc>${baseUrl}/sitemap-india-${i}.xml</loc>
-        <lastmod>${new Date().toISOString()}</lastmod>
+        <lastmod>${now}</lastmod>
       </sitemap>`;
     }
 
     // ===============================
-    // WORLD POSTAL CODE SITEMAP
+    // WORLD COUNT (FAST)
     // ===============================
     const [[{ total: worldTotal }]]: any = await db.query(
       `SELECT COUNT(*) as total FROM worldwide_postal_codes`
@@ -43,7 +84,7 @@ export async function GET() {
       worldSitemaps += `
       <sitemap>
         <loc>${baseUrl}/sitemap-world-${i}.xml</loc>
-        <lastmod>${new Date().toISOString()}</lastmod>
+        <lastmod>${now}</lastmod>
       </sitemap>`;
     }
 
@@ -63,7 +104,7 @@ export async function GET() {
         (s) => `
       <sitemap>
         <loc>${new URL(`/${s}`, baseUrl).toString()}</loc>
-        <lastmod>${new Date().toISOString()}</lastmod>
+        <lastmod>${now}</lastmod>
       </sitemap>`
       )
       .join("");
@@ -75,20 +116,26 @@ export async function GET() {
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 ${staticXml}
-
 ${indiaSitemaps}
-
 ${worldSitemaps}
 
 </sitemapindex>`;
 
+    // ===============================
+    // SAVE CACHE
+    // ===============================
+    cachedXml = xml;
+    lastGenerated = Date.now();
+
+    // ===============================
+    // PING SEARCH ENGINES
+    // ===============================
+    await pingSearchEngines(`${baseUrl}/sitemap.xml`);
+
     return new NextResponse(xml, {
       headers: {
         "Content-Type": "application/xml",
-        "Cache-Control":
-          "no-store, no-cache, must-revalidate, proxy-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
+        "Cache-Control": "public, max-age=3600",
       },
     });
   } catch (error) {

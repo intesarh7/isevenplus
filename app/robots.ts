@@ -12,7 +12,6 @@ export default function robots() {
     ],
     sitemap: [
       `${baseUrl}/sitemap.xml`,
-      `${baseUrl}/sitemap-world-index.xml`,
     ],
   };
 }
