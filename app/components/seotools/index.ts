@@ -1,4 +1,5 @@
 import BacklinkChecker from "./BacklinkChecker";
+import BrokenLinksFinder from "./BrokenLinksFinder";
 import CanonicalTagChecker from "./CanonicalTagChecker";
 import DomainAuthorityChecker from "./DomainAuthorityChecker";
 import ExternalLinksChecker from "./ExternalLinksChecker";
@@ -18,6 +19,7 @@ import MetaTagAnalyzer from "./MetaTagAnalyzer";
 import MobileFriendlyChecker from "./MobileFriendlyChecker";
 import NewsSitemapGenerator from "./NewsSitemapGenerator";
 import OpenGraphTagChecker from "./OpenGraphTagChecker";
+import PageAuthorityChecker from "./PageAuthorityChecker";
 import PageSizeChecker from "./PageSizeChecker";
 import RobotsTxtGenerator from "./RobotsTxtGenerator";
 import RobotsTxtTester from "./RobotsTxtTester";
@@ -56,5 +58,7 @@ export const seoToolComponents: Record<string, any> = {
   "keyword-position-checker": KeywordPositionChecker,
   "backlink-checker-tool": BacklinkChecker,
   "domain-authority-checker": DomainAuthorityChecker,
+  "page-authority-checker": PageAuthorityChecker,
+  "broken-links-finder": BrokenLinksFinder,
 
 };

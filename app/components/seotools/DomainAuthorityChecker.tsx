@@ -96,7 +96,7 @@ export default function DomainAuthorityChecker() {
             {/* HEADER */}
             <h1 className="text-2xl font-bold flex items-center gap-2">
                 <Globe className="text-indigo-600" />
-                Domain Authority Checker (PRO)
+                Domain Authority Checker (Free)
             </h1>
 
             {/* INPUT */}
