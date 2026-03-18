@@ -276,7 +276,7 @@ const timeAgo = (dateString: string) => {
                       )}
                     </td>
 
-                    <td className="text-blue-600 truncate max-w-[200px]">
+                    <td className="text-blue-600 truncate max-w-50">
                       {r.url || "-"}
                     </td>
 
