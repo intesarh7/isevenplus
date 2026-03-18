@@ -1,5 +1,6 @@
 import BacklinkChecker from "./BacklinkChecker";
 import CanonicalTagChecker from "./CanonicalTagChecker";
+import DomainAuthorityChecker from "./DomainAuthorityChecker";
 import ExternalLinksChecker from "./ExternalLinksChecker";
 import GoogleIndexChecker from "./GoogleIndexChecker";
 import HeadingTagChecker from "./HeadingTagChecker";
@@ -54,6 +55,6 @@ export const seoToolComponents: Record<string, any> = {
   "long-tail-keyword-generator": LongTailKeywordGenerator,
   "keyword-position-checker": KeywordPositionChecker,
   "backlink-checker-tool": BacklinkChecker,
-  
+  "domain-authority-checker": DomainAuthorityChecker,
 
 };
