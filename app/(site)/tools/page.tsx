@@ -1,7 +1,79 @@
 import BreadcrumbSchema from "@/app/components/BreadcrumbSchema";
 import db from "@/app/lib/db";
 import { ChevronRight, Flame } from "lucide-react";
+import { Metadata } from "next";
 import Link from "next/link";
+
+
+
+/* ================================
+   🔥 SEO METADATA (DYNAMIC)
+================================ */
+export async function generateMetadata({ searchParams }: any): Promise<Metadata> {
+
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+    "https://www.isevenplus.com";
+
+  const page = Number(searchParams.page) || 1;
+  const search = searchParams.search || "";
+  const category = searchParams.category || "";
+
+  let title = "All Calculators & Tools - Free Online SEO & Utility Tools";
+  let description =
+    "Use our free online calculators and tools including SEO tools, converters, checkers, and utilities.";
+
+  // 🔍 Search based
+  if (search) {
+    title = `Search "${search}" Tools - Free Calculators & Utilities`;
+    description = `Find tools related to "${search}" including calculators, SEO tools, and utilities.`;
+  }
+
+  // 📂 Category based
+  if (category) {
+    title = `${category} Tools & Calculators - Free Online Tools`;
+    description = `Explore ${category} tools and calculators for free.`;
+  }
+
+  // 📄 Pagination
+  if (page > 1) {
+    title += ` - Page ${page}`;
+  }
+
+  const url = `${baseUrl}/tools${
+    page > 1 ? `?page=${page}` : ""
+  }${search ? `&search=${search}` : ""}${category ? `&category=${category}` : ""}/`;
+
+  return {
+    title,
+    description,
+    keywords: [
+      "free tools",
+      "online calculators",
+      "seo tools",
+      "web tools",
+      "utility tools",
+      "free calculator online",
+      category,
+      search
+    ],
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: "iSevenPlus",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
+}
 
 export default async function ToolsPage({
   searchParams,
@@ -72,6 +144,8 @@ export default async function ToolsPage({
 
   return (
     <>
+
+    
       <nav className="text-sm text-gray-500 mb-4">
         <Link href="/" className="hover:underline">
           Home

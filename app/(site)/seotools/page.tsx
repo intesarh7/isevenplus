@@ -3,19 +3,72 @@ import Link from "next/link";
 import SeoToolSearch from "@/app/components/SeoToolSearch"
 import { RowDataPacket } from "mysql2";
 import { CheckCircle, Crown, Flame } from "lucide-react";
+import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-/* ===============================
-   METADATA
+ 
+/* ================================
+   🔥 SEO TOOLS METADATA (DYNAMIC)
 ================================ */
+export async function generateMetadata({ searchParams }: any): Promise<Metadata> {
 
-export const metadata = {
-  title: "Free SEO Tools – Keyword, Meta, Sitemap & More | iSevenPlus",
-  description:
-    "Use 50+ powerful free SEO tools like Meta Tag Analyzer, Keyword Density Checker, XML Sitemap Generator, Robots.txt Generator and more to improve your website ranking.",
-};
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+    "https://www.isevenplus.com";
 
+  const page = Number(searchParams.page) || 1;
+  const search = searchParams.search || "";
+
+  let title = "SEO Tools - Free Online SEO Checker, Analyzer & Utilities";
+  let description =
+    "Use free SEO tools like keyword generator, backlink checker, meta tag analyzer, and more to improve your website ranking.";
+
+  // 🔍 Search based
+  if (search) {
+    title = `"${search}" SEO Tools - Free SEO Utilities`;
+    description = `Find SEO tools related to "${search}" including analyzers, checkers, and generators.`;
+  }
+
+  // 📄 Pagination
+  if (page > 1) {
+    title += ` - Page ${page}`;
+  }
+
+  const url = `${baseUrl}/tools/seo${
+    page > 1 ? `?page=${page}` : ""
+  }${search ? `&search=${search}` : ""}/`;
+
+  return {
+    title,
+    description,
+    keywords: [
+      "seo tools",
+      "free seo tools",
+      "seo analyzer",
+      "keyword research tools",
+      "backlink checker",
+      "meta tag checker",
+      "website seo audit",
+      search
+    ],
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: "iSevenPlus",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
+}
 
 
 /* ===============================

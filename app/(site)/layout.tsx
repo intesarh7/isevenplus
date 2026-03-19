@@ -20,9 +20,6 @@ export const metadata = {
     default: "iSevenPlus - Smart Online Tools & Pincode Finder",
     template: "%s | iSevenPlus",
   },
-  alternates: {
-    canonical: "/", // ✅ IMPORTANT (homepage fix)
-  },
 
   description:
     "Find Indian pincodes, world postal codes, smart calculators and SEO tools on iSevenPlus.",

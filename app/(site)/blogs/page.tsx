@@ -1,6 +1,56 @@
 import db from "@/app/lib/db";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+
+/* ================================
+   SEO METADATA (DYNAMIC)
+================================ */
+export async function generateMetadata({ searchParams }: any): Promise<Metadata> {
+
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
+    "https://www.isevenplus.com";
+
+  const page = Number(searchParams.page) || 1;
+  const search = searchParams.search || "";
+
+  let title = "Blog - Latest Articles, Guides & Tips";
+  let description = "Read latest blogs, guides, SEO tips, and tutorials.";
+
+  if (search) {
+    title = `Search results for "${search}" - Blog`;
+    description = `Explore blog results for "${search}".`;
+  }
+
+  if (page > 1) {
+    title += ` - Page ${page}`;
+  }
+
+  const url = `${baseUrl}/blogs${page > 1 ? `?page=${page}` : ""}${search ? `&search=${search}` : ""}/`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: "iSevenPlus",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
+}
+
 
 export default async function BlogPage({ searchParams }: any) {
   const page = Number(searchParams.page) || 1;

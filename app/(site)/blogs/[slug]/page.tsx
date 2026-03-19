@@ -94,7 +94,7 @@ AND deletedAt IS NULL
   const title = blog.metaTitle || blog.title;
   const description = blog.metaDescription || "";
 
-  const url = `${baseUrl}/blogs/${blog.slug}`;
+  const url = `${baseUrl}/blogs/${blog.slug}/`;
 
   const image = blog.featuredImage || `${baseUrl}/default-blog.jpg`;
 

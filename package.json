@@ -37,6 +37,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "recharts": "^3.8.0",
+    "slugify": "^1.6.8",
     "tinymce": "^6.8.6"
   },
   "devDependencies": {
