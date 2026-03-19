@@ -4,20 +4,28 @@ import { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 
-const LIMIT = 5000; // 🔥 shared hosting safe
+const LIMIT = 5000;
 
 /* =========================
-   HELPER
+   ADVANCED SLUGIFY
 ========================= */
-function formatSlug(text: string) {
+function slugify(text: string) {
   if (!text) return "";
 
   return text
     .toString()
     .toLowerCase()
+    .normalize("NFD") // remove accents
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/["'`´]/g, "")
     .replace(/[^a-z0-9\s-]/g, "")
     .trim()
     .replace(/\s+/g, "-");
+}
+
+function safeSlug(val?: string) {
+  if (!val) return "";
+  return slugify(val);
 }
 
 /* =========================
@@ -33,26 +41,39 @@ function escapeXml(str: string) {
 }
 
 /* =========================
-   BUILD URL
+   BUILD CLEAN URL (FIXED)
 ========================= */
 function buildPostalUrl(data: any) {
-  const country = formatSlug(data.country_code);
-  const state = formatSlug(data.admin1 || "");
-  const city = formatSlug(data.place_name || "");
-  const postal = data.postal_code?.split(" ")[0];
+  const country = safeSlug(data.country_code) || "unknown";
 
-  if (!postal) return "";
+  let state =
+    safeSlug(data.admin1) ||
+    safeSlug(data.place_name) ||
+    "na";
 
-  const parts = ["postalcode", country];
+  let city =
+    safeSlug(data.place_name) ||
+    safeSlug(data.admin1) ||
+    "na";
 
-  if (state) parts.push(state);
-  if (city) parts.push(city);
+  // ✅ FIX: duplicate avoid
+  if (state === city) {
+    city = `${city}-area`;
+  }
 
-  parts.push(postal);
+  const postal =
+    data.postal_code
+      ?.toString()
+      .replace(/\s+/g, "-")
+      .replace(/[^0-9a-zA-Z-]/g, "") ||
+    "000000";
 
-  return "/" + parts.join("/");
+  return `/postalcode/${country}/${state}/${city}/${postal}`;
 }
 
+/* =========================
+   API
+========================= */
 export async function GET(
   req: Request,
   { params }: { params: { page: string } }
@@ -62,7 +83,6 @@ export async function GET(
       process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
       "https://www.isevenplus.com";
 
-    // ✅ FIXED PAGE PARSE
     const page = parseInt(params.page || "1");
 
     if (isNaN(page) || page < 1) {
@@ -71,7 +91,6 @@ export async function GET(
 
     const offset = (page - 1) * LIMIT;
 
-    // ✅ FIXED QUERY (stable + safe)
     const [rows] = await db.query<RowDataPacket[]>(
       `SELECT postal_code,
               country_code,
@@ -83,7 +102,6 @@ export async function GET(
       [LIMIT, offset]
     );
 
-    // 🔥 CRITICAL FIX
     if (!rows || rows.length === 0) {
       return new NextResponse("Not Found", { status: 404 });
     }
@@ -121,6 +139,7 @@ ${urls}
         "Cache-Control": "public, max-age=3600",
       },
     });
+
   } catch (error) {
     console.error("World Sitemap Error:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

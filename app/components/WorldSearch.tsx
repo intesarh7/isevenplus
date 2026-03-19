@@ -5,21 +5,7 @@ import { Search, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 /* ================================
-   NORMALIZE (GLOBAL SAFE)
-================================ */
-function normalizeText(text: string) {
-    return text
-        ?.toString()
-        .toLowerCase()
-        .normalize("NFD") // accents remove
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/["'`´-]/g, "") // remove special chars
-        .replace(/[^a-z0-9\s]/g, "")
-        .trim();
-}
-
-/* ================================
-   SLUGIFY (URL SAFE)
+   SLUGIFY
 ================================ */
 function slugify(text: string) {
     return text
@@ -31,6 +17,14 @@ function slugify(text: string) {
         .replace(/[^a-z0-9\s-]/g, "")
         .trim()
         .replace(/\s+/g, "-");
+}
+
+/* ================================
+   SAFE SLUG
+================================ */
+function safeSlug(val?: string) {
+    if (!val) return "";
+    return slugify(val);
 }
 
 type Result = {
@@ -49,7 +43,7 @@ export default function WorldSearch() {
     const [loading, setLoading] = useState(false);
 
     /* ================================
-       SEARCH API CALL (DEBOUNCED)
+       SEARCH API
     ================================= */
     useEffect(() => {
         if (!query) {
@@ -63,7 +57,6 @@ export default function WorldSearch() {
             try {
                 const res = await fetch(`/api/world-search?q=${query}`);
                 const data = await res.json();
-
                 setResults(data.results || []);
             } catch (err) {
                 console.error(err);
@@ -73,7 +66,6 @@ export default function WorldSearch() {
         }, 400);
 
         return () => clearTimeout(timer);
-
     }, [query]);
 
     /* ================================
@@ -81,25 +73,39 @@ export default function WorldSearch() {
     ================================= */
     function handleClick(item: Result) {
 
-        const country = item.country_code.toLowerCase();
-        const state = slugify(item.admin1 || "unknown");
-        const city = slugify(item.place_name || "unknown");
-        const postal = item.postal_code
-    ?.toString()
-    .replace(/\s+/g, "-") // space → dash
-    .replace(/[^0-9a-zA-Z-]/g, ""); // clean
+        const country = safeSlug(item.country_code) || "unknown";
 
-        router.push(`/postalcode/${country}/${state}/${city}/${postal}`);
+        let state =
+            safeSlug(item.admin1) ||
+            safeSlug(item.place_name) ||
+            "na";
+
+        let city =
+            safeSlug(item.place_name) ||
+            safeSlug(item.admin1) ||
+            "na";
+
+        // ✅ FIX: duplicate avoid
+        if (state === city) {
+            city = `${city}-area`;
+        }
+
+        const postal =
+            item.postal_code
+                ?.toString()
+                .replace(/\s+/g, "-")
+                .replace(/[^0-9a-zA-Z-]/g, "") ||
+            "000000";
+
+        const url = `/postalcode/${country}/${state}/${city}/${postal}`;
+
+        router.push(url);
     }
 
     return (
         <div className="relative w-full">
 
-            {/* ================================
-                INPUT
-            ================================= */}
             <div className="relative">
-
                 <Search className="absolute left-3 top-3 text-gray-400" size={18} />
 
                 <input
@@ -109,12 +115,8 @@ export default function WorldSearch() {
                     placeholder="Search country, state, city, or postal code..."
                     className="w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
-
             </div>
 
-            {/* ================================
-                DROPDOWN
-            ================================= */}
             {query && (
                 <div className="absolute z-50 w-full bg-white border rounded-xl mt-2 shadow-lg max-h-80 overflow-y-auto">
 
@@ -131,14 +133,12 @@ export default function WorldSearch() {
                     )}
 
                     {results.map((item, i) => (
-
                         <div
                             key={i}
                             onClick={() => handleClick(item)}
                             className="p-3 cursor-pointer hover:bg-indigo-50 border-b last:border-0"
                         >
                             <div className="flex items-center gap-2 text-sm">
-
                                 <MapPin size={14} className="text-indigo-500" />
 
                                 <span className="font-semibold">
@@ -148,13 +148,11 @@ export default function WorldSearch() {
                                 <span className="text-gray-500">
                                     {item.admin1}, {item.country_code}
                                 </span>
-
                             </div>
 
                             <div className="text-xs text-gray-400">
                                 Postal Code: {item.postal_code}
                             </div>
-
                         </div>
                     ))}
 
