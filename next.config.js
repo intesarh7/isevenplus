@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
 
   // ✅ IMPORTANT: Force trailing slash on all URLs
-  trailingSlash: true,
+  //trailingSlash: true,
 
   images: {
     remotePatterns: [
