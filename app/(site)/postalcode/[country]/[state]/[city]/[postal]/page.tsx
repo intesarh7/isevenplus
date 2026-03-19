@@ -2,10 +2,10 @@ import db from "@/app/lib/db";
 import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
-import { Home, ChevronRight, MapPin, Navigation, Globe, LocateFixed } from "lucide-react";
+import { Home, ChevronRight, MapPin, Navigation, Globe, LocateFixed, Mail, LinkIcon, HelpCircle, Info, MapIcon } from "lucide-react";
 import WorldSearch from "@/app/components/WorldSearch";
 import { createSlug } from "@/app/lib/slugify";
- 
+
 /* ================================
    HELPERS
 ================================ */
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 
     return {
         title: `${decoded} Postal Code Details`,
-        description: `Details of postal code ${decoded}`,
+        description: `${decoded} postal code of ${params.city}, ${params.state}, ${params.country}. Get location, map, nearby postal codes, and full details.`,
         alternates: { canonical: url },
     };
 }
@@ -394,6 +394,143 @@ export default async function PostalDetail({ params }: any) {
                     {data.postal_code} is the postal code of {data.place_name}, located in {data.admin1}, {data.country_code}.
                     Postal codes help in efficient mail delivery and location identification.
                 </p>
+            </div>
+
+            {/* Location Overview */}
+            {/* Location Overview */}
+            <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
+                <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                    <Info className="text-indigo-600" size={20} />
+                    Location Overview
+                </h2>
+
+                <p className="text-gray-600 leading-6 text-sm">
+                    {data.place_name} is a locality in {data.admin1}, {data.country_code}.
+                    The postal code <strong>{data.postal_code}</strong> is used for accurate mail delivery
+                    and identifying this region geographically.
+                </p>
+
+                <ul className="mt-4 text-sm text-gray-600 space-y-2">
+                    <li className="flex items-center gap-2">
+                        <Globe size={16} className="text-indigo-500" />
+                        Country: {data.country_code}
+                    </li>
+                    <li className="flex items-center gap-2">
+                        <Navigation size={16} className="text-indigo-500" />
+                        Region: {data.admin1}
+                    </li>
+                    <li className="flex items-center gap-2">
+                        <MapPin size={16} className="text-indigo-500" />
+                        Place: {data.place_name}
+                    </li>
+                    <li className="flex items-center gap-2">
+                        <Mail size={16} className="text-indigo-500" />
+                        Postal Code: {data.postal_code}
+                    </li>
+                    <li className="flex items-center gap-2">
+                        <LocateFixed size={16} className="text-indigo-500" />
+                        Coordinates: {data.latitude}, {data.longitude}
+                    </li>
+                </ul>
+            </div>
+
+            {/* Map Section */}
+            {/* Map Section */}
+            <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
+                <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                    <MapIcon  size={20} className="text-indigo-600" />
+                    Map Location
+                </h2>
+
+                <iframe
+                    src={`https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=12&output=embed`}
+                    className="w-full h-[300px] rounded-lg"
+                    loading="lazy"
+                ></iframe>
+            </div>
+
+            {/* Usage Section */}
+            <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
+                <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                    <Mail className="text-indigo-600" size={20} />
+                    Uses of Postal Code {data.postal_code}
+                </h2>
+
+
+                <p className="text-gray-600 text-sm leading-6">
+                    Postal code <strong>{data.postal_code}</strong> plays a crucial role in
+                    logistics, courier services, and address identification in {data.place_name}.
+                    It helps ensure accurate delivery and efficient sorting of mail.
+                </p>
+
+                <ul className="mt-3 text-sm text-gray-600 list-disc ml-5 space-y-1">
+                    <li className="flex items-center gap-2">
+                        <Mail size={16} className="text-indigo-500" />
+                        Mail delivery & sorting
+                    </li>
+                    <li className="flex items-center gap-2">
+                        <MapPin size={16} className="text-indigo-500" />
+                        Online shopping address verification
+                    </li>
+                    <li className="flex items-center gap-2">
+                        <Navigation size={16} className="text-indigo-500" />
+                        Courier & logistics operations
+                    </li>
+                    <li className="flex items-center gap-2">
+                        <Globe size={16} className="text-indigo-500" />
+                        Government & census mapping
+                    </li>
+                </ul>
+            </div>
+
+            {/* Explore More */}
+            <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
+                <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                    <LinkIcon className="text-indigo-600" size={20} />
+                    Explore More Postal Codes in {data.place_name}
+                </h2>
+
+                <div className="flex flex-wrap gap-2">
+                    {nearby.slice(0, 6).map((n: any) => (
+                        <Link
+                            key={n.postal_code}
+                            href={`/postalcode/${params.country}/${params.state}/${params.city}/${formatPostal(n.postal_code)}`}
+                            className="px-3 py-1 text-sm border rounded-lg hover:bg-indigo-50"
+                        >
+                            {n.postal_code}
+                        </Link>
+                    ))}
+                </div>
+            </div>
+            {/* FAQ Section */}
+            <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
+                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                    <HelpCircle className="text-indigo-600" size={20} />
+                    FAQs about {data.postal_code}
+                </h2>
+
+                <div className="space-y-3 text-sm text-gray-600">
+
+                    <div>
+                        <strong>What is the postal code of {data.place_name}?</strong>
+                        <p>The postal code is {data.postal_code}.</p>
+                    </div>
+
+                    <div>
+                        <strong>Where is {data.postal_code} located?</strong>
+                        <p>
+                            It is located in {data.place_name}, {data.admin1}, {data.country_code}.
+                        </p>
+                    </div>
+
+                    <div>
+                        <strong>What are the coordinates of this location?</strong>
+                        <p>
+                            Latitude: {data.latitude}, Longitude: {data.longitude}.
+                        </p>
+                    </div>
+
+                </div>
             </div>
 
             {/* Schema */}
