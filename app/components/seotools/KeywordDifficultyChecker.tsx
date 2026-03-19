@@ -11,8 +11,13 @@ import {
     Target,
     Tag,
     Copy,
-    Download
+    Download,
+    Percent,
+    Shield,
+    Link2,
+    DollarSign
 } from "lucide-react";
+
 
 export default function KeywordDifficultyChecker() {
 
@@ -74,7 +79,7 @@ export default function KeywordDifficultyChecker() {
 
                 <h1 className="text-2xl font-bold flex gap-2 items-center">
                     <BarChart3 className="text-indigo-600" />
-                    Keyword Difficulty Checker PRO
+                    Keyword Difficulty Checker FREE
                 </h1>
 
                 <input
@@ -136,21 +141,93 @@ export default function KeywordDifficultyChecker() {
 
                     <div className="grid md:grid-cols-4 gap-4">
 
-                        <Metric title="Difficulty" value={result?.difficulty ?? 0} />
+                        {/* Difficulty */}
+                        <div className="p-4 rounded-xl bg-red-100 flex justify-between items-center">
+                            <div>
+                                <p className="text-sm text-red-700">Difficulty</p>
+                                <h2 className="text-2xl font-bold text-red-900">
+                                    {result?.difficulty ?? 0}
+                                </h2>
+                            </div>
+                            <BarChart3 className="text-red-600" />
+                        </div>
 
-                        <Metric title="Search Volume" value={result.volume} />
+                        {/* Search Volume */}
+                        <div className="p-4 rounded-xl bg-blue-100 flex justify-between items-center">
+                            <div>
+                                <p className="text-sm text-blue-700">Search Volume</p>
+                                <h2 className="text-2xl font-bold text-blue-900">
+                                    {result?.volume}
+                                </h2>
+                            </div>
+                            <Search className="text-blue-600" />
+                        </div>
 
-                        <Metric title="CPC" value={`$${result.cpc}`} />
+                        {/* CPC */}
+                        <div className="p-4 rounded-xl bg-green-100 flex justify-between items-center">
+                            <div>
+                                <p className="text-sm text-green-700">CPC</p>
+                                <h2 className="text-2xl font-bold text-green-900">
+                                    ${result?.cpc}
+                                </h2>
+                            </div>
+                            <DollarSign className="text-green-600" />
+                        </div>
 
-                        <Metric title="Intent" value={result.intent} />
+                        {/* Intent */}
+                        <div className="p-4 rounded-xl bg-purple-100 flex justify-between items-center">
+                            <div>
+                                <p className="text-sm text-purple-700">Intent</p>
+                                <h2 className="text-2xl font-bold text-purple-900">
+                                    {result?.intent}
+                                </h2>
+                            </div>
+                            <Target className="text-purple-600" />
+                        </div>
 
-                        <Metric title="Backlinks" value={result?.backlinks ?? 0} />
+                        {/* Backlinks */}
+                        <div className="p-4 rounded-xl bg-indigo-100 flex justify-between items-center">
+                            <div>
+                                <p className="text-sm text-indigo-700">Backlinks</p>
+                                <h2 className="text-2xl font-bold text-indigo-900">
+                                    {result?.backlinks ?? 0}
+                                </h2>
+                            </div>
+                            <Link2 className="text-indigo-600" />
+                        </div>
 
-                        <Metric title="Authority" value={result?.authority ?? 0} />
+                        {/* Authority */}
+                        <div className="p-4 rounded-xl bg-yellow-100 flex justify-between items-center">
+                            <div>
+                                <p className="text-sm text-yellow-700">Authority</p>
+                                <h2 className="text-2xl font-bold text-yellow-900">
+                                    {result?.authority ?? 0}
+                                </h2>
+                            </div>
+                            <Shield className="text-yellow-600" />
+                        </div>
 
-                        <Metric title="Opportunity" value={result.opportunityScore} />
+                        {/* Opportunity */}
+                        <div className="p-4 rounded-xl bg-emerald-100 flex justify-between items-center">
+                            <div>
+                                <p className="text-sm text-emerald-700">Opportunity</p>
+                                <h2 className="text-2xl font-bold text-emerald-900">
+                                    {result?.opportunityScore}
+                                </h2>
+                            </div>
+                            <TrendingUp className="text-emerald-600" />
+                        </div>
 
-                        <Metric title="Rank Probability" value={`${result.rankingProbability}%`} />
+                        {/* Rank Probability */}
+                        <div className="p-4 rounded-xl bg-pink-100 flex justify-between items-center">
+                            <div>
+                                <p className="text-sm text-pink-700">Rank Probability</p>
+                                <h2 className="text-2xl font-bold text-pink-900">
+                                    {result?.rankingProbability}%
+                                </h2>
+                            </div>
+                            <Percent className="text-pink-600" />
+                        </div>
 
                     </div>
 
@@ -572,21 +649,6 @@ export default function KeywordDifficultyChecker() {
                 </div>
 
             </section>
-
-        </div>
-
-    );
-}
-
-function Metric({ title, value }: any) {
-
-    return (
-
-        <div className="border p-4 rounded-lg bg-white">
-
-            <p className="text-gray-500 text-sm">{title}</p>
-
-            <p className="text-2xl font-bold">{value}</p>
 
         </div>
 

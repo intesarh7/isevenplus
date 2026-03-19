@@ -13,6 +13,7 @@ import KeywordDensityChecker from "./KeywordDensityChecker";
 import KeywordDifficultyChecker from "./KeywordDifficultyChecker";
 import KeywordPositionChecker from "./KeywordPositionChecker";
 import KeywordSuggestionTool from "./KeywordSuggestionTool";
+import LinkAnalyzer from "./LinkAnalyzer";
 import LongTailKeywordGenerator from "./LongTailKeywordGenerator";
 import MetaDescriptionChecker from "./MetaDescriptionChecker";
 import MetaTagAnalyzer from "./MetaTagAnalyzer";
@@ -26,7 +27,9 @@ import RobotsTxtTester from "./RobotsTxtTester";
 import TitleTagLengthChecker from "./TitleTagLengthChecker";
 import UrlEncoderDecoder from "./UrlEncoderDecoder";
 import VideoSitemapGenerator from "./VideoSitemapGenerator";
+import WebsiteLinkCountChecker from "./WebsiteLinkCountChecker";
 import WebsiteScreenshotGenerator from "./WebsiteScreenshotGenerator";
+import WordCounterTool from "./WordCounterTool";
 import XMLSitemapGenerator from "./XMLSitemapGenerator";
 
 export const seoToolComponents: Record<string, any> = {
@@ -60,5 +63,8 @@ export const seoToolComponents: Record<string, any> = {
   "domain-authority-checker": DomainAuthorityChecker,
   "page-authority-checker": PageAuthorityChecker,
   "broken-links-finder": BrokenLinksFinder,
+  "website-link-analyzer-tool": LinkAnalyzer,
+  "website-link-count-checker": WebsiteLinkCountChecker,
+  "word-counter-tool": WordCounterTool,
 
 };
