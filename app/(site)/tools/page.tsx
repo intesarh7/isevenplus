@@ -205,7 +205,7 @@ export default async function ToolsPage({
           {/* ================= MAIN CONTENT ================= */}
           <main className="w-full">
 
-            <div className="sticky top-20 z-30 border p-4 rounded-xl bg-white shadow-md backdrop-blur supports-[backdrop-filter]:bg-white/90 mb-5">
+            <div className="sticky top-20 z-30 border p-4 rounded-xl bg-white shadow-md backdrop-blur supports-backdrop-filter:bg-white/90 mb-5">
 
               <h3 className="font-semibold mb-4">Filter Tools</h3>
 

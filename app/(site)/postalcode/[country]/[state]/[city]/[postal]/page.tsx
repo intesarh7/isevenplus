@@ -3,19 +3,9 @@ import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
 import { Home, ChevronRight, MapPin, Navigation, Globe, LocateFixed } from "lucide-react";
-import slugifyLib from "slugify";
 import WorldSearch from "@/app/components/WorldSearch";
-
-export function createSlug(text: string) {
-    if (!text) return "";
-
-    return slugifyLib(text, {
-        lower: true,
-        strict: true, // remove special chars
-        locale: "en",
-        trim: true
-    });
-}
+import { createSlug } from "@/app/lib/slugify";
+ 
 /* ================================
    HELPERS
 ================================ */
