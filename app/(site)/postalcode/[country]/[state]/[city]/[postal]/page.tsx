@@ -221,324 +221,361 @@ export default async function PostalDetail({ params }: any) {
     const formatPostal = (p: string) =>
         p.trim().replace(/\s+/g, "-").toLowerCase();
 
+    const geoSchema = {
+        "@context": "https://schema.org",
+        "@type": "Place",
+        "name": data.place_name,
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": data.latitude,
+            "longitude": data.longitude
+        }
+    };
 
     return (
-        <div className="py-10 px-4">
+        <>
+            <script type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(geoSchema) }} />
+                
+            <div className="py-10 px-4">
 
-            {/* Breadcrumb */}
-            <nav className="flex flex-wrap items-center text-sm mb-6 gap-2 text-gray-600">
+                {/* Breadcrumb */}
+                <nav className="flex flex-wrap items-center text-sm mb-6 gap-2 text-gray-600">
 
-                {/* Home */}
-                <Link
-                    href="/"
-                    className="flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-medium transition"
-                >
-                    <Home size={16} />
-                    Home
-                </Link>
+                    {/* Home */}
+                    <Link
+                        href="/"
+                        className="flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-medium transition"
+                    >
+                        <Home size={16} />
+                        Home
+                    </Link>
 
-                <ChevronRight size={14} className="text-gray-400" />
+                    <ChevronRight size={14} className="text-gray-400" />
 
-                {/* Postal Codes */}
-                <Link
-                    href="/postalcode"
-                    className="text-indigo-600 hover:text-indigo-800 font-medium transition"
-                >
-                    Worldwide Postal Codes
-                </Link>
+                    {/* Postal Codes */}
+                    <Link
+                        href="/postalcode"
+                        className="text-indigo-600 hover:text-indigo-800 font-medium transition"
+                    >
+                        Worldwide Postal Codes
+                    </Link>
 
-                <ChevronRight size={14} className="text-gray-400" />
+                    <ChevronRight size={14} className="text-gray-400" />
 
-                {/* Country */}
-                <Link
-                    href={`/postalcode/${params.country}`}
-                    className="text-indigo-600 hover:text-indigo-800 font-medium transition"
-                >
-                    {data.country_code}
-                </Link>
+                    {/* Country */}
+                    <Link
+                        href={`/postalcode/${params.country}`}
+                        className="text-indigo-600 hover:text-indigo-800 font-medium transition"
+                    >
+                        {data.country_code}
+                    </Link>
 
-                <ChevronRight size={14} className="text-gray-400" />
+                    <ChevronRight size={14} className="text-gray-400" />
 
-                {/* State */}
-                <Link
-                    href={`/postalcode/${params.country}/${params.state}`}
-                    className="text-indigo-600 hover:text-indigo-800 font-medium transition"
-                >
-                    {data.admin1 || data.place_name || params.state.replace(/-/g, " ")}
-                </Link>
+                    {/* State */}
+                    <Link
+                        href={`/postalcode/${params.country}/${params.state}`}
+                        className="text-indigo-600 hover:text-indigo-800 font-medium transition"
+                    >
+                        {data.admin1 || data.place_name || params.state.replace(/-/g, " ")}
+                    </Link>
 
-                <ChevronRight size={14} className="text-gray-400" />
+                    <ChevronRight size={14} className="text-gray-400" />
 
-                {/* Current */}
-                <span className="flex items-center gap-1 text-gray-900 font-semibold">
-                    <MapPin size={14} className="text-indigo-500" />
-                    {data.postal_code}
-                </span>
+                    {/* Current */}
+                    <span className="flex items-center gap-1 text-gray-900 font-semibold">
+                        <MapPin size={14} className="text-indigo-500" />
+                        {data.postal_code}
+                    </span>
 
-            </nav>
+                </nav>
 
-            <div className="mb-10">
-                <WorldSearch />
-            </div>
-
-            {/* Title */}
-            <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
-                <MapPin /> {data.postal_code} Postal Code - {data.place_name}
-            </h1>
-
-            {/* Table */}
-            <div className="bg-white rounded-2xl shadow-md border overflow-hidden mb-8">
-
-                {/* Header */}
-                <div className="px-6 py-4 border-b bg-gray-50 flex items-center gap-2">
-                    <MapPin className="text-indigo-600" size={20} />
-                    <h2 className="text-lg font-semibold text-gray-800">
-                        Postal Code Details
-                    </h2>
+                <div className="mb-10">
+                    <WorldSearch />
                 </div>
 
+                {/* Title */}
+                <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
+                    <MapPin /> {data.postal_code} Postal Code - {data.place_name}
+                </h1>
+
                 {/* Table */}
-                <table className="w-full text-sm">
+                <div className="bg-white rounded-2xl shadow-md border overflow-hidden mb-8">
 
-                    <tbody className="divide-y">
+                    {/* Header */}
+                    <div className="px-6 py-4 border-b bg-gray-50 flex items-center gap-2">
+                        <MapPin className="text-indigo-600" size={20} />
+                        <h2 className="text-lg font-semibold text-gray-800">
+                            Postal Code Details
+                        </h2>
+                    </div>
 
-                        {/* Place */}
-                        <tr className="hover:bg-gray-50 transition">
-                            <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
-                                <MapPin size={16} className="text-indigo-500" />
-                                Place
-                            </td>
-                            <td className="px-6 py-4 text-gray-800 font-semibold">
-                                {data.place_name}
-                            </td>
-                        </tr>
+                    {/* Table */}
+                    <table className="w-full text-sm">
 
-                        {/* State */}
-                        <tr className="hover:bg-gray-50 transition">
-                            <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
-                                <Navigation size={16} className="text-indigo-500" />
-                                State / Region
-                            </td>
-                            <td className="px-6 py-4 text-gray-800 font-semibold">
-                                {data.admin1}
-                            </td>
-                        </tr>
+                        <tbody className="divide-y">
 
-                        {/* Country */}
-                        <tr className="hover:bg-gray-50 transition">
-                            <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
-                                <Globe size={16} className="text-indigo-500" />
-                                Country
-                            </td>
-                            <td className="px-6 py-4 text-gray-800 font-semibold">
-                                {data.country_code}
-                            </td>
-                        </tr>
+                            {/* Place */}
+                            <tr className="hover:bg-gray-50 transition">
+                                <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
+                                    <MapPin size={16} className="text-indigo-500" />
+                                    Place
+                                </td>
+                                <td className="px-6 py-4 text-gray-800 font-semibold">
+                                    {data.place_name}
+                                </td>
+                            </tr>
 
-                        {/* Latitude */}
-                        <tr className="hover:bg-gray-50 transition">
-                            <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
-                                <LocateFixed size={16} className="text-indigo-500" />
-                                Latitude
-                            </td>
-                            <td className="px-6 py-4 text-gray-800 font-semibold">
-                                {data.latitude}
-                            </td>
-                        </tr>
+                            {/* State */}
+                            <tr className="hover:bg-gray-50 transition">
+                                <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
+                                    <Navigation size={16} className="text-indigo-500" />
+                                    State / Region
+                                </td>
+                                <td className="px-6 py-4 text-gray-800 font-semibold">
+                                    {data.admin1}
+                                </td>
+                            </tr>
 
-                        {/* Longitude */}
-                        <tr className="hover:bg-gray-50 transition">
-                            <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
-                                <LocateFixed size={16} className="text-indigo-500" />
-                                Longitude
-                            </td>
-                            <td className="px-6 py-4 text-gray-800 font-semibold">
-                                {data.longitude}
-                            </td>
-                        </tr>
+                            {/* Country */}
+                            <tr className="hover:bg-gray-50 transition">
+                                <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
+                                    <Globe size={16} className="text-indigo-500" />
+                                    Country
+                                </td>
+                                <td className="px-6 py-4 text-gray-800 font-semibold">
+                                    {data.country_code}
+                                </td>
+                            </tr>
 
-                    </tbody>
+                            {/* Latitude */}
+                            <tr className="hover:bg-gray-50 transition">
+                                <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
+                                    <LocateFixed size={16} className="text-indigo-500" />
+                                    Latitude
+                                </td>
+                                <td className="px-6 py-4 text-gray-800 font-semibold">
+                                    {data.latitude}
+                                </td>
+                            </tr>
 
-                </table>
+                            {/* Longitude */}
+                            <tr className="hover:bg-gray-50 transition">
+                                <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
+                                    <LocateFixed size={16} className="text-indigo-500" />
+                                    Longitude
+                                </td>
+                                <td className="px-6 py-4 text-gray-800 font-semibold">
+                                    {data.longitude}
+                                </td>
+                            </tr>
 
-            </div>
+                        </tbody>
 
-            {/* Nearby */}
-            <h2 className="text-xl font-bold mb-3">Nearby Postal Codes</h2>
-            <div className="flex flex-wrap gap-2 mb-8">
-                {nearby.map((n: any) => (
-                    <Link key={n.postal_code}
-                        href={`/postalcode/${params.country}/${params.state}/${params.city}/${formatPostal(n.postal_code)}`}
-                        className="border px-3 py-1 rounded">
-                        {n.postal_code}
-                    </Link>
-                ))}
-            </div>
+                    </table>
 
-            {/* Related */}
-            <h2 className="text-xl font-bold mb-3">Related Postal Codes</h2>
-            <div className="flex flex-wrap gap-2 mb-8">
-                {related.map((r: any) => (
-                    <Link key={r.postal_code}
-                        href={`/postalcode/${params.country}/${params.state}/${params.city}/${formatPostal(r.postal_code)}`}
-                        className="border px-3 py-1 rounded">
-                        {r.postal_code}
-                    </Link>
-                ))}
-            </div>
+                </div>
 
-            {/* Content */}
-            <div className="bg-indigo-50 p-6 rounded-xl">
-                <h2 className="text-2xl font-bold mb-2">About {data.postal_code}</h2>
-                <p>
-                    {data.postal_code} is the postal code of {data.place_name}, located in {data.admin1}, {data.country_code}.
-                    Postal codes help in efficient mail delivery and location identification.
-                </p>
-            </div>
-
-            {/* Location Overview */}
-            {/* Location Overview */}
-            <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
-                <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
-                    <Info className="text-indigo-600" size={20} />
-                    Location Overview
-                </h2>
-
-                <p className="text-gray-600 leading-6 text-sm">
-                    {data.place_name} is a locality in {data.admin1}, {data.country_code}.
-                    The postal code <strong>{data.postal_code}</strong> is used for accurate mail delivery
-                    and identifying this region geographically.
-                </p>
-
-                <ul className="mt-4 text-sm text-gray-600 space-y-2">
-                    <li className="flex items-center gap-2">
-                        <Globe size={16} className="text-indigo-500" />
-                        Country: {data.country_code}
-                    </li>
-                    <li className="flex items-center gap-2">
-                        <Navigation size={16} className="text-indigo-500" />
-                        Region: {data.admin1}
-                    </li>
-                    <li className="flex items-center gap-2">
-                        <MapPin size={16} className="text-indigo-500" />
-                        Place: {data.place_name}
-                    </li>
-                    <li className="flex items-center gap-2">
-                        <Mail size={16} className="text-indigo-500" />
-                        Postal Code: {data.postal_code}
-                    </li>
-                    <li className="flex items-center gap-2">
-                        <LocateFixed size={16} className="text-indigo-500" />
-                        Coordinates: {data.latitude}, {data.longitude}
-                    </li>
-                </ul>
-            </div>
-
-            {/* Map Section */}
-            {/* Map Section */}
-            <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
-                <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
-                    <MapIcon  size={20} className="text-indigo-600" />
-                    Map Location
-                </h2>
-
-                <iframe
-                    src={`https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=12&output=embed`}
-                    className="w-full h-[300px] rounded-lg"
-                    loading="lazy"
-                ></iframe>
-            </div>
-
-            {/* Usage Section */}
-            <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
-                <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
-                    <Mail className="text-indigo-600" size={20} />
-                    Uses of Postal Code {data.postal_code}
-                </h2>
-
-
-                <p className="text-gray-600 text-sm leading-6">
-                    Postal code <strong>{data.postal_code}</strong> plays a crucial role in
-                    logistics, courier services, and address identification in {data.place_name}.
-                    It helps ensure accurate delivery and efficient sorting of mail.
-                </p>
-
-                <ul className="mt-3 text-sm text-gray-600 list-disc ml-5 space-y-1">
-                    <li className="flex items-center gap-2">
-                        <Mail size={16} className="text-indigo-500" />
-                        Mail delivery & sorting
-                    </li>
-                    <li className="flex items-center gap-2">
-                        <MapPin size={16} className="text-indigo-500" />
-                        Online shopping address verification
-                    </li>
-                    <li className="flex items-center gap-2">
-                        <Navigation size={16} className="text-indigo-500" />
-                        Courier & logistics operations
-                    </li>
-                    <li className="flex items-center gap-2">
-                        <Globe size={16} className="text-indigo-500" />
-                        Government & census mapping
-                    </li>
-                </ul>
-            </div>
-
-            {/* Explore More */}
-            <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
-                <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
-                    <LinkIcon className="text-indigo-600" size={20} />
-                    Explore More Postal Codes in {data.place_name}
-                </h2>
-
-                <div className="flex flex-wrap gap-2">
-                    {nearby.slice(0, 6).map((n: any) => (
-                        <Link
-                            key={n.postal_code}
+                {/* Nearby */}
+                <h2 className="text-xl font-bold mb-3">Nearby Postal Codes</h2>
+                <div className="flex flex-wrap gap-2 mb-8">
+                    {nearby.map((n: any) => (
+                        <Link key={n.postal_code}
                             href={`/postalcode/${params.country}/${params.state}/${params.city}/${formatPostal(n.postal_code)}`}
-                            className="px-3 py-1 text-sm border rounded-lg hover:bg-indigo-50"
-                        >
+                            className="border px-3 py-1 rounded">
                             {n.postal_code}
                         </Link>
                     ))}
                 </div>
-            </div>
-            {/* FAQ Section */}
-            <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <HelpCircle className="text-indigo-600" size={20} />
-                    FAQs about {data.postal_code}
-                </h2>
 
-                <div className="space-y-3 text-sm text-gray-600">
-
-                    <div>
-                        <strong>What is the postal code of {data.place_name}?</strong>
-                        <p>The postal code is {data.postal_code}.</p>
-                    </div>
-
-                    <div>
-                        <strong>Where is {data.postal_code} located?</strong>
-                        <p>
-                            It is located in {data.place_name}, {data.admin1}, {data.country_code}.
-                        </p>
-                    </div>
-
-                    <div>
-                        <strong>What are the coordinates of this location?</strong>
-                        <p>
-                            Latitude: {data.latitude}, Longitude: {data.longitude}.
-                        </p>
-                    </div>
-
+                {/* Related */}
+                <h2 className="text-xl font-bold mb-3">Related Postal Codes</h2>
+                <div className="flex flex-wrap gap-2 mb-8">
+                    {related.map((r: any) => (
+                        <Link key={r.postal_code}
+                            href={`/postalcode/${params.country}/${params.state}/${params.city}/${formatPostal(r.postal_code)}`}
+                            className="border px-3 py-1 rounded">
+                            {r.postal_code}
+                        </Link>
+                    ))}
                 </div>
+
+                {/* Content */}
+                <div className="bg-indigo-50 p-6 rounded-xl">
+                    <h2 className="text-2xl font-bold mb-2">About {data.postal_code}</h2>
+                    <p>
+                        {data.postal_code} is the postal code of {data.place_name}, located in {data.admin1}, {data.country_code}.
+                        Postal codes help in efficient mail delivery and location identification.
+                    </p>
+                </div>
+
+                {/* Location Overview */}
+                {/* Location Overview */}
+                <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
+                    <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                        <Info className="text-indigo-600" size={20} />
+                        Location Overview
+                    </h2>
+
+                    <p className="text-gray-600 leading-6 text-sm">
+                        {data.place_name} is a locality in {data.admin1}, {data.country_code}.
+                        The postal code <strong>{data.postal_code}</strong> is used for accurate mail delivery
+                        and identifying this region geographically.
+                    </p>
+
+                    <ul className="mt-4 text-sm text-gray-600 space-y-2">
+                        <li className="flex items-center gap-2">
+                            <Globe size={16} className="text-indigo-500" />
+                            Country: {data.country_code}
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <Navigation size={16} className="text-indigo-500" />
+                            Region: {data.admin1}
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <MapPin size={16} className="text-indigo-500" />
+                            Place: {data.place_name}
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <Mail size={16} className="text-indigo-500" />
+                            Postal Code: {data.postal_code}
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <LocateFixed size={16} className="text-indigo-500" />
+                            Coordinates: {data.latitude}, {data.longitude}
+                        </li>
+                    </ul>
+                </div>
+
+                {/* Map Section */}
+                {/* Map Section */}
+                <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
+                    <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                        <MapIcon size={20} className="text-indigo-600" />
+                        Map Location
+                    </h2>
+
+                    <iframe
+                        src={`https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=12&output=embed`}
+                        className="w-full h-[300px] rounded-lg"
+                        loading="lazy"
+                    ></iframe>
+                </div>
+
+                {/* Usage Section */}
+                <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
+                    <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                        <Mail className="text-indigo-600" size={20} />
+                        Uses of Postal Code {data.postal_code}
+                    </h2>
+
+
+                    <p className="text-gray-600 text-sm leading-6">
+                        Postal code <strong>{data.postal_code}</strong> plays a crucial role in
+                        logistics, courier services, and address identification in {data.place_name}.
+                        It helps ensure accurate delivery and efficient sorting of mail.
+                    </p>
+
+                    <ul className="mt-3 text-sm text-gray-600 list-disc ml-5 space-y-1">
+                        <li className="flex items-center gap-2">
+                            <Mail size={16} className="text-indigo-500" />
+                            Mail delivery & sorting
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <MapPin size={16} className="text-indigo-500" />
+                            Online shopping address verification
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <Navigation size={16} className="text-indigo-500" />
+                            Courier & logistics operations
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <Globe size={16} className="text-indigo-500" />
+                            Government & census mapping
+                        </li>
+                    </ul>
+                </div>
+
+                <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
+                    <h2 className="text-xl font-semibold mb-3">
+                        Area Insights - {data.place_name}
+                    </h2>
+
+                    <p className="text-sm text-gray-600 leading-6">
+                        {data.place_name} is located in the region of {data.admin1}, {data.country_code}.
+                        This area is identified by postal code {data.postal_code} and plays an important role
+                        in regional logistics and communication systems.
+                    </p>
+
+                    <p className="text-sm text-gray-600 mt-3 leading-6">
+                        The region surrounding {data.place_name} includes multiple nearby postal zones
+                        which are interconnected for efficient mail delivery and transportation services.
+                    </p>
+
+                    <p className="text-sm text-gray-600 mt-3 leading-6">
+                        Geographic coordinates ({data.latitude}, {data.longitude}) help in identifying
+                        the exact location of this postal region on global mapping systems.
+                    </p>
+                </div>
+
+                {/* Explore More */}
+                <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
+                    <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                        <LinkIcon className="text-indigo-600" size={20} />
+                        Explore More Postal Codes in {data.place_name}
+                    </h2>
+
+                    <div className="flex flex-wrap gap-2">
+                        {nearby.slice(0, 6).map((n: any) => (
+                            <Link
+                                key={n.postal_code}
+                                href={`/postalcode/${params.country}/${params.state}/${params.city}/${formatPostal(n.postal_code)}`}
+                                className="px-3 py-1 text-sm border rounded-lg hover:bg-indigo-50"
+                            >
+                                {n.postal_code}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+                {/* FAQ Section */}
+                <div className="mt-6 p-6 bg-white rounded-xl border shadow-sm">
+                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <HelpCircle className="text-indigo-600" size={20} />
+                        FAQs about {data.postal_code}
+                    </h2>
+
+                    <div className="space-y-3 text-sm text-gray-600">
+
+                        <div>
+                            <strong>What is the postal code of {data.place_name}?</strong>
+                            <p>The postal code is {data.postal_code}.</p>
+                        </div>
+
+                        <div>
+                            <strong>Where is {data.postal_code} located?</strong>
+                            <p>
+                                It is located in {data.place_name}, {data.admin1}, {data.country_code}.
+                            </p>
+                        </div>
+
+                        <div>
+                            <strong>What are the coordinates of this location?</strong>
+                            <p>
+                                Latitude: {data.latitude}, Longitude: {data.longitude}.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                {/* Schema */}
+                <script type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+                <script type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+
             </div>
-
-            {/* Schema */}
-            <script type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-            <script type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-
-        </div>
+        </>
     );
 }
