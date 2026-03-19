@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Home, ChevronRight, MapPin, Navigation, Globe, LocateFixed, Mail, LinkIcon, HelpCircle, Info, MapIcon } from "lucide-react";
 import WorldSearch from "@/app/components/WorldSearch";
 import { createSlug } from "@/app/lib/slugify";
+import { generatePostalContent } from "@/app/lib/contentEngine";
 
 /* ================================
    HELPERS
@@ -121,6 +122,8 @@ export default async function PostalDetail({ params }: any) {
 
     const data = rows[0];
 
+    const content = generatePostalContent(data);
+
     /* ================================
    SCHEMA (SEO JSON-LD)
 ================================ */
@@ -236,7 +239,7 @@ export default async function PostalDetail({ params }: any) {
         <>
             <script type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(geoSchema) }} />
-                
+
             <div className="py-10 px-4">
 
                 {/* Breadcrumb */}
@@ -403,11 +406,14 @@ export default async function PostalDetail({ params }: any) {
 
                 {/* Content */}
                 <div className="bg-indigo-50 p-6 rounded-xl">
-                    <h2 className="text-2xl font-bold mb-2">About {data.postal_code}</h2>
-                    <p>
-                        {data.postal_code} is the postal code of {data.place_name}, located in {data.admin1}, {data.country_code}.
-                        Postal codes help in efficient mail delivery and location identification.
-                    </p>
+                    <h2 className="text-2xl font-bold mb-2">
+                        About {data.postal_code}
+                    </h2>
+
+                    <p className="text-gray-700 mb-2">{content.intro}</p>
+                    <p className="text-gray-700 mb-2">{content.geo}</p>
+                    <p className="text-gray-700 mb-2">{content.usage}</p>
+                    <p className="text-gray-700">{content.extra}</p>
                 </div>
 
                 {/* Location Overview */}
@@ -458,7 +464,7 @@ export default async function PostalDetail({ params }: any) {
 
                     <iframe
                         src={`https://maps.google.com/maps?q=${data.latitude},${data.longitude}&z=12&output=embed`}
-                        className="w-full h-[300px] rounded-lg"
+                        className="w-full h-75 rounded-lg"
                         loading="lazy"
                     ></iframe>
                 </div>
