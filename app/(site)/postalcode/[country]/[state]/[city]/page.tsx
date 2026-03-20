@@ -6,7 +6,6 @@ import { Home, ChevronRight, MapPin } from "lucide-react";
 import WorldSearch from "@/app/components/WorldSearch";
 import { redirect } from "next/navigation";
 export const dynamic = "force-dynamic";
-
 /* ================================
    TYPES
 ================================ */
@@ -55,7 +54,6 @@ function normalizeText(text: string) {
    METADATA
 ================================ */
 export async function generateMetadata({ params }: any): Promise<Metadata> {
-
     const country = params.country.toUpperCase();
     const state = params.state.replace(/-/g, " ");
     const city = params.city.replace(/-/g, " ");
@@ -78,63 +76,16 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 ================================ */
 export default async function CityPage({ params }: any) {
 
-    const cityParam = params.city;
-
-if (/^\d[\d-]*$/.test(cityParam)) {
-
-    const [rows]: any = await db.query(
-        `SELECT postal_code, admin1, place_name 
-         FROM worldwide_postal_codes 
-         WHERE country_code=?`,
-        [params.country.toUpperCase()]
-    );
-
-    const clean = cityParam.replace(/[-\s]/g, "").toLowerCase();
-
-    // 🔥 GET ALL MATCHES
-    const matches = rows.filter((r: any) => {
-        const db = (r.postal_code || "").replace(/[-\s]/g, "").toLowerCase();
-
-        return (
-            db === clean ||               // exact
-            db.startsWith(clean) ||      // 31863 matches 31863-98023
-            db.includes(clean)           // fallback
-        );
-    });
-
-    if (matches.length > 0) {
-
-        // 🔥 SORT BEST MATCH FIRST
-        matches.sort((a: any, b: any) => {
-            const aLen = (a.postal_code || "").length;
-            const bLen = (b.postal_code || "").length;
-            return aLen - bLen;
-        });
-
-        const best = matches[0];
-
-        const stateSlug = slugify(best.admin1 || params.state);
-        const citySlug = slugify(best.place_name || params.state);
-        const postalSlug = (best.postal_code || "")
-            .trim()
-            .replace(/\s+/g, "-")
-            .toLowerCase();
-
-        return redirect(
-            `/postalcode/${params.country}/${stateSlug}/${citySlug}/${postalSlug}`
-        );
-    }
-}
-
     const country = params.country.toUpperCase();
     const state = params.state.replace(/-/g, " ");
     const city = params.city.replace(/-/g, " ");
+    const cityParam = params.city;
 
     const normState = normalizeText(state);
     const normCity = normalizeText(city);
 
     /* ================================
-       DB QUERY (FIXED TYPE)
+       SINGLE DB QUERY (🔥 FIXED)
     ================================= */
     const [rows] = await db.query<PostalRow[]>(
         `SELECT postal_code, admin1, place_name 
@@ -144,6 +95,48 @@ if (/^\d[\d-]*$/.test(cityParam)) {
          AND postal_code != ''`,
         [country]
     );
+
+    /* ================================
+       🔥 REDIRECT LOGIC (USING SAME DATA)
+    ================================= */
+    if (/^\d[\d-]*$/.test(cityParam)) {
+
+        const clean = cityParam.replace(/[-\s]/g, "").toLowerCase();
+
+        const matches = rows.filter((r) => {
+            const dbPostal = (r.postal_code || "").replace(/[-\s]/g, "").toLowerCase();
+
+            return (
+                dbPostal === clean ||
+                dbPostal.startsWith(clean) ||
+                dbPostal.includes(clean)
+            );
+        });
+
+        if (matches.length > 0) {
+            matches.sort((a, b) => a.postal_code.length - b.postal_code.length);
+
+            const best = matches[0];
+
+            const stateSlug = slugify(
+                best.admin1 && best.admin1.trim().length > 0
+                    ? best.admin1
+                    : params.state || "unknown"
+            );
+
+            const citySlug = slugify(
+                best.place_name && best.place_name.trim().length > 0
+                    ? best.place_name
+                    : params.city || "city"
+            );
+
+            const postalSlug = formatPostal(best.postal_code);
+
+            return redirect(
+                `/postalcode/${params.country}/${stateSlug}/${citySlug}/${postalSlug}`
+            );
+        }
+    }
 
     /* ================================
        FILTERING
