@@ -6,7 +6,7 @@ import { Home, ChevronRight, MapPin, Navigation, Globe, LocateFixed, Mail, LinkI
 import WorldSearch from "@/app/components/WorldSearch";
 import { createSlug } from "@/app/lib/slugify";
 import { generatePostalContent } from "@/app/lib/contentEngine";
-
+export const dynamic = "force-dynamic";
 /* ================================
    HELPERS
 ================================ */

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { MapPin, ArrowRight } from "lucide-react";
 import PincodeAutoSuggest from "@/app/components/PincodeAutoSuggest";
 import Breadcrumb from "@/app/components/Breadcrumb";
-
+export const dynamic = "force-dynamic";
 /* =========================================================
    🔥 HELPER
 ========================================================= */
