@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
  import WorldSearch from "@/app/components/WorldSearch";
 import { Metadata } from "next";
-
+export const dynamic = "force-dynamic";
 /* ================================
    CACHE
 ================================ */

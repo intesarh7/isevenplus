@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import PincodeTabs from "../components/PincodeTabs";
 
-export const dynamic = "auto";
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "iSevenPlus – Free Online Calculators & Smart Tools",

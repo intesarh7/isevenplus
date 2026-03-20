@@ -4,7 +4,7 @@ import { RowDataPacket } from "mysql2";
 import { Search, MapPin, Globe, TrendingUp, Navigation, Package, Building2, ArrowRight, ChevronDown, HelpCircle, FileText, Hash, Rocket, Mic } from "lucide-react";
 import PincodeAutoSuggest from "@/app/components/PincodeAutoSuggest";
 import Image from "next/image";
-
+export const dynamic = "force-dynamic";
 /* ================= BASE URL ================= */
 const baseUrl =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
