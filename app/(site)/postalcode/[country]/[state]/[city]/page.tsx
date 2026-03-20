@@ -5,6 +5,8 @@ import { Metadata } from "next";
 import { Home, ChevronRight, MapPin } from "lucide-react";
 import WorldSearch from "@/app/components/WorldSearch";
 import { redirect } from "next/navigation";
+export const dynamic = "force-dynamic";
+
 /* ================================
    TYPES
 ================================ */
