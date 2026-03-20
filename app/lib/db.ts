@@ -11,10 +11,10 @@ const pool =
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: Number(process.env.DB_PORT) || 3306, // 🔥 FIXED
+    port: Number(process.env.DB_PORT) || 3306,
 
     waitForConnections: true,
-    connectionLimit: process.env.NODE_ENV === "production" ? 5 : 10,
+    connectionLimit: 5, // 🔥 IMPORTANT (zyada mat rakho)
     queueLimit: 0,
 
     connectTimeout: 10000,
@@ -24,11 +24,10 @@ const pool =
     ssl:
       process.env.NODE_ENV === "production"
         ? { rejectUnauthorized: false }
-        : undefined, // 🔥 Hostinger sometimes requires SSL
+        : undefined,
   });
 
-if (process.env.NODE_ENV !== "production") {
-  globalForMySQL.pool = pool;
-}
+// 🔥 ALWAYS assign (production + dev dono me)
+globalForMySQL.pool = pool;
 
 export default pool;
