@@ -5,12 +5,29 @@ import { Home, ChevronRight, MapPin } from "lucide-react";
 import WorldSearch from "@/app/components/WorldSearch";
 import { redirect } from "next/navigation";
 import slugifyLib from "slugify"; // ✅ ADD
+import { transliterate } from "transliteration";
 
+/* ================================
+   🌍 UNIVERSAL ENGLISH CONVERTER (NEW)
+================================ */
+function toEnglish(text: string) {
+    if (!text) return "";
+
+    try {
+        // Hindi, Arabic, etc → English
+        return transliterate(text);
+    } catch {
+        return text;
+    }
+}
 /* ================================
    MASTER NORMALIZER 🔥🔥🔥
 ================================ */
 function normalizeMaster(text: string) {
-    return text
+
+    const englishText = toEnglish(text); // ✅ ADD: URL & DB same language me convert
+
+    return englishText
         ?.toLowerCase()
         .normalize("NFD") // remove accents
         .replace(/[\u0300-\u036f]/g, "")
@@ -20,7 +37,7 @@ function normalizeMaster(text: string) {
         .replace(/,/g, "")
         .replace(/;/g, "")
         .replace(/-/g, " ")
-        .replace(/\bst\b/g, "saint") // st → saint
+        .replace(/\bst\b/g, "saint")
         .replace(/\s+/g, " ")
         .trim();
 }
@@ -37,8 +54,8 @@ function slugify(text: string) {
 ================================ */
 function createSlug(text: string) {
     if (!text) return "";
-
-    return slugifyLib(text, {
+    const englishText = toEnglish(text);
+    return slugifyLib(englishText, {
         lower: true,
         strict: true,
         locale: "en",
@@ -87,8 +104,8 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 export default async function StatePage({ params }: any) {
     const country = params.country.toUpperCase();
     const state = params.state.replace(/-/g, " ");
-
-    const normState = normalizeMaster(state);
+    const stateEnglish = toEnglish(state);
+    const normState = normalizeMaster(stateEnglish); // ✅ FIX
 
     // ✅ CLEAN URL REDIRECT (NEW FIX)
     const cleanState = createSlug(params.state);
@@ -118,12 +135,13 @@ export default async function StatePage({ params }: any) {
         const dbCity = normalizeMaster(r.place_name || "");
 
         return (
-            // state match (flexible)
             dbState.includes(normState) ||
             normState.includes(dbState) ||
 
-            // 🔥 hyphen / split match (IMPORTANT FIX)
-            dbState.split(" ").some((word: string) => normState.includes(word))
+            dbState.split(" ").some((word: string) => normState.includes(word)) ||
+
+            // ✅ ADD: city based loose match
+            dbCity.includes(normState)
         );
     });
 
@@ -131,9 +149,10 @@ export default async function StatePage({ params }: any) {
     if (cities.length === 0) {
         cities = rows.filter((r: any) => {
             const dbCity = normalizeMaster(r.place_name || "");
-            return dbCity.includes(normState);
+            return dbCity.includes(normState); // ✅ ONLY THIS
         });
     }
+
 
     /* ================================
        SCHEMA
@@ -231,8 +250,23 @@ export default async function StatePage({ params }: any) {
           EMPTY STATE
       ================================= */}
             {cities.length === 0 && (
-                <div className="text-center text-gray-500 mt-6">
-                    No cities found for this region.
+                <div className="mt-6 p-5 rounded-xl border border-yellow-300 bg-yellow-50 text-yellow-800">
+
+                    <h3 className="font-semibold text-lg mb-1">
+                        Postal Code Not Found
+                    </h3>
+
+                    <p className="text-sm">
+                        We couldn't find postal codes for <b>{state}, {country}</b>.
+                        This may be due to spelling differences or data availability.
+                    </p>
+
+                    <ul className="text-sm mt-3 list-disc pl-5 space-y-1">
+                        <li>Try searching again using a different spelling</li>
+                        <li>Search using nearby cities or districts</li>
+                        <li>Use the global search box above</li>
+                    </ul>
+
                 </div>
             )}
 

@@ -38,7 +38,8 @@
     "react-dom": "18.2.0",
     "recharts": "^3.8.0",
     "slugify": "^1.6.8",
-    "tinymce": "^6.8.6"
+    "tinymce": "^6.8.6",
+    "transliteration": "^2.6.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.1",

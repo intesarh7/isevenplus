@@ -3,7 +3,38 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { Home, ChevronRight, Globe } from "lucide-react";
 import WorldSearch from "@/app/components/WorldSearch";
+import { transliterate } from "transliteration";
 
+/* ================================
+   🌍 UNIVERSAL ENGLISH CONVERTER (NEW)
+================================ */
+function toEnglish(text: string) {
+    if (!text) return "";
+
+    try {
+        return transliterate(text); // ✅ Hindi, Arabic → English
+    } catch {
+        return text; // ✅ fallback safe
+    }
+}
+
+/* ================================
+   🔥 CREATE SLUG (MULTILANGUAGE FIX)
+================================ */
+function createSlug(text: string) {
+    if (!text) return "";
+
+    const englishText = toEnglish(text); // ✅ ADD (important)
+
+    return englishText
+        ?.toString()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9\s-]/g, "")
+        .trim()
+        .replace(/\s+/g, "-");
+}
 /* ================================
    HELPERS
 ================================ */
@@ -20,13 +51,22 @@ function slugify(text: string) {
 
 // 🔥 FIX: normalize (handles Kärnten → krnten)
 function normalizeText(text: string) {
-    return text
+    const englishText = toEnglish(text);
+    return englishText
         ?.toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-z0-9\s]/g, "")
+        .replace(/\./g, "")
+        .replace(/'/g, "")
+        .replace(/"/g, "")
+        .replace(/,/g, "")
+        .replace(/;/g, "")
+        .replace(/-/g, " ")
+        .replace(/\bst\b/g, "saint")
+        .replace(/\s+/g, " ")
         .trim();
 }
+
 
 /* ================================
    METADATA (SEO)
@@ -97,6 +137,8 @@ export default async function CountryPage({ params }: any) {
             .map((r: any) => ({ admin1: r.place_name }));
     }
 
+  
+
     /* ================================
        SCHEMA
     ================================= */
@@ -160,7 +202,7 @@ export default async function CountryPage({ params }: any) {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
 
                 {states.map((s: any) => {
-                    const slug = slugify(s.admin1);
+                    const slug = createSlug(s.admin1);
 
                     return (
                         <Link
