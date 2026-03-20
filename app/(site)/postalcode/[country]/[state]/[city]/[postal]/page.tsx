@@ -6,7 +6,7 @@ import { Home, ChevronRight, MapPin, Navigation, Globe, LocateFixed, Mail, LinkI
 import WorldSearch from "@/app/components/WorldSearch";
 import { createSlug } from "@/app/lib/slugify";
 import { generatePostalContent } from "@/app/lib/contentEngine";
-export const dynamic = "force-dynamic";
+
 /* ================================
    HELPERS
 ================================ */
@@ -65,8 +65,6 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 
         return text
             .replace(/-/g, " ")
-            .replace(/\b(area|region|zone|district)\b/gi, "") // sab extra words remove
-            .replace(/\s+/g, " ")
             .replace(/\b\w/g, (c: string) => c.toUpperCase())
             .trim();
     }
@@ -93,7 +91,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     const location = locationParts.join(", ");
 
     return {
-        title: `${decoded} Postal Code – ${location}, ${formattedCountry} (Location, Map & Nearby Codes)`,
+        title: `${decoded} Postal Code – ${location}, ${formattedCountry} (Location, Map & Nearby Codes) | iSevenPlus`,
 
         description: `Find complete details of ${decoded} postal code in ${location}, ${formattedCountry}. Check location, map, nearby postal codes, coordinates, and area insights with accurate and updated information.`,
 
