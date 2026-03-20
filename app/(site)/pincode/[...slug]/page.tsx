@@ -71,15 +71,23 @@ export async function generateMetadata({
     canonicalPath = "/" + canonicalPath;
   }
 
+  function formatText(text?: string): string {
+    if (!text) return "";
+
+    return text
+      .toLowerCase()
+      .replace(/\b\w/g, (c: string) => c.toUpperCase());
+  }
+
   /* ensure trailing slash */
   canonicalPath = canonicalPath.replace(/\/?$/, "/");
 
   const canonical = `${baseUrl}${canonicalPath}`;
 
   return {
-    title: `${data.pincode} Pincode - ${data.district}, ${data.state}, India | Post Office Details | iSevenPlus`,
+    title: `${data.pincode} PIN Code – ${formatText(data.district)}, ${formatText(data.state)}, India (Post Office, Location & Details)`,
 
-    description: `Complete details of ${data.pincode} pincode in ${data.district}, ${data.state}, India. Office name, branch type, delivery status and more.`,
+    description: `Find complete details of ${data.pincode} PIN Code in ${formatText(data.district)}, ${formatText(data.state)}, India. Get post office name, branch type, delivery status, location, and other important information.`,
 
     alternates: {
       canonical,

@@ -37,6 +37,13 @@ function normalizePostalFlexible(code: string) {
         .replace(/-/g, "")
         .trim();
 }
+function formatText(text?: string): string {
+    if (!text) return "";
+
+    return text
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (c: string) => c.toUpperCase());
+}
 /* ================================
    METADATA
 ================================ */
@@ -52,9 +59,44 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 
     const url = `${baseUrl}/postalcode/${params.country}/${params.state}/${params.city}/${normalized}/`;
 
+
+    function formatText(text?: string): string {
+        if (!text) return "";
+
+        return text
+            .replace(/-/g, " ")
+            .replace(/\b(area|region|zone|district)\b/gi, "") // sab extra words remove
+            .replace(/\s+/g, " ")
+            .replace(/\b\w/g, (c: string) => c.toUpperCase())
+            .trim();
+    }
+
+    const formattedArea = formatText(params.area);
+    const formattedCity = formatText(params.city);
+    const formattedState = formatText(params.state);
+    const formattedCountry = params.country?.toUpperCase() || "";
+
+    // 👉 remove "Area" duplication like "Hor Al Anz East Area"
+    const cleanArea = formattedArea.replace(/\bArea\b/i, "").trim();
+
+    // 👉 build location safely (NO empty / NO duplicate)
+    let locationParts = [];
+
+    if (cleanArea && cleanArea !== formattedCity) {
+        locationParts.push(cleanArea);
+    }
+
+    if (formattedCity) {
+        locationParts.push(formattedCity);
+    }
+
+    const location = locationParts.join(", ");
+
     return {
-        title: `${decoded} Postal Code Details`,
-        description: `${decoded} postal code of ${params.city}, ${params.state}, ${params.country}. Get location, map, nearby postal codes, and full details.`,
+        title: `${decoded} Postal Code – ${location}, ${formattedCountry} (Location, Map & Nearby Codes)`,
+
+        description: `Find complete details of ${decoded} postal code in ${location}, ${formattedCountry}. Check location, map, nearby postal codes, coordinates, and area insights with accurate and updated information.`,
+
         alternates: { canonical: url },
     };
 }
