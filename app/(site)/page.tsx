@@ -19,9 +19,9 @@ import PincodeTabs from "../components/PincodeTabs";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "iSevenPlus – Free Online Calculators & Smart Tools",
+  title: "100+ Free Online Calculators & SEO Tools (2026) - Fast & Accurate",
   description:
-    "Free online calculators, construction tools, finance tools, and worldwide pincode search.",
+    "Use 100+ free tools including SEO tools, calculators & business utilities. Get instant results, improve productivity & save time. 100% free platform.",
 };
 
 export default async function HomePage() {
@@ -131,11 +131,11 @@ SELECT COUNT(*) as total FROM blogs
 
       {/* 1️⃣ HERO */}
       <section className="text-center pt-10 bg-white">
-        <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-          Smart Online Calculators & Tools
+        <h1 className="text-3xl sm:text-3xl font-bold mb-4">
+          Free Online Calculators & SEO Tools (2026)<br></br> 100+ Smart Tools in One Place
         </h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Professional tools for construction, finance, daily calculations and pincode search.
+          100% free tools - Save time and boost productivity with powerful calculators, SEO tools & smart utilities — all in one place.
         </p>
         <Link
           href="/tools"
