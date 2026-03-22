@@ -323,7 +323,7 @@ SELECT COUNT(*) as total FROM blogs
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
 
             {featuredTools.map((tool: any, index: number) => (
               <Link
@@ -473,7 +473,7 @@ SELECT COUNT(*) as total FROM blogs
         </div>
 
         {/* GRID */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
 
           {popularCalculators.map((tool: any, index: number) => (
             <Link
@@ -561,7 +561,7 @@ SELECT COUNT(*) as total FROM blogs
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
 
             {popularCities.map((city: any, index: number) => {
 
@@ -615,7 +615,7 @@ SELECT COUNT(*) as total FROM blogs
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
 
             {popularStates.map((state: any, index: number) => {
 
@@ -721,7 +721,7 @@ SELECT COUNT(*) as total FROM blogs
           </p>
 
           {/* GRID */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
             {[
               {
