@@ -44,7 +44,7 @@ export default function PincodeTabs() {
 
       {tab === "search" && (
         <>
-          <h2 className="text-1xl font-bold mb-4 text-left text-orange-600">
+          <h2 className="text-1xl font-bold mb-4 text-left text-indigo-700">
             Pincode Search by City, District or State
           </h2>
 
@@ -54,7 +54,7 @@ export default function PincodeTabs() {
 
       {tab === "locator" && (
         <>
-          <h2 className="text-1xl font-bold mb-4 text-left text-orange-600">
+          <h2 className="text-1xl font-bold mb-4 text-left text-indigo-700">
             Pincode / Post Office Locator Tool
           </h2>
 

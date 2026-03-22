@@ -92,12 +92,16 @@ export default async function PincodePage({ searchParams }: any) {
 
   /* ================= STATES ================= */
   const [statesWithCount] = await db.query<RowDataPacket[]>(
-    `SELECT state, COUNT(*) as total FROM indian_pincodes
-     GROUP BY state ORDER BY state ASC`
+    `SELECT state, COUNT(*) as total 
+   FROM indian_pincodes
+   WHERE state IS NOT NULL 
+   AND state != ''
+   GROUP BY state 
+   ORDER BY state ASC`
   );
 
   /* ================= POPULAR SEARCHES ================= */
- const [popularCities] = await db.query<RowDataPacket[]>(`
+  const [popularCities] = await db.query<RowDataPacket[]>(`
   SELECT 
     district, 
     state, 
@@ -484,7 +488,7 @@ export default async function PincodePage({ searchParams }: any) {
             </div>
 
             {/* GRID CARDS */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-125 overflow-y-auto pr-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-h-125 overflow-y-auto pr-2">
 
               {statesWithCount.map((state: any, i: number) => (
                 <a

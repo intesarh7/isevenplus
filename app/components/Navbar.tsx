@@ -16,7 +16,8 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Pincode", href: "/pincode" },
+    { name: "Pincode India", href: "/pincode" },
+    { name: "Postal Codes Worldwide", href: "/postalcode" },
     { name: "Blogs", href: "/blogs" },
   ];
 
@@ -112,7 +113,7 @@ export default function Navbar() {
 
       {/* ================= Drawer Menu ================= */}
       <div
-        className={`fixed top-0 right-0 h-full w-72 bg-gray-950 shadow-xl z-50 transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed top-0 right-0 h-full w-96 bg-gray-950 shadow-xl z-50 transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
 
@@ -167,7 +168,15 @@ export default function Navbar() {
             onClick={() => setIsOpen(false)}
             className="text-lg text-white hover:text-indigo-600"
           >
-            Pincode
+            Pincode India
+          </Link>
+
+          <Link
+            href="/postalcode"
+            onClick={() => setIsOpen(false)}
+            className="text-lg text-white hover:text-indigo-600"
+          >
+            Postal Codes Worldwide
           </Link>
 
           <Link

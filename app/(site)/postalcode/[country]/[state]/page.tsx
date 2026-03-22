@@ -50,6 +50,24 @@ function slugify(text: string) {
 }
 
 /* ================================
+   🎯 TITLE CASE FORMATTER (NEW)
+================================ */
+function formatTitle(text: string) {
+    if (!text) return "";
+
+    return text
+        .toLowerCase()
+        .split(" ")
+        .map(word => {
+            // numbers ya empty words skip
+            if (!word) return word;
+
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        })
+        .join(" ");
+}
+
+/* ================================
    🔥 UNIVERSAL SLUG (NEW FIX)
 ================================ */
 function createSlug(text: string) {
@@ -68,7 +86,8 @@ function createSlug(text: string) {
 ================================ */
 export async function generateMetadata({ params }: any): Promise<Metadata> {
     const country = params.country.toUpperCase();
-    const state = params.state.replace(/-/g, " ");
+    const rawState = params.state.replace(/-/g, " ");
+    const state = formatTitle(toEnglish(rawState));
 
     const baseUrl =
         process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
@@ -103,7 +122,8 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 ================================ */
 export default async function StatePage({ params }: any) {
     const country = params.country.toUpperCase();
-    const state = params.state.replace(/-/g, " ");
+    const rawState = params.state.replace(/-/g, " ");
+    const state = formatTitle(toEnglish(rawState));
     const stateEnglish = toEnglish(state);
     const normState = normalizeMaster(stateEnglish); // ✅ FIX
 
@@ -165,12 +185,35 @@ export default async function StatePage({ params }: any) {
         url: `${process.env.NEXT_PUBLIC_BASE_URL}/postalcode/${params.country}/${cleanState}`, // ✅ FIXED
     };
 
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": `What is the postal code system in ${state}?`,
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": `Postal codes in ${state}, ${country} help identify locations for delivery services.`
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How can I find a city postal code?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You can use the search bar or browse the city list above."
+                }
+            }
+        ]
+    };
+
     return (
         <div className="max-w-6xl mx-auto py-10 px-4">
 
             {/* ================================
-          BREADCRUMB
-      ================================= */}
+                BREADCRUMB
+            ================================= */}
             <nav className="flex flex-wrap items-center text-sm text-gray-600 mb-4 gap-1">
 
                 <Link href="/" className="flex items-center gap-1 text-indigo-600 hover:underline">
@@ -203,23 +246,50 @@ export default async function StatePage({ params }: any) {
             </div>
 
             {/* ================================
-          H1
-      ================================= */}
+                H1
+            ================================= */}
             <h1 className="text-3xl font-bold mb-4 flex items-center gap-2">
                 <MapPin className="text-indigo-500" />
                 Cities in {state}, {country}
             </h1>
 
             {/* ================================
-          INTRO
-      ================================= */}
+            🔥 SEO HERO STATS (NEW)
+            ================================ */}
+            <div className="mb-8 p-5 rounded-2xl border bg-white shadow-sm flex flex-wrap gap-6 text-sm">
+
+                <div>
+                    <p className="text-gray-500">Total Cities</p>
+                    <p className="text-xl font-bold text-indigo-600">{cities.length}+</p>
+                </div>
+
+                <div>
+                    <p className="text-gray-500">Region</p>
+                    <p className="text-xl font-bold">{state}</p>
+                </div>
+
+                <div>
+                    <p className="text-gray-500">Country</p>
+                    <p className="text-xl font-bold">{country}</p>
+                </div>
+
+                <div>
+                    <p className="text-gray-500">Search Coverage</p>
+                    <p className="text-xl font-bold text-green-600">100%</p>
+                </div>
+
+            </div>
+
+            {/* ================================
+                INTRO
+            ================================= */}
             <p className="text-gray-600 mb-8 max-w-3xl">
                 Discover all cities located in {state}, {country} and explore their postal codes.
             </p>
 
             {/* ================================
-          CITY GRID
-      ================================= */}
+                CITY GRID
+            ================================= */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
 
                 {cities.map((c: any) => {
@@ -247,8 +317,8 @@ export default async function StatePage({ params }: any) {
             </div>
 
             {/* ================================
-          EMPTY STATE
-      ================================= */}
+                EMPTY STATE
+            ================================= */}
             {cities.length === 0 && (
                 <div className="mt-6 p-5 rounded-xl border border-yellow-300 bg-yellow-50 text-yellow-800">
 
@@ -271,8 +341,58 @@ export default async function StatePage({ params }: any) {
             )}
 
             {/* ================================
-          SEO BLOCK
-      ================================= */}
+            🔗 RELATED LINKS (NEW)
+            ================================ */}
+            <div className="mt-10">
+                <h2 className="text-xl font-bold mb-3">
+                    Explore Nearby Locations
+                </h2>
+
+                <div className="flex flex-wrap gap-3">
+
+                    <Link href={`/postalcode/${params.country}`}
+                        className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-indigo-100">
+                        All States in {country}
+                    </Link>
+
+                    <Link href="/postalcode"
+                        className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-indigo-100">
+                        Worldwide Postal Codes
+                    </Link>
+
+                </div>
+            </div>
+
+            {/* ================================
+                ⭐ FEATURED CITIES (NEW)
+                ================================ */}
+            <div className="mt-10">
+                <h2 className="text-xl font-bold mb-4">
+                    Popular Cities in {state}
+                </h2>
+
+                <div className="flex flex-wrap gap-3">
+
+                    {cities.slice(0, 10).map((c: any) => {
+                        const cleanCitySlug = createSlug(c.place_name);
+
+                        return (
+                            <Link
+                                key={c.place_name}
+                                href={`/postalcode/${params.country}/${cleanState}/${cleanCitySlug}`}
+                                className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full hover:bg-indigo-100 text-sm"
+                            >
+                                {c.place_name}
+                            </Link>
+                        );
+                    })}
+
+                </div>
+            </div>
+
+            {/* ================================
+                SEO BLOCK
+            ================================= */}
             <div className="mt-12 bg-indigo-50 rounded-2xl p-6">
                 <h2 className="text-2xl font-bold mb-3">
                     About Postal Codes in {state}
@@ -284,11 +404,78 @@ export default async function StatePage({ params }: any) {
             </div>
 
             {/* ================================
+            ❓ FAQ SECTION (NEW)
+            ================================ */}
+            <div className="mt-12">
+                <h2 className="text-2xl font-bold mb-6">
+                    Frequently Asked Questions
+                </h2>
+
+                <div className="space-y-4">
+
+                    <div className="p-4 border rounded-xl bg-white">
+                        <h3 className="font-semibold">
+                            What is the postal code system in {state}?
+                        </h3>
+                        <p className="text-gray-600 text-sm mt-1">
+                            Postal codes in {state}, {country} are used to identify locations for faster mail and delivery services.
+                        </p>
+                    </div>
+
+                    <div className="p-4 border rounded-xl bg-white">
+                        <h3 className="font-semibold">
+                            How can I find a city postal code?
+                        </h3>
+                        <p className="text-gray-600 text-sm mt-1">
+                            You can browse the city list above or use the search bar to quickly find postal codes.
+                        </p>
+                    </div>
+
+                    <div className="p-4 border rounded-xl bg-white">
+                        <h3 className="font-semibold">
+                            Are postal codes same for all areas?
+                        </h3>
+                        <p className="text-gray-600 text-sm mt-1">
+                            No, different areas and cities have unique postal codes for accurate delivery.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            {/* ================================
+            🚀 CTA (NEW)
+            ================================ */}
+            <div className="mt-12 p-6 rounded-2xl bg-linear-to-r from-indigo-500 to-purple-600 text-white text-center">
+
+                <h2 className="text-2xl font-bold mb-2">
+                    Find Postal Codes Instantly
+                </h2>
+
+                <p className="mb-4 text-sm">
+                    Use our smart search to quickly find postal codes worldwide.
+                </p>
+
+                <Link
+                    href="/postalcode"
+                    className="inline-block px-6 py-3 bg-white text-indigo-600 font-semibold rounded-xl"
+                >
+                    Search Now
+                </Link>
+
+            </div>
+
+            {/* ================================
           SCHEMA
       ================================= */}
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            />
+
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
             />
 
         </div>

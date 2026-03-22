@@ -28,6 +28,20 @@ function slugify(text: string) {
         .trim()
         .replace(/\s+/g, "-");
 }
+/* ================================
+   🎯 TITLE CASE FORMATTER (NEW)
+================================ */
+function formatTitle(text: string) {
+    if (!text) return "";
+
+    return text
+        .toLowerCase()
+        .split(" ")
+        .map(word =>
+            word ? word.charAt(0).toUpperCase() + word.slice(1) : word
+        )
+        .join(" ");
+}
 
 function formatPostal(postal: string) {
     return postal
@@ -55,8 +69,11 @@ function normalizeText(text: string) {
 ================================ */
 export async function generateMetadata({ params }: any): Promise<Metadata> {
     const country = params.country.toUpperCase();
-    const state = params.state.replace(/-/g, " ");
-    const city = params.city.replace(/-/g, " ");
+    const rawState = params.state.replace(/-/g, " ");
+    const rawCity = params.city.replace(/-/g, " ");
+
+    const state = formatTitle(rawState);
+    const city = formatTitle(rawCity);
 
     const baseUrl =
         process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/+$/, "") ||
@@ -77,8 +94,11 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 export default async function CityPage({ params }: any) {
 
     const country = params.country.toUpperCase();
-    const state = params.state.replace(/-/g, " ");
-    const city = params.city.replace(/-/g, " ");
+    const rawState = params.state.replace(/-/g, " ");
+    const rawCity = params.city.replace(/-/g, " ");
+
+    const state = formatTitle(rawState);
+    const city = formatTitle(rawCity);
     const cityParam = params.city;
 
     const normState = normalizeText(state);
@@ -221,7 +241,7 @@ export default async function CityPage({ params }: any) {
 
                 <ChevronRight size={16} />
 
-                <Link href={`/postalcode/${params.country}/${params.state}`} className="text-indigo-600 hover:underline">
+                <Link href={`/postalcode/${params.country}/${slugify(state)}`} className="text-indigo-600 hover:underline">
                     {state}
                 </Link>
 
@@ -248,6 +268,35 @@ export default async function CityPage({ params }: any) {
                     Found <b>{uniquePostals.length}</b> postal codes in {city}.
                 </p>
             )}
+
+            {/* ================================
+  🔥 SEO HERO STATS (NEW)
+================================ */}
+            <div className="mb-8 p-5 rounded-2xl border bg-white shadow-sm flex flex-wrap gap-6 text-sm">
+
+                <div>
+                    <p className="text-gray-500">Total Postal Codes</p>
+                    <p className="text-xl font-bold text-indigo-600">
+                        {uniquePostals.length}+
+                    </p>
+                </div>
+
+                <div>
+                    <p className="text-gray-500">City</p>
+                    <p className="text-xl font-bold">{city}</p>
+                </div>
+
+                <div>
+                    <p className="text-gray-500">Region</p>
+                    <p className="text-xl font-bold">{state}</p>
+                </div>
+
+                <div>
+                    <p className="text-gray-500">Country</p>
+                    <p className="text-xl font-bold">{country}</p>
+                </div>
+
+            </div>
 
             {/* LIST */}
             <div className="flex flex-wrap gap-3">
@@ -316,7 +365,7 @@ export default async function CityPage({ params }: any) {
                 </h2>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-sm">
-                    <Link href={`/postalcode/${params.country}/${params.state}`} className="hover:underline text-indigo-600">
+                    <Link href={`/postalcode/${params.country}/${slugify(state)}`} className="hover:underline text-indigo-600">
                         {state} Postal Codes
                     </Link>
 
