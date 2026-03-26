@@ -24,6 +24,7 @@ import PageAuthorityChecker from "./PageAuthorityChecker";
 import PageSizeChecker from "./PageSizeChecker";
 import RobotsTxtGenerator from "./RobotsTxtGenerator";
 import RobotsTxtTester from "./RobotsTxtTester";
+import SeoTitleGenerator from "./SeoTitleGenerator";
 import TitleTagLengthChecker from "./TitleTagLengthChecker";
 import UrlEncoderDecoder from "./UrlEncoderDecoder";
 import VideoSitemapGenerator from "./VideoSitemapGenerator";
@@ -66,5 +67,6 @@ export const seoToolComponents: Record<string, any> = {
   "website-link-analyzer-tool": LinkAnalyzer,
   "website-link-count-checker": WebsiteLinkCountChecker,
   "word-counter-tool": WordCounterTool,
+  "seo-title-generator": SeoTitleGenerator,
 
 };

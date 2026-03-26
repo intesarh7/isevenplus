@@ -18,7 +18,7 @@ export default function PincodeTabs() {
 
         <button
           onClick={() => setTab("search")}
-          className={`pb-2 font-medium ${
+          className={`pb-2 font-medium cursor-pointer ${
             tab === "search"
               ? "border-b-2 border-indigo-600 text-indigo-600"
               : "text-gray-500"
@@ -29,7 +29,7 @@ export default function PincodeTabs() {
 
         <button
           onClick={() => setTab("locator")}
-          className={`pb-2 font-medium ${
+          className={`pb-2 font-medium  cursor-pointer ${
             tab === "locator"
               ? "border-b-2 border-indigo-600 text-indigo-600"
               : "text-gray-500"

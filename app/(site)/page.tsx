@@ -16,8 +16,16 @@ import {
   Building2,
   CalculatorIcon,
   ChevronDown,
+  Circle,
+  Zap,
+  ShieldCheck,
+  LogIn,
+  Rocket,
 } from "lucide-react";
 import PincodeTabs from "../components/PincodeTabs";
+import HomeSearch from "../components/HomeSearch";
+import AnimatedCounter from "../components/AnimatedCounter";
+import TrustBar from "../components/TrustBar";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +34,6 @@ export const metadata = {
   description:
     "Use 100+ free calculators for SEO, finance, delivery & more. Fast results, no signup required. 100% free platform.",
 };
-
 export default async function HomePage() {
   let categories: any[] = [];
   let featuredTools: any[] = [];
@@ -129,31 +136,109 @@ SELECT COUNT(*) as total FROM blogs
 `);
   totalBlogs = blogCount[0].total;
 
+  const [trendingStripData] = await db.query<RowDataPacket[]>(`
+  SELECT name, slug 
+  FROM tools 
+  WHERE isActive=1 AND isDeleted=0
+  ORDER BY usageCount DESC, RAND()
+  LIMIT 5
+`);
+
   return (
-    <main className="">
+    <main className=" overflow-hidden">
+
+
 
       {/* 1️⃣ HERO */}
-      <section className="text-center pt-10 bg-white">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-4">
-          All-in-One Free Calculator & SEO Tools<br></br> 100+ Smart Tools in One Place
+      <section className="relative text-center pt-5 pb-10 px-4 bg-linear-to-b from-indigo-50 via-white to-white">
+
+        {/* 🔥 BACKGROUND GLOW */}
+        <div className="absolute -top-16 sm:-top-20 md:-top-24 left-1/2 -translate-x-1/2 bg-indigo-200 opacity-30 blur-3xl rounded-full w-62.5 h-62.5 sm:w-100 sm:h-100 md:w-125 md:h-125 lg:w-150 lg:h-150 "></div>
+
+        {/* 🔥 TRENDING STRIP */}
+        <div className="relative z-10 w-full mb-4 overflow-hidden">
+          <div className="relative bg-white/70 backdrop-blur border border-indigo-100 rounded-full shadow-sm py-2 px-3 overflow-hidden">
+
+            {/* VIEWPORT */}
+            <div className="w-full overflow-hidden">
+
+              {/* TRACK */}
+              <div className="animate-marquee inline-flex items-center">
+
+                {[...trendingStripData, ...trendingStripData].map((tool: any, index: number) => (
+                  <Link
+                    key={index}
+                    href={`/tools/${tool.slug}`}
+                    className="px-4 text-indigo-700 text-xs font-medium hover:text-indigo-900 shrink-0 flex items-center gap-2"
+                  >
+                    {/* 🔵 DOT ICON */}
+                    <Circle size={6} className="fill-indigo-500 text-indigo-500 drop-shadow-sm animate-pulse" />
+
+                    {/* TOOL NAME */}
+                    <span>{tool.name}</span>
+                  </Link>
+                ))}
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        {/* ⭐ TRUST LINE */}
+        <TrustBar />
+
+        {/* 🧠 HEADING */}
+        <h1 className="relative z-10 text-2xl sm:text-4xl md:text-5xl font-bold mt-4 leading-tight text-gray-900">
+          All-in-One Free Calculator & SEO Tools
+          <br />
+          <span className="text-indigo-600">100+ Smart Tools in One Place</span>
         </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Calculate Anything Instantly - No Signup Required - Save time and boost productivity with powerful calculators, SEO tools & smart utilities — all in one place.
+
+        {/* 📄 SUBTEXT */}
+        <p className="relative z-10 text-gray-600 max-w-2xl mx-auto mt-4 text-sm sm:text-base">
+          Calculate anything instantly — from finance to SEO. Save time, boost productivity, and get accurate results without signup.
         </p>
-        <Link
-          href="/tools"
-          className="inline-block mt-6 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl"
-        >
-          Explore Tools
-        </Link>
-        <section className="mx-auto">
+
+        {/* 🚀 CTA BUTTONS */}
+        <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+
+          {/* 🚀 Explore Tools */}
+          <Link
+            href="/tools"
+            className="group inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-7 py-3 rounded-xl font-medium shadow-lg transition-all duration-300"
+          >
+            <Rocket size={18} className="group-hover:translate-x-0.5 transition" />
+            Explore Tools
+          </Link>
+
+          {/* 🔍 SEO Tools */}
+          <Link
+            href="/seotools"
+            className="group inline-flex items-center gap-2 border border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-7 py-3 rounded-xl font-medium transition-all duration-300"
+          >
+            <Search size={18} className="group-hover:scale-110 transition" />
+            Try SEO Tools
+          </Link>
+
+        </div>
+
+        {/* 🔍 SEARCH */}
+        <div className="relative z-10">
+          <HomeSearch />
+        </div>
+
+        {/* 📦 PINCODE TABS */}
+        <div className="relative mt-8">
           <PincodeTabs />
-        </section>
+        </div>
+
       </section>
 
       {/* DASHBOARD CARDS */}
 
-      <section className="max-w-6xl mx-auto py-12">
+      <section className="max-w-6xl mx-auto pt-5 pb-10">
 
         <div className="grid md:grid-cols-4 gap-6">
 
@@ -291,7 +376,7 @@ SELECT COUNT(*) as total FROM blogs
                   </h3>
 
                   <p className="text-xs text-gray-500 mt-1">
-                    Explore tools & calculators
+                    ⚡ Free • Instant • No Signup
                   </p>
                 </div>
 
@@ -329,7 +414,7 @@ SELECT COUNT(*) as total FROM blogs
               <Link
                 key={tool.id}
                 href={`/tools/${tool.slug}`}
-                className="group border rounded-xl p-4 bg-white hover:shadow-md hover:border-indigo-300 transition flex flex-col justify-between"
+                className="group border rounded-xl p-4 bg-white hover:shadow-md hover:border-indigo-300 transition flex flex-col justify-between relative"
               >
 
                 {/* ICON + NAME */}
@@ -344,9 +429,9 @@ SELECT COUNT(*) as total FROM blogs
                 </div>
 
                 {/* ⭐ RATING SECTION */}
-                <div className="flex items-center justify-start gap-2.5 text-xs mt-2">
+                <div className="flex items-center flex-start gap-1 text-xs mt-3">
 
-                  {/* ⭐ STARS */}
+                  {/* ⭐ RATING */}
                   <div className="flex items-center gap-1">
                     {[...Array(5)].map((_, i) => (
                       <Star
@@ -358,7 +443,17 @@ SELECT COUNT(*) as total FROM blogs
                           }`}
                       />
                     ))}
+                    <span className="text-gray-500 ml-1">
+                      ({tool.ratingCount || "1k+"})
+                    </span>
                   </div>
+
+                  {/* ⚡ BADGE */}
+                  <span className="text-[10px] bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full absolute top-1 right-1">
+                    ⚡ Instant
+                  </span>
+
+
 
                   {/* COUNT */}
                   <div className="text-gray-400">
@@ -413,7 +508,7 @@ SELECT COUNT(*) as total FROM blogs
 
                 {/* 🔥 TRENDING BADGE */}
                 {index < 3 && (
-                  <span className="absolute top-3 right-3 text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-full">
+                  <span className="absolute top-1 right-1 text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-full">
                     🔥 Trending
                   </span>
                 )}
@@ -494,8 +589,8 @@ SELECT COUNT(*) as total FROM blogs
               </div>
 
               {/* OPTIONAL TAG */}
-              <div className="text-xs text-gray-500 flex justify-between items-center">
-                <span>Calculator</span>
+              <div className="text-xs text-gray-500 flex justify-between items-center mt-2">
+                <span className="text-indigo-600 font-medium">Use Now</span>
                 <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 transition" />
               </div>
 
@@ -526,11 +621,18 @@ SELECT COUNT(*) as total FROM blogs
           <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
             Indian & Worldwide <span className="text-indigo-600">Pincode Search</span>
           </h2>
+          <p className="text-xs text-gray-500 mb-6">
+            ⭐ Trusted platform for accurate calculations & real-time tools
+          </p>
 
           {/* SUBTEXT */}
           <p className="text-gray-600 mb-6 text-sm md:text-base">
             Find accurate pincodes and postal codes instantly across India and worldwide.
           </p>
+          <p className="text-xs text-gray-500 mb-4">
+            🔍 Search from 1,50,000+ Indian pincodes database
+          </p>
+
 
           {/* BUTTON */}
           <Link
@@ -998,6 +1100,22 @@ SELECT COUNT(*) as total FROM blogs
 
         </div>
 
+      </section>
+
+      <section className="text-center py-16 bg-indigo-600 text-white rounded-2xl mt-10">
+        <h2 className="text-2xl font-bold mb-3">
+          Start Using Free Tools Today 🚀
+        </h2>
+        <p className="text-sm mb-6">
+          No signup required • Instant results • 100% free
+        </p>
+
+        <Link
+          href="/tools"
+          className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-medium hover:bg-gray-100"
+        >
+          Explore All Tools
+        </Link>
       </section>
 
     </main>
