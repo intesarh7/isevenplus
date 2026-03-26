@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import CreateWishClient from "./CreateWishClient";
 
 /* ================= BASE URL ================= */
@@ -60,5 +61,7 @@ export async function generateMetadata({ searchParams }: any) {
 
 /* ================= PAGE ================= */
 export default function Page() {
-  return <CreateWishClient />;
+  return <Suspense fallback={<div>Loading...</div>}>
+    <CreateWishClient />
+  </Suspense>;
 }
