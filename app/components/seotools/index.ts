@@ -32,6 +32,7 @@ import PageSizeChecker from "./PageSizeChecker";
 import RobotsTxtGenerator from "./RobotsTxtGenerator";
 import RobotsTxtTester from "./RobotsTxtTester";
 import SeoTitleGenerator from "./SeoTitleGenerator";
+import SSLChecker from "./SSLChecker";
 import TitleTagLengthChecker from "./TitleTagLengthChecker";
 import UrlEncoderDecoder from "./UrlEncoderDecoder";
 import UrlSlugGenerator from "./UrlSlugGenerator";
@@ -84,5 +85,6 @@ export const seoToolComponents: Record<string, any> = {
   "css-beautifier": CssBeautifier,
   "url-slug-generator": UrlSlugGenerator,
   "dns-lookup": DnsLookup,
+  "ssl-checker-tool": SSLChecker,
 
 };
