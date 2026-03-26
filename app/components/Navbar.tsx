@@ -19,6 +19,8 @@ export default function Navbar() {
     { name: "Pincode India", href: "/pincode" },
     { name: "Postal Codes Worldwide", href: "/postalcode" },
     { name: "Blogs", href: "/blogs" },
+    { name: "Events", href: "/events" },
+    
   ];
 
   return (
@@ -185,6 +187,13 @@ export default function Navbar() {
             className="text-lg text-white hover:text-indigo-600"
           >
             Blogs
+          </Link>
+          <Link
+            href="/events"
+            onClick={() => setIsOpen(false)}
+            className="text-lg text-white hover:text-indigo-600"
+          >
+            Events
           </Link>
 
           {/* Bookmark */}
