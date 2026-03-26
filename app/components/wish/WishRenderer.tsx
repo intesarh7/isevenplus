@@ -71,7 +71,7 @@ export default function WishRenderer({
 
   return (
     <>
-      <div className="flex flex-col items-center overflow-hidden relative">
+      <div className="flex flex-col items-center overflow-hidden  relative">
         {/* 🌸 EMOJI FLOWER BORDER */}
         <div className="absolute inset-0 pointer-events-none z-20">
 
