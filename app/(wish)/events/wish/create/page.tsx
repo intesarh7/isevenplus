@@ -61,7 +61,9 @@ export async function generateMetadata({ searchParams }: any) {
 
 /* ================= PAGE ================= */
 export default function Page() {
-  return <Suspense fallback={<div>Loading...</div>}>
-    <CreateWishClient />
-  </Suspense>;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CreateWishClient />
+    </Suspense>
+  );
 }
