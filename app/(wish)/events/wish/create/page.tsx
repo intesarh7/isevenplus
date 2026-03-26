@@ -1,3 +1,4 @@
+"use client";
 import CreateWishClient from "./CreateWishClient";
 
 /* ================= BASE URL ================= */
