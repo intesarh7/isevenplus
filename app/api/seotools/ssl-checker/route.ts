@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server"; 
 import tls from "tls";
 
 function extractHostname(input: string) {
@@ -13,7 +13,7 @@ function extractHostname(input: string) {
   }
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<Response> {
   try {
     const { domain } = await req.json();
 
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     const hostname = extractHostname(domain);
 
-    return new Promise((resolve) => {
+    return new Promise<Response>((resolve) => {
       const socket = tls.connect(
         {
           host: hostname,
