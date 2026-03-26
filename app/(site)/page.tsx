@@ -135,10 +135,10 @@ SELECT COUNT(*) as total FROM blogs
       {/* 1️⃣ HERO */}
       <section className="text-center pt-10 bg-white">
         <h1 className="text-2xl sm:text-3xl font-bold mb-4">
-          Free Online Calculators & SEO Tools (2026)<br></br> 100+ Smart Tools in One Place
+          All-in-One Free Calculator & SEO Tools<br></br> 100+ Smart Tools in One Place
         </h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          100% free tools - Save time and boost productivity with powerful calculators, SEO tools & smart utilities — all in one place.
+          Calculate Anything Instantly - No Signup Required - Save time and boost productivity with powerful calculators, SEO tools & smart utilities — all in one place.
         </p>
         <Link
           href="/tools"
