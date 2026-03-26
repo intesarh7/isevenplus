@@ -5,10 +5,8 @@ import { EVENTS } from "@/app/data/events";
 import * as htmlToImage from "html-to-image";
 import { Download } from "lucide-react";
 
-type EventKey = keyof typeof EVENTS;
-
 type Props = {
-  event: string; // ✅ FIX: string rakho
+  event: string;
   name: string;
   message: string;
   theme?: string;
@@ -21,8 +19,8 @@ export default function WishRenderer({
   theme,
 }: Props) {
 
-  // ✅ FIX: normalize event key
-  const normalizeEventKey = (val: string): EventKey => {
+  /* ✅ NORMALIZE EVENT KEY */
+  const normalizeEventKey = (val: string): keyof typeof EVENTS => {
     const key = val.toLowerCase().replace(/[^a-z]/g, "");
 
     const map: any = {
@@ -47,7 +45,7 @@ export default function WishRenderer({
 
   const eventData = EVENTS[safeEventKey];
 
-  // ✅ SAFETY FIRST
+  /* ✅ SAFETY */
   if (!eventData) {
     return (
       <div className="flex items-center justify-center h-screen text-red-500">
@@ -58,6 +56,7 @@ export default function WishRenderer({
 
   const emojis = eventData?.emojis || {};
 
+  /* ✅ RANDOM EMOJI */
   const randomEmoji = (arr: string[]) =>
     arr[Math.floor(Math.random() * arr.length)];
 
@@ -98,7 +97,11 @@ export default function WishRenderer({
       {/* 🌸 BORDER */}
       <div className="absolute inset-0 pointer-events-none z-20">
         {[...Array(12)].map((_, i) => (
-          <span key={i} className="absolute text-lg" style={{ top: 0, left: `${i * 8}%` }}>
+          <span
+            key={i}
+            className="absolute text-lg"
+            style={{ top: 0, left: `${i * 8}%` }}
+          >
             🌸
           </span>
         ))}
@@ -113,7 +116,7 @@ export default function WishRenderer({
 
             <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl px-10 py-12 text-center shadow-2xl">
 
-              {/* ✅ EMOJIS SAFE */}
+              {/* ✅ EMOJIS */}
               {emojis?.topLeft && (
                 <div className={`absolute top-2 left-2 ${animationClass}`}>
                   {emojis.topLeft}
