@@ -1,14 +1,21 @@
 import BacklinkChecker from "./BacklinkChecker";
 import BrokenLinksFinder from "./BrokenLinksFinder";
 import CanonicalTagChecker from "./CanonicalTagChecker";
+import CssBeautifier from "./CssBeautifier";
+import CssMinifier from "./CssMinifier";
+import DnsLookup from "./DnsLookup";
 import DomainAuthorityChecker from "./DomainAuthorityChecker";
 import ExternalLinksChecker from "./ExternalLinksChecker";
 import GoogleIndexChecker from "./GoogleIndexChecker";
 import HeadingTagChecker from "./HeadingTagChecker";
+import HtmlBeautifier from "./HtmlBeautifier";
+import HtmlMinifier from "./HtmlMinifier";
 import HttpStatusCodeChecker from "./HttpStatusCodeChecker";
 import ImageAltTagChecker from "./ImageAltTagChecker";
 import ImageSitemapGenerator from "./ImageSitemapGenerator";
 import InternalLinksChecker from "./InternalLinksChecker";
+import JsBeautifier from "./JsBeautifier";
+import JsMinifier from "./JsMinifier";
 import KeywordDensityChecker from "./KeywordDensityChecker";
 import KeywordDifficultyChecker from "./KeywordDifficultyChecker";
 import KeywordPositionChecker from "./KeywordPositionChecker";
@@ -27,6 +34,7 @@ import RobotsTxtTester from "./RobotsTxtTester";
 import SeoTitleGenerator from "./SeoTitleGenerator";
 import TitleTagLengthChecker from "./TitleTagLengthChecker";
 import UrlEncoderDecoder from "./UrlEncoderDecoder";
+import UrlSlugGenerator from "./UrlSlugGenerator";
 import VideoSitemapGenerator from "./VideoSitemapGenerator";
 import WebsiteLinkCountChecker from "./WebsiteLinkCountChecker";
 import WebsiteScreenshotGenerator from "./WebsiteScreenshotGenerator";
@@ -68,5 +76,13 @@ export const seoToolComponents: Record<string, any> = {
   "website-link-count-checker": WebsiteLinkCountChecker,
   "word-counter-tool": WordCounterTool,
   "seo-title-generator": SeoTitleGenerator,
+  "html-minifier": HtmlMinifier,
+  "html-beautifier": HtmlBeautifier,
+  "js-minifier": JsMinifier,
+  "js-beautifier": JsBeautifier,
+  "css-minifier": CssMinifier,
+  "css-beautifier": CssBeautifier,
+  "url-slug-generator": UrlSlugGenerator,
+  "dns-lookup": DnsLookup,
 
 };
