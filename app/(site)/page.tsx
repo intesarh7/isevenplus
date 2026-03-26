@@ -24,7 +24,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Free Online Calculators & SEO Tools - Fast, Accurate & Easy (2026)",
   description:
-    "Use 100+ free tools including SEO tools, calculators & business utilities. Get instant results, improve productivity & save time. 100% free platform.",
+    "Use 100+ free calculators for SEO, finance, delivery & more. Fast results, no signup required. 100% free platform.",
 };
 
 export default async function HomePage() {
