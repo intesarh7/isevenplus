@@ -19,7 +19,7 @@ export default function CreateWish() {
     const [message, setMessage] = useState("");
     const [theme, setTheme] = useState("");
     const [loading, setLoading] = useState(false);
-const eventData = EVENTS[event];
+    const eventData = EVENTS[event];
     const themes = eventData.themes ?? [];
     // ✅ safe images
 
@@ -47,7 +47,7 @@ const eventData = EVENTS[event];
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    event,
+                    event: eventData.name, // ✅ yahi fix hai
                     name,
                     message,
                     theme,
@@ -56,12 +56,12 @@ const eventData = EVENTS[event];
 
             const data = await res.json();
 
-            if (data.success && data.id) {
+            if (data.success && data.slug) {
                 // ✅ FIX 3 + FIX 4 (yaha hona chahiye tha)
-                const url = `${window.location.origin}/events/wish/${data.id}`;
+                const url = `${window.location.origin}/events/wish/${data.slug}`;
                 setShareUrl(url);
 
-                router.push(`/events/wish/${data.id}`);
+                router.push(`/events/wish/${data.slug}`);
             } else {
                 alert("Something went wrong");
             }

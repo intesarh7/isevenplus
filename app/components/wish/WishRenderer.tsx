@@ -1,4 +1,4 @@
-"use client"; // ✅ FIX 1 (VERY IMPORTANT)
+"use client";
 
 import ThemeWrapper from "./ThemeWrapper";
 import { EVENTS } from "@/app/data/events";
@@ -8,7 +8,7 @@ import { Download } from "lucide-react";
 type EventKey = keyof typeof EVENTS;
 
 type Props = {
-  event: EventKey;
+  event: string; // ✅ FIX: string rakho
   name: string;
   message: string;
   theme?: string;
@@ -21,14 +21,33 @@ export default function WishRenderer({
   theme,
 }: Props) {
 
-  const eventData = EVENTS[event];
-  // ✅ safe images
-  const emojis = eventData.emojis || {};
+  // ✅ FIX: normalize event key
+  const normalizeEventKey = (val: string): EventKey => {
+    const key = val.toLowerCase().replace(/[^a-z]/g, "");
 
-  const randomEmoji = (arr: string[]) =>
-    arr[Math.floor(Math.random() * arr.length)];
+    const map: any = {
+      teachersday: "teachers",
+      mothersday: "mothers",
+      fathersday: "fathers",
+      independence: "independence",
+      republic: "republic",
+      diwali: "diwali",
+      holi: "holi",
+      eid: "eid",
+      birthday: "birthday",
+      christmas: "christmas",
+      newyear: "newyear",
+      valentine: "valentine",
+    };
 
-  // ✅ safety (pehle check karo)
+    return map[key] || "diwali"; // fallback
+  };
+
+  const safeEventKey = normalizeEventKey(event);
+
+  const eventData = EVENTS[safeEventKey];
+
+  // ✅ SAFETY FIRST
   if (!eventData) {
     return (
       <div className="flex items-center justify-center h-screen text-red-500">
@@ -37,6 +56,10 @@ export default function WishRenderer({
     );
   }
 
+  const emojis = eventData?.emojis || {};
+
+  const randomEmoji = (arr: string[]) =>
+    arr[Math.floor(Math.random() * arr.length)];
 
   /* ✅ DOWNLOAD IMAGE */
   const downloadImage = async () => {
@@ -55,7 +78,7 @@ export default function WishRenderer({
     }
   };
 
-  /* ✅ ANIMATION ENGINE */
+  /* ✅ ANIMATION */
   const getAnimationClass = (type?: string) => {
     switch (type) {
       case "bounce": return "animate-bounce";
@@ -70,134 +93,81 @@ export default function WishRenderer({
   const animationClass = getAnimationClass(eventData.animation);
 
   return (
-    <>
-      <div className="flex flex-col items-center overflow-hidden  relative">
-        {/* 🌸 EMOJI FLOWER BORDER */}
-        <div className="absolute inset-0 pointer-events-none z-20">
+    <div className="flex flex-col items-center overflow-hidden relative">
 
-          {[...Array(12)].map((_, i) => (
-            <span
-              key={"top" + i}
-              className="absolute text-lg animate-pulse"
-              style={{ top: 0, left: `${i * 8}%` }}
-            >
-              🌸
-            </span>
-          ))}
+      {/* 🌸 BORDER */}
+      <div className="absolute inset-0 pointer-events-none z-20">
+        {[...Array(12)].map((_, i) => (
+          <span key={i} className="absolute text-lg" style={{ top: 0, left: `${i * 8}%` }}>
+            🌸
+          </span>
+        ))}
+      </div>
 
-          {[...Array(12)].map((_, i) => (
-            <span
-              key={"bottom" + i}
-              className="absolute text-lg animate-pulse"
-              style={{ bottom: 0, left: `${i * 8}%` }}
-            >
-              🌼
-            </span>
-          ))}
+      {/* 🎯 CARD */}
+      <div id="wish-card" className="relative w-full">
 
-        </div>
+        <ThemeWrapper theme={theme || eventData.defaultTheme}>
 
-        {/* 🌿 CORNER FLOWERS */}
-        <div className="absolute -top-1 -left-1 text-2xl animate-bounce z-20">🌺</div>
-        <div className="absolute -top-1 -right-1 text-2xl animate-bounce z-20">🌼</div>
-        <div className="absolute -bottom-1 -left-1 text-2xl animate-bounce z-20">🌸</div>
-        <div className="absolute -bottom-1 -right-1 text-2xl animate-bounce z-20">🌻</div>
+          <div className="relative flex items-center justify-center">
 
-        <div className="absolute inset-0 rounded-3xl p-0.5 bg-linear-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-80"></div>
-        {/* 🎯 CARD */}
-        <div id="wish-card" className="relative overflow-hidden w-full">
+            <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl px-10 py-12 text-center shadow-2xl">
 
-          <ThemeWrapper theme={theme || eventData.defaultTheme}>
-
-            <div className="relative flex items-center justify-center">
-
-              {/* ✨ GLOW BORDER */}
-              <div className="absolute inset-0 rounded-3xl p-0.5 bg-linear-to-r from-pink-500 via-purple-500 to-indigo-500 blur opacity-70"></div>
-
-              {/* 🎨 CARD */}
-              <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl px-10 py-12 text-center shadow-2xl overflow-hidden">
-
-                {/* 🎉 IMAGES */}
-
-                {/* 🎉 TOP LEFT */}
-                {emojis.topLeft && (
-                  <div className={`absolute top-2 left-2 text-2xl ${animationClass}`}>
-                    {emojis.topLeft}
-                  </div>
-                )}
-
-                {/* 🎈 TOP RIGHT */}
-                {emojis.topRight && (
-                  <div className={`absolute top-2 right-2 text-2xl ${animationClass}`}>
-                    {emojis.topRight}
-                  </div>
-                )}
-
-                {/* 🎂 BOTTOM LEFT */}
-                {emojis.bottomLeft && (
-                  <div className={`absolute bottom-2 left-2 text-2xl ${animationClass}`}>
-                    {emojis.bottomLeft}
-                  </div>
-                )}
-
-                {/* ⭐ BOTTOM RIGHT */}
-                {emojis.bottomRight && (
-                  <div className={`absolute bottom-2 right-2 text-2xl ${animationClass}`}>
-                    {emojis.bottomRight}
-                  </div>
-                )}
-
-                {/* ✨ CONTENT */}
-                <div className="space-y-4 relative z-10">
-
-                  <h1 className="text-2xl font-bold text-white drop-shadow">
-                    {eventData.title}
-                  </h1>
-
-                  <p className="text-lg text-white/90">
-                    🎉 {name} ki taraf se special message:
-                  </p>
-
-                  <p className="italic text-xl text-white">
-                    "{message}"
-                  </p>
-
-                  <p className="text-sm text-white/70 mt-4">
-                    👉 Created By - isevenplus.com
-                  </p>
-
+              {/* ✅ EMOJIS SAFE */}
+              {emojis?.topLeft && (
+                <div className={`absolute top-2 left-2 ${animationClass}`}>
+                  {emojis.topLeft}
                 </div>
+              )}
 
+              {emojis?.topRight && (
+                <div className={`absolute top-2 right-2 ${animationClass}`}>
+                  {emojis.topRight}
+                </div>
+              )}
+
+              {emojis?.bottomLeft && (
+                <div className={`absolute bottom-2 left-2 ${animationClass}`}>
+                  {emojis.bottomLeft}
+                </div>
+              )}
+
+              {emojis?.bottomRight && (
+                <div className={`absolute bottom-2 right-2 ${animationClass}`}>
+                  {emojis.bottomRight}
+                </div>
+              )}
+
+              {/* CONTENT */}
+              <div className="space-y-4">
+                <h1 className="text-2xl font-bold text-white">
+                  {eventData.title}
+                </h1>
+
+                <p className="text-lg text-white/90">
+                  🎉 {name} ki taraf se special message:
+                </p>
+
+                <p className="italic text-xl text-white">
+                  "{message}"
+                </p>
               </div>
 
             </div>
 
-          </ThemeWrapper>
-          <div className="absolute inset-0 pointer-events-none">
-            {[...Array(10)].map((_, i) => (
-              <span
-                key={i}
-                className="absolute animate-bounce text-xl"
-                style={{
-                  top: Math.random() * 100 + "%",
-                  left: Math.random() * 100 + "%",
-                }}
-              >
-                {emojis.topLeft || "✨"}
-              </span>
-            ))}
           </div>
-        </div>
 
-        {/* 📸 DOWNLOAD BUTTON */}
-        <button
-          onClick={downloadImage}
-          className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg absolute bottom-28 flex items-center gap-2 shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer"
-        >
-          <Download size={18} />
-        </button>
-
+        </ThemeWrapper>
       </div>
-    </>
+
+      {/* DOWNLOAD */}
+      <button
+        onClick={downloadImage}
+        className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg"
+      >
+        <Download size={18} />
+      </button>
+
+    </div>
   );
 }
