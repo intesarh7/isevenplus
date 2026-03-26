@@ -92,7 +92,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     const location = locationParts.join(", ");
 
     return {
-        title: `${decoded} Postal Code – ${location}, ${formattedCountry} (Location, Map & Nearby Codes)`,
+        title: `${decoded} Postal Code - ${location}, ${formattedCountry} (Location, Map & Nearby Codes)`,
 
         description: `Find complete details of ${decoded} postal code in ${location}, ${formattedCountry}. Check location, map, nearby postal codes, coordinates, and area insights with accurate and updated information.`,
 
