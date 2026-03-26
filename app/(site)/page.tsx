@@ -22,7 +22,7 @@ import PincodeTabs from "../components/PincodeTabs";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "100+ Free Online Calculators & SEO Tools (2026) - Fast & Accurate",
+  title: "Free Online Calculators & SEO Tools - Fast, Accurate & Easy (2026)",
   description:
     "Use 100+ free tools including SEO tools, calculators & business utilities. Get instant results, improve productivity & save time. 100% free platform.",
 };
