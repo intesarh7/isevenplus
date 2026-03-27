@@ -13,8 +13,9 @@ import {
     ChevronDown,
     HelpCircle
 } from "lucide-react";
- import WorldSearch from "@/app/components/WorldSearch";
+import WorldSearch from "@/app/components/WorldSearch";
 import { Metadata } from "next";
+import ContinentFilterGrid from "@/app/components/ContinentFilterGrid";
 export const dynamic = "force-dynamic";
 /* ================================
    CACHE
@@ -32,6 +33,56 @@ function slugify(text: string) {
         .trim()
         .replace(/\s+/g, "-");
 }
+
+/* ================================
+   🌍 CONTINENT MAPPING
+================================ */
+const continentMap: Record<string, string> = {
+    // North America & Caribbean
+    US: "North America & Caribbean",
+    CA: "North America & Caribbean",
+    MX: "North America & Caribbean",
+    JM: "North America & Caribbean",
+    CU: "North America & Caribbean",
+
+    // South America
+    BR: "South America",
+    AR: "South America",
+    CL: "South America",
+    CO: "South America",
+    PE: "South America",
+
+    // Europe
+    GB: "Europa",
+    DE: "Europa",
+    FR: "Europa",
+    IT: "Europa",
+    ES: "Europa",
+    NL: "Europa",
+    SE: "Europa",
+    CH: "Europa",
+
+    // Asia
+    IN: "Asia",
+    CN: "Asia",
+    JP: "Asia",
+    PK: "Asia",
+    BD: "Asia",
+    AE: "Asia",
+    SG: "Asia",
+
+    // Oceania
+    AU: "Oceania",
+    NZ: "Oceania",
+    FJ: "Oceania",
+
+    // Africa
+    ZA: "Africa",
+    NG: "Africa",
+    EG: "Africa",
+    KE: "Africa",
+    TZ: "Africa",
+};
 /* ================================
    🔥 SEO METADATA (FULL)
 ================================ */
@@ -81,6 +132,8 @@ export async function generateMetadata(): Promise<Metadata> {
 ================================ */
 export default async function PostalHomePage() {
 
+
+
     /* ================================
        FAST + PARALLEL QUERIES ⚡
     ================================= */
@@ -91,6 +144,7 @@ export default async function PostalHomePage() {
         [stateData],
         [popularData]
     ]: any = await Promise.all([
+
 
         // COUNTRIES
         db.query(`
@@ -125,8 +179,21 @@ export default async function PostalHomePage() {
       WHERE place_name != '' AND place_name IS NOT NULL
       LIMIT 10
     `)
-
     ]);
+    /* ================================
+       🌍 GROUP BY CONTINENT
+    ================================ */
+    const groupedCountries: Record<string, any[]> = {};
+
+    countryData.forEach((c: any) => {
+        const continent = continentMap[c.country_code] || "Other";
+
+        if (!groupedCountries[continent]) {
+            groupedCountries[continent] = [];
+        }
+
+        groupedCountries[continent].push(c);
+    });
 
     return (
         <div className="mx-auto py-10 px-4">
@@ -157,29 +224,51 @@ export default async function PostalHomePage() {
                 <WorldSearch />
             </div>
 
-            {/* COUNTRY GRID */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {countryData.map((c: any) => (
-                    <Link
-                        key={c.country_code}
-                        href={`/postalcode/${slugify(c.country_code)}`}
-                        className="group border rounded-2xl p-4 hover:shadow-md transition bg-white"
-                    >
-                        <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2 font-semibold text-lg text-gray-800">
-                                <Globe size={18} className="text-indigo-500" />
-                                {c.country_code}
-                            </div>
+            {/* ================= CONTINENT FILTER GRID ================= */}
+            <div className="mt-12">
+                <h2 className="text-2xl font-bold mb-4">
+                    Filter by Continent
+                </h2>
 
-                            <ChevronRight size={16} className="text-gray-400 group-hover:translate-x-1 transition" />
-                        </div>
-
-                        <p className="text-sm text-gray-500">
-                            {c.total} Postal Codes
-                        </p>
-                    </Link>
-                ))}
+                <ContinentFilterGrid countryData={countryData} />
             </div>
+
+            {/* COUNTRY GRID */}
+            {/*
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {countryData.map((c: any) => {
+
+                const continent = continentMap[c.country_code] || "Other";
+
+                return (
+                <Link
+                    key={c.country_code}
+                    href={`/postalcode/${slugify(c.country_code)}`}
+                    className="group border rounded-2xl p-4 hover:shadow-md transition bg-white"
+                >
+                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2 font-semibold text-lg text-gray-800">
+                        <Globe size={18} className="text-indigo-500" />
+                        {c.country_code}
+                    </div>
+
+                    <ChevronRight size={16} className="text-gray-400 group-hover:translate-x-1 transition" />
+                    </div>
+
+                    <p className="text-xs text-indigo-600 font-medium mb-1">
+                    🌍 {continent}
+                    </p>
+
+                    <p className="text-sm text-gray-500">
+                    {c.total} Postal Codes
+                    </p>
+                </Link>
+                );
+            })}
+            </div>
+            */}
+
+
 
             {/* 🔥 POPULAR SEARCHES */}
             <div className="mt-12">
