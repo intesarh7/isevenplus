@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Calculator, RotateCcw, FlaskConical } from "lucide-react";
+import { Calculator, RotateCcw, FlaskConical, PieChart, BadgeIndianRupee, TrendingUp, BarChart3, HelpCircle, Tag, Zap, CheckCircle, Percent, Receipt, IndianRupee } from "lucide-react";
 import CalculatorLayout from "../personalplanning/CalculatorLayout";
 
 export default function GSTCalculator() {
@@ -130,22 +130,45 @@ export default function GSTCalculator() {
 
         {gstAmount !== null && (
 
-          <div className="bg-gray-50 border rounded-xl p-6 space-y-3 text-lg">
+          <div className="bg-white border rounded-2xl shadow-md overflow-hidden">
 
-            <div className="flex justify-between">
-              <span>GST Amount</span>
-              <span className="font-semibold text-indigo-600">
-                ₹ {gstAmount.toFixed(2)}
-              </span>
+            {/* Header */}
+            <div className="bg-linear-to-r from-indigo-500 to-indigo-600 text-white px-5 py-3 flex items-center gap-2">
+              <Receipt size={18} />
+              <span className="font-semibold">GST Calculation Result</span>
             </div>
 
-            <div className="flex justify-between">
-              <span>
-                {mode === "add" ? "Total Price (Including GST)" : "Price Without GST"}
-              </span>
-              <span className="font-semibold">
-                ₹ {total?.toFixed(2)}
-              </span>
+            {/* Content */}
+            <div className="p-5 space-y-4">
+
+              {/* GST Amount */}
+              <div className="flex items-center justify-between bg-indigo-50 p-4 rounded-xl">
+                <div className="flex items-center gap-2 text-gray-700">
+                  <IndianRupee size={18} className="text-indigo-600" />
+                  <span className="font-medium">GST Amount</span>
+                </div>
+
+                <span className="text-lg font-bold text-indigo-600">
+                  ₹ {gstAmount.toFixed(2)}
+                </span>
+              </div>
+
+              {/* Total */}
+              <div className="flex items-center justify-between bg-green-50 p-4 rounded-xl">
+                <div className="flex items-center gap-2 text-gray-700">
+                  <TrendingUp size={18} className="text-green-600" />
+                  <span className="font-medium">
+                    {mode === "add"
+                      ? "Total Price (Including GST)"
+                      : "Price Without GST"}
+                  </span>
+                </div>
+
+                <span className="text-lg font-bold text-green-600">
+                  ₹ {total?.toFixed(2)}
+                </span>
+              </div>
+
             </div>
 
           </div>
@@ -155,71 +178,205 @@ export default function GSTCalculator() {
 
         {/* SEO CONTENT */}
 
-        <div className="mt-10 space-y-6 text-gray-700 leading-relaxed">
+        <div className="mx-auto mt-10 space-y-10">
 
-          <h2 className="text-2xl font-semibold">
-            GST Calculator – Calculate GST Amount Instantly
-          </h2>
+          {/* TOP CTA STRIP */}
+          <section className="bg-linear-to-r from-indigo-50 to-blue-50 p-6 rounded-2xl border shadow-sm">
+            <div className="grid sm:grid-cols-3 gap-4 text-sm font-medium">
 
-          <p>
-            The GST Calculator is a simple online tool that helps you calculate the Goods and Services Tax (GST) on any amount. In India, GST is applied on most goods and services at different tax rates such as 5%, 12%, 18%, and 28%. With this calculator, you can easily determine the GST amount and the final price including or excluding GST.
-          </p>
+              <div className="flex items-center gap-2 text-indigo-700">
+                <Zap size={18} />
+                Calculate GST in 1 click (5%, 12%, 18%, 28%)
+              </div>
 
-          <p>
-            This tool is useful for business owners, freelancers, shopkeepers, and consumers who want to quickly calculate GST without doing manual calculations. By entering the amount and selecting the GST rate, the calculator instantly shows the GST amount and the total payable value.
-          </p>
+              <div className="flex items-center gap-2 text-green-700">
+                <CheckCircle size={18} />
+                100% Free GST Tool – No Login Required
+              </div>
 
-          <h3 className="text-xl font-semibold">
-            How to Use the GST Calculator
-          </h3>
+              <div className="flex items-center gap-2 text-blue-700">
+                <BarChart3 size={18} />
+                Accurate GST Amount & Final Price Instantly
+              </div>
 
-          <ul className="list-disc pl-6 space-y-2">
+            </div>
+          </section>
 
-            <li>Enter the original amount of the product or service.</li>
+          {/* ABOUT */}
+          <section className="bg-white p-6 rounded-2xl shadow border">
+            <h2 className="text-2xl font-bold flex items-center gap-2 mb-4">
+              <Calculator className="text-indigo-600" />
+              About GST Calculator India
+            </h2>
 
-            <li>Select the GST rate (5%, 12%, 18%, or 28%).</li>
+            <p className="text-gray-700 leading-relaxed">
+              GST Calculator ek powerful online tool hai jo India me GST (Goods and Services Tax) calculate karne ke liye use hota hai. Ye tool aapko quickly aur accurately GST amount, final price, aur tax breakdown calculate karne me help karta hai.
+            </p>
 
-            <li>Choose whether you want to add GST or remove GST.</li>
+            <p className="text-gray-700 mt-3 leading-relaxed">
+              Chahe aap business owner ho, seller ho, ya customer — ye calculator aapko GST add karne aur remove karne dono ka option deta hai. Isse aap apni pricing strategy aur billing ko better bana sakte ho.
+            </p>
 
-            <li>Click the Calculate GST button to see the result.</li>
+            <p className="text-gray-700 mt-3 leading-relaxed">
+              India me GST system multiple tax slabs me divided hai jaise 5%, 12%, 18% aur 28%. Ye calculator sabhi slabs ke liye kaam karta hai aur instantly result deta hai.
+            </p>
+          </section>
 
-          </ul>
+          {/* WHAT IS GST */}
+          <section className="bg-white p-6 rounded-2xl shadow border">
+            <h2 className="text-2xl font-bold flex items-center gap-2 mb-4">
+              <Percent className="text-green-600" />
+              What is GST (Goods and Services Tax)?
+            </h2>
 
-          <h3 className="text-xl font-semibold">
-            Example GST Calculation
-          </h3>
+            <p className="text-gray-700 leading-relaxed">
+              GST (Goods and Services Tax) ek indirect tax system hai jo India me 2017 me implement kiya gaya tha. Iska main goal tha multiple taxes ko replace karna aur ek unified tax system banana.
+            </p>
 
-          <p>
-            Suppose the product price is ₹1000 and the GST rate is 18%.
-          </p>
+            <p className="text-gray-700 mt-3 leading-relaxed">
+              GST ke andar alag-alag types hote hain:
+            </p>
 
-          <ul className="list-disc pl-6 space-y-2">
+            <ul className="list-disc pl-5 mt-3 text-gray-700 space-y-1">
+              <li>CGST (Central GST)</li>
+              <li>SGST (State GST)</li>
+              <li>IGST (Integrated GST)</li>
+            </ul>
 
-            <li>GST Amount = ₹180</li>
+            <p className="text-gray-700 mt-3 leading-relaxed">
+              Ye taxes goods aur services ke supply par lagte hain aur har transaction me applicable hote hain.
+            </p>
+          </section>
 
-            <li>Total Price Including GST = ₹1180</li>
+          {/* HOW GST CALCULATOR WORKS */}
+          <section className="bg-white p-6 rounded-2xl shadow border">
+            <h2 className="text-2xl font-bold flex items-center gap-2 mb-4">
+              <PieChart className="text-purple-600" />
+              How GST Calculator Works
+            </h2>
 
-          </ul>
+            <p className="text-gray-700 leading-relaxed">
+              GST calculator do tarah se kaam karta hai:
+            </p>
 
-          <h3 className="text-xl font-semibold">
-            Benefits of Using a GST Calculator
-          </h3>
+            <ul className="list-disc pl-5 mt-3 text-gray-700 space-y-2">
+              <li>GST Add karna (Net price → Final price)</li>
+              <li>GST Remove karna (Final price → Base price)</li>
+            </ul>
 
-          <ul className="list-disc pl-6 space-y-2">
+            <div className="mt-5 bg-gray-50 p-4 rounded-xl text-gray-700 text-sm">
+              <p className="font-semibold mb-2">Formula:</p>
+              <p>GST Amount = (Original Price × GST%) / 100</p>
+              <p>Total Price = Original Price + GST</p>
+            </div>
+          </section>
 
-            <li>Instant GST calculation</li>
+          {/* GST SLABS */}
+          <section className="bg-white p-6 rounded-2xl shadow border">
+            <h2 className="text-2xl font-bold flex items-center gap-2 mb-4">
+              <BadgeIndianRupee className="text-yellow-600" />
+              GST Slabs in India
+            </h2>
 
-            <li>Accurate tax estimation</li>
+            <ul className="list-disc pl-5 text-gray-700 space-y-2">
+              <li>5% GST - Essential items</li>
+              <li>12% GST - Processed food items</li>
+              <li>18% GST - Most goods & services</li>
+              <li>28% GST - Luxury items</li>
+            </ul>
+          </section>
 
-            <li>Saves time and effort</li>
+          {/* BENEFITS */}
+          <section className="bg-white p-6 rounded-2xl shadow border">
+            <h2 className="text-2xl font-bold flex items-center gap-2 mb-4">
+              <TrendingUp className="text-indigo-600" />
+              Benefits of Using GST Calculator
+            </h2>
 
-            <li>Useful for business invoices</li>
+            <ul className="list-disc pl-5 text-gray-700 space-y-2">
+              <li>Instant GST calculation</li>
+              <li>Accurate pricing</li>
+              <li>Time-saving tool</li>
+              <li>Useful for billing & invoicing</li>
+              <li>No manual errors</li>
+            </ul>
+          </section>
 
-          </ul>
+          {/* USE CASES */}
+          <section className="bg-white p-6 rounded-2xl shadow border">
+            <h2 className="text-2xl font-bold flex items-center gap-2 mb-4">
+              <BarChart3 className="text-indigo-600" />
+              Who Can Use This GST Calculator?
+            </h2>
 
-          <p>
-            Using a GST Calculator makes it easy to understand how GST affects the price of goods and services. It helps businesses maintain accurate tax records and helps customers know the exact tax amount they are paying.
-          </p>
+            <ul className="list-disc pl-5 text-gray-700 space-y-2">
+              <li>Business owners</li>
+              <li>E-commerce sellers</li>
+              <li>Freelancers</li>
+              <li>Accountants</li>
+              <li>General consumers</li>
+            </ul>
+          </section>
+
+          {/* FAQ */}
+          <section className="bg-white p-6 rounded-2xl shadow border">
+            <h2 className="text-2xl font-bold flex items-center gap-2 mb-6">
+              <HelpCircle className="text-indigo-600" />
+              Frequently Asked Questions
+            </h2>
+
+            <div className="space-y-4">
+              {[
+                {
+                  q: "How to calculate GST?",
+                  a: "Multiply the price with GST rate and divide by 100."
+                },
+                {
+                  q: "What are GST slabs?",
+                  a: "5%, 12%, 18%, and 28% are standard GST rates in India."
+                },
+                {
+                  q: "Is this GST calculator free?",
+                  a: "Yes, it is completely free and easy to use."
+                },
+                {
+                  q: "Can I remove GST using this tool?",
+                  a: "Yes, you can both add and remove GST."
+                }
+              ].map((faq, i) => (
+                <div key={i} className="border rounded-xl p-4">
+                  <h3 className="font-semibold">{faq.q}</h3>
+                  <p className="text-gray-600 mt-1">{faq.a}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* TAGS */}
+          <section className="bg-white p-6 rounded-2xl shadow border">
+            <h2 className="text-2xl font-bold flex items-center gap-2 mb-4">
+              <Tag className="text-indigo-600" />
+              Related Keywords
+            </h2>
+
+            <div className="flex flex-wrap gap-2">
+              {[
+                "gst calculator india",
+                "gst calculate online",
+                "add gst calculator",
+                "remove gst calculator",
+                "gst tax calculator india",
+                "gst price calculator"
+              ].map((tag, i) => (
+                <span
+                  key={i}
+                  className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-sm"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </section>
 
         </div>
 
