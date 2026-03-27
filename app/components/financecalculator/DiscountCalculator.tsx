@@ -110,7 +110,10 @@ export default function DiscountCalculator() {
           {/* Header */}
           <div className="bg-linear-to-r from-green-500 to-emerald-600 text-white px-5 py-3 flex items-center gap-2">
             <Tag size={18} />
-            <span className="font-semibold">Discount Result</span>
+            <span className="font-semibold">Discount Result With </span>
+            <span className="text-sm text-white">
+              ({((discountAmount / (finalPrice + discountAmount)) * 100).toFixed(1)}% OFF)
+            </span>
           </div>
 
           {/* Content */}
