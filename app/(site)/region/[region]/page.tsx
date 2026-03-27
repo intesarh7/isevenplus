@@ -29,7 +29,7 @@ export async function generateMetadata({
     const canonical = `${baseUrl}/region/${params.region}/`;
 
     return {
-        title: `${regionName} Region Pincode List - Postal Codes & Post Offices | iSevenPlus`,
+        title: `${regionName} Region Pincode List - Postal Codes & Post Offices`,
 
         description: `Find all pincodes in the ${regionName} postal region of India. Browse district-wise post office lists, branch types and delivery status.`,
 

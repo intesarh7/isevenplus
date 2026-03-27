@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Home, Search } from "lucide-react";
 
 export const metadata = {
-  title: "404 - Page Not Found | iSevenPlus",
+  title: "404 - Page Not Found",
   description: "The requested page could not be found on iSevenPlus.",
 };
 

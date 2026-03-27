@@ -37,7 +37,7 @@ export default function RootLayout({
         <meta name="google-adsense-account" content="ca-pub-5131122927046742" />
 
         {/* ✅ Google Analytics Script */}
-        {/* <Script
+         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-TF1NBTNYH0"
           strategy="afterInteractive"
         />
@@ -48,7 +48,7 @@ export default function RootLayout({
             gtag('js', new Date());
             gtag('config', 'G-TF1NBTNYH0');
           `}
-        </Script> */}
+        </Script> 
       </head>
 
       <body className={inter.className}>{children}</body>

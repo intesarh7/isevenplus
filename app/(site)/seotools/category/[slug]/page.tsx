@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: any) {
 
     return {
 
-        title: `${category.name} Tools | Free SEO Tools | iSevenPlus`,
+        title: `${category.name} Tools | Free SEO Tools`,
 
         description:
             category.description ||

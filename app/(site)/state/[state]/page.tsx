@@ -38,7 +38,7 @@ export async function generateMetadata({
   const canonical = `${baseUrl}/state/${state}/`;
 
   return {
-    title: `${stateName} Pincode List (${year}) - District Wise Post Offices & ZIP Codes | iSevenPlus`,
+    title: `${stateName} Pincode List (${year}) - District Wise Post Offices & ZIP Codes`,
 
     description: `Find the complete ${stateName} pincode list with district wise post offices, delivery status, branch types and postal codes in India. Updated postal database on iSevenPlus.`,
 

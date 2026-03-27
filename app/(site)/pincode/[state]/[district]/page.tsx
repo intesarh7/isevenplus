@@ -23,7 +23,7 @@ const generateSlug = (text?: string) => {
 export async function generateMetadata({ params }: any) {
   const { state, district } = params;
 
-  const title = `${district} Pincode - ${state} (All Post Offices) | iSevenPlus`;
+  const title = `${district} Pincode - ${state} (All Post Offices)`;
 
   return {
     title,
