@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import pool from "@/app/lib/db";
 import { v4 as uuidv4 } from "uuid";
+export const dynamic = "force-dynamic";
 
 // ✅ slug generator
 function generateSlug(text: string) {
