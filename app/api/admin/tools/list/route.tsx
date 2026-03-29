@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import db from "@/app/lib/db";
-
+export const dynamic = "force-dynamic";
 // ✅ cache enable (IMPORTANT)
 export const revalidate = 60; // 1 minute cache
 
