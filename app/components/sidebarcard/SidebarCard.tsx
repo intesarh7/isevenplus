@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronRight, Flame } from "lucide-react";
 import { ReactNode } from "react";
 export const dynamic = "force-dynamic";
+
 interface SidebarCardProps {
   title: string;
   icon: ReactNode;
