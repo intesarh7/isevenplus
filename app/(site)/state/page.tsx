@@ -2,6 +2,7 @@ import PageHeader from "@/app/components/PageHeader";
 import PincodeAutoSuggest from "@/app/components/PincodeAutoSuggest";
 import db from "@/app/lib/db";
 import { RowDataPacket } from "mysql2";
+export const dynamic = "force-dynamic";
 
 export default async function StateListPage() {
 
