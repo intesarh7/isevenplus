@@ -1,154 +1,148 @@
-import { NextResponse } from "next/server";
-import * as cheerio from "cheerio";
+import { NextRequest, NextResponse } from "next/server";
+
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
+
+// 🔥 Normalize domain
 function normalizeDomain(input: string) {
-
-    let url = input.trim();
-
-    if (!url.startsWith("http")) {
-        url = "https://" + url;
-    }
-
-    return url.replace(/\/$/, "");
-
+  let url = input.trim();
+  if (!url.startsWith("http")) {
+    url = "https://" + url;
+  }
+  return url.replace(/\/$/, "");
 }
 
-/* GET INTERNAL LINKS */
+// 🔥 Safe fetch
+async function fetchHTML(url: string) {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      cache: "no-store",
+      redirect: "follow",
+    });
+    return await res.text();
+  } catch {
+    return "";
+  }
+}
 
+// 🔥 Crawl page (FIXED)
 async function crawlPage(url: string) {
+  try {
+    const html = await fetchHTML(url);
 
-    try {
+    // ❗ dynamic import (VERY IMPORTANT FIX)
+    const cheerio = await import("cheerio");
+    const $ = cheerio.load(html);
 
-        const res = await fetch(url, { cache: "no-store" });
+    const links = new Set<string>();
 
-        const html = await res.text();
+    $("a").each((_, el) => {
+      const href = $(el).attr("href");
+      if (!href) return;
 
-        const $ = cheerio.load(html);
-
-        const links = new Set<string>();
-
-        $("a").each((_, el) => {
-
-            const href = $(el).attr("href");
-
-            if (!href) return;
-
-            if (href.startsWith("/")) {
-                links.add(url + href);
-            }
-
-            if (href.startsWith(url)) {
-                links.add(href);
-            }
-
-        });
-
-        return [...links];
-
-    } catch {
-
-        return [];
-
-    }
-
-}
-
-/* PAGINATION DETECT */
-
-function detectPagination(urls: string[]) {
-
-    const pages: string[] = [];
-
-    urls.forEach(u => {
-
-        if (/page\/\d+/.test(u)) pages.push(u);
-
+      try {
+        if (href.startsWith("/")) {
+          links.add(url + href);
+        } else if (href.startsWith("http")) {
+          const parsed = new URL(href);
+          if (parsed.hostname === new URL(url).hostname) {
+            links.add(parsed.href);
+          }
+        }
+      } catch {}
     });
 
-    return pages;
-
+    return [...links];
+  } catch {
+    return [];
+  }
 }
 
-/* BLOG ARCHIVE DETECT */
+// 🔥 Pagination detect
+function detectPagination(urls: string[]) {
+  return urls.filter((u) => /page\/\d+/.test(u));
+}
 
+// 🔥 Blog detect
 function detectBlogArchive(urls: string[]) {
+  return urls.filter(
+    (u) =>
+      u.includes("/blog") ||
+      u.includes("/category") ||
+      u.includes("/tag")
+  );
+}
 
-    return urls.filter(u =>
-        u.includes("/blog") ||
-        u.includes("/category") ||
-        u.includes("/tag")
+// 🔥 Google index check (SAFE + LIMIT)
+async function checkIndexed(url: string) {
+  try {
+    const res = await fetch(
+      `https://www.google.com/search?q=site:${encodeURIComponent(url)}`,
+      {
+        headers: { "User-Agent": "Mozilla/5.0" },
+        cache: "no-store",
+      }
     );
 
+    const html = await res.text();
+    return html.includes(url);
+  } catch {
+    return false;
+  }
 }
 
-/* GOOGLE INDEX CHECK */
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { domain } = body;
 
-async function checkIndexed(url: string) {
-
-    try {
-
-        const res = await fetch(
-            `https://www.google.com/search?q=site:${encodeURIComponent(url)}`,
-            {
-                headers: { "User-Agent": "Mozilla/5.0" }
-            }
-        );
-
-        const html = await res.text();
-
-        return html.includes(url);
-
-    } catch {
-
-        return false;
-
+    if (!domain) {
+      return NextResponse.json(
+        { message: "Domain required" },
+        { status: 400 }
+      );
     }
-
-}
-
-export async function POST(req: Request) {
-
-    const { domain } = await req.json();
 
     const site = normalizeDomain(domain);
 
-    /* STEP 1 — CRAWL HOME */
-
+    // STEP 1
     const links = await crawlPage(site);
 
-    /* STEP 2 — PAGINATION */
-
+    // STEP 2
     const pagination = detectPagination(links);
 
-    /* STEP 3 — BLOG ARCHIVE */
-
+    // STEP 3
     const blog = detectBlogArchive(links);
 
     const allUrls = [...new Set([...links, ...pagination, ...blog])];
 
-    /* LIMIT */
+    // 🔥 SAFE LIMIT (VERY IMPORTANT)
+    const urls = allUrls.slice(0, 200);
 
-    const urls = allUrls.slice(0, 5000);
-
-    /* STEP 4 — FAST INDEX CHECK */
-
+    // STEP 4 (parallel but safe)
     const checks = await Promise.all(
-        urls.map(async (u) => ({
-            url: u,
-            indexed: await checkIndexed(u)
-        }))
+      urls.map(async (u) => ({
+        url: u,
+        indexed: await checkIndexed(u),
+      }))
     );
 
-    const indexed = checks.filter(r => r.indexed).length;
+    const indexed = checks.filter((r) => r.indexed).length;
 
     return NextResponse.json({
-
-        total: checks.length,
-        indexed,
-        notIndexed: checks.length - indexed,
-        urls: checks
-
+      total: checks.length,
+      indexed,
+      notIndexed: checks.length - indexed,
+      urls: checks,
     });
-
+  } catch (error) {
+    return NextResponse.json({
+      total: 0,
+      indexed: 0,
+      notIndexed: 0,
+      urls: [],
+      error: "Failed to process request",
+    });
+  }
 }
