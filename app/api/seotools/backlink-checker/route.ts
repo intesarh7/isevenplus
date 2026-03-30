@@ -1,37 +1,42 @@
-import { NextResponse } from "next/server";
-import axios from "axios";
-import * as cheerio from "cheerio";
+import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  let url = searchParams.get("url");
+// ❗ IMPORTANT: axios remove (SSR issue avoid)
+async function fetchHTML(url: string) {
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+    },
+    redirect: "follow",
+    cache: "no-store",
+  });
 
-  if (!url) {
-    return NextResponse.json({ message: "URL required" }, { status: 400 });
-  }
+  return await res.text();
+}
 
-  if (!url.startsWith("http")) {
-    url = "https://" + url;
-  }
-
+export async function GET(req: NextRequest) {
   try {
-    const response = await axios.get(url, {
-      timeout: 10000,
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
-        Accept: "text/html",
-      },
-      maxRedirects: 5,
-      validateStatus: () => true,
-    });
+    const { searchParams } = new URL(req.url);
+    let url = searchParams.get("url");
 
-    const html = response.data;
+    if (!url) {
+      return NextResponse.json(
+        { message: "URL required" },
+        { status: 400 }
+      );
+    }
 
-    if (!html || typeof html !== "string" || html.length < 1000) {
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
+
+    const html = await fetchHTML(url);
+
+    // ❗ Safety check
+    if (!html || html.length < 100) {
       return NextResponse.json({
         links: [],
         stats: { total: 0, dofollow: 0, nofollow: 0, domains: 0 },
@@ -39,6 +44,8 @@ export async function GET(req: Request) {
       });
     }
 
+    // ❗ dynamic import (IMPORTANT FIX)
+    const cheerio = await import("cheerio");
     const $ = cheerio.load(html);
 
     const links: any[] = [];
@@ -77,7 +84,7 @@ export async function GET(req: Request) {
       } catch {}
     });
 
-    // 🚀 Remove duplicates (IMPORTANT)
+    // remove duplicates
     const uniqueLinks = Array.from(
       new Map(links.map((l) => [l.source, l])).values()
     );
@@ -94,13 +101,12 @@ export async function GET(req: Request) {
       stats,
       blocked: false,
     });
-
-  } catch (err: any) {
+  } catch (error) {
     return NextResponse.json({
       links: [],
       stats: { total: 0, dofollow: 0, nofollow: 0, domains: 0 },
       blocked: true,
-      message: "Website blocked or failed to fetch",
+      message: "Failed to fetch or parse website",
     });
   }
 }
