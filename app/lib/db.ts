@@ -14,7 +14,7 @@ const pool =
     port: Number(process.env.DB_PORT) || 3306,
 
     waitForConnections: true,
-    connectionLimit: 10, // 🔥 IMPORTANT (zyada mat rakho)
+    connectionLimit: 1, // 🔥 IMPORTANT (zyada mat rakho)
     queueLimit: 0,
 
     connectTimeout: 10000,
