@@ -1,45 +1,67 @@
-import { NextResponse } from "next/server";
-import * as cheerio from "cheerio";
+import { NextRequest, NextResponse } from "next/server";
+
 export const dynamic = "force-dynamic";
-export async function POST(req: Request) {
+export const runtime = "nodejs";
 
-    const { url } = await req.json();
+// 🔥 Safe HTML fetch
+async function fetchHTML(url: string) {
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+    },
+    redirect: "follow",
+    cache: "no-store",
+  });
 
-    try {
+  return await res.text();
+}
 
-        const res = await fetch(url);
-        const html = await res.text();
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    let { url } = body;
 
-        const $ = cheerio.load(html);
-
-        const canonical = $('link[rel="canonical"]').attr("href");
-
-        let status = "missing";
-
-        if (canonical) {
-
-            if (canonical === url) {
-                status = "valid";
-            } else {
-                status = "different";
-            }
-
-        }
-
-        return NextResponse.json({
-            pageUrl: url,
-            canonical,
-            status
-        });
-
-    } catch {
-
-        return NextResponse.json({
-            pageUrl: url,
-            canonical: null,
-            status: "missing"
-        });
-
+    if (!url) {
+      return NextResponse.json(
+        { message: "URL required" },
+        { status: 400 }
+      );
     }
 
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
+
+    const html = await fetchHTML(url);
+
+    // ❗ dynamic import (VERY IMPORTANT)
+    const cheerio = await import("cheerio");
+    const $ = cheerio.load(html);
+
+    const canonical = $('link[rel="canonical"]').attr("href") || null;
+
+    let status = "missing";
+
+    if (canonical) {
+      if (canonical === url) {
+        status = "valid";
+      } else {
+        status = "different";
+      }
+    }
+
+    return NextResponse.json({
+      pageUrl: url,
+      canonical,
+      status,
+    });
+  } catch (error) {
+    return NextResponse.json({
+      pageUrl: null,
+      canonical: null,
+      status: "missing",
+      error: "Failed to fetch or parse",
+    });
+  }
 }
