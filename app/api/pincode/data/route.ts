@@ -76,8 +76,11 @@ export async function GET(req: Request) {
       posts,
     });
 
-  } catch (error) {
-    console.error("API Error:", error);
-    return NextResponse.json({ error: true, message: error.message, }, { status: 500 });
-  }
+  } catch (error: any) {
+  console.error("API Error:", error);
+  return NextResponse.json(
+    { error: true, message: error?.message || "Something went wrong" },
+    { status: 500 }
+  );
+}
 }
