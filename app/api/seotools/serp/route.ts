@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
-import * as cheerio from "cheerio";
+import { NextRequest, NextResponse } from "next/server";
 
 /* ============================================
-   ✅ FORCE DYNAMIC (VERY IMPORTANT FIX)
+   ✅ FORCE DYNAMIC
 ============================================ */
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 export const revalidate = 0;
 
 /* ============================================
@@ -12,14 +12,32 @@ export const revalidate = 0;
 ============================================ */
 function getDomain(link: string) {
   try {
-    // DuckDuckGo redirect link
     if (link.includes("uddg=")) {
-      const decoded = decodeURIComponent(link.split("uddg=")[1].split("&")[0]);
+      const decoded = decodeURIComponent(
+        link.split("uddg=")[1].split("&")[0]
+      );
       return new URL(decoded).hostname.replace("www.", "");
     }
 
-    // direct link
     return new URL(link).hostname.replace("www.", "");
+  } catch {
+    return "";
+  }
+}
+
+/* ============================================
+   SAFE FETCH
+============================================ */
+async function fetchHTML(url: string) {
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+      },
+      cache: "no-store",
+    });
+
+    return await res.text();
   } catch {
     return "";
   }
@@ -28,7 +46,7 @@ function getDomain(link: string) {
 /* ============================================
    GET API
 ============================================ */
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const keyword = searchParams.get("keyword");
@@ -37,16 +55,18 @@ export async function GET(req: Request) {
       return NextResponse.json({ results: [] });
     }
 
-    const url = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(keyword)}`;
+    const url = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(
+      keyword
+    )}`;
 
-    const res = await fetch(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-      },
-      cache: "no-store", // ✅ ensure fresh results
-    });
+    const html = await fetchHTML(url);
 
-    const html = await res.text();
+    if (!html) {
+      return NextResponse.json({ results: [] });
+    }
+
+    // ❗ FIX: dynamic import
+    const cheerio = await import("cheerio");
     const $ = cheerio.load(html);
 
     const results: any[] = [];
