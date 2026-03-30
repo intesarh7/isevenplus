@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 function toAbsoluteUrl(base: string, link: string) {
   try {
     return new URL(link, base).href;

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import dns from "dns";
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 const resolver = new dns.Resolver();
 
 // 🔥 Use Google DNS (stable)

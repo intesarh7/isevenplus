@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 export async function POST(req: Request) {
 
     const { url } = await req.json();

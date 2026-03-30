@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 function normalizeUrl(input: string) {
 
   let url = input.trim();
