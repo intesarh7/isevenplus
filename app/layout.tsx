@@ -4,10 +4,7 @@ import Script from "next/script";
 
 export const dynamic = "force-dynamic";
 
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-});
+ 
 
 /* ============================================
    ✅ DEFINE BASE URL PROPERLY
