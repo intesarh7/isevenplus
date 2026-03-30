@@ -1,5 +1,4 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
 import Script from "next/script";
 
 export const dynamic = "force-dynamic";
@@ -50,7 +49,7 @@ export default function RootLayout({
         </Script> 
       </head>
 
-      <body className={inter.className}>{children}</body>
+      <body className="">{children}</body>
     </html>
   );
 }
