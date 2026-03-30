@@ -78,6 +78,6 @@ export async function GET(req: Request) {
 
   } catch (error) {
     console.error("API Error:", error);
-    return NextResponse.json({ error: true }, { status: 500 });
+    return NextResponse.json({ error: true, message: error.message, }, { status: 500 });
   }
 }
