@@ -1,8 +1,26 @@
-import { NextResponse } from "next/server";
-import * as cheerio from "cheerio";
+import { NextRequest, NextResponse } from "next/server";
+
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
+// 🔥 Safe fetch
+async function fetchHTML(url: string) {
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+      },
+      cache: "no-store",
+      redirect: "follow",
+    });
+
+    return await res.text();
+  } catch {
+    return "";
+  }
+}
+
+// 🔥 Absolute URL helper
 function toAbsoluteUrl(base: string, link: string) {
   try {
     return new URL(link, base).href;
@@ -11,9 +29,31 @@ function toAbsoluteUrl(base: string, link: string) {
   }
 }
 
-export async function POST(req: Request) {
+// 🔥 Timeout fetch (important)
+async function fetchWithTimeout(url: string, timeout = 7000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
   try {
-    const { url } = await req.json();
+    const res = await fetch(url, {
+      method: "GET",
+      signal: controller.signal,
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+      },
+    });
+
+    clearTimeout(id);
+    return res;
+  } catch {
+    clearTimeout(id);
+    throw new Error("timeout");
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    let { url } = await req.json();
 
     if (!url) {
       return NextResponse.json(
@@ -22,20 +62,27 @@ export async function POST(req: Request) {
       );
     }
 
-    const res = await fetch(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-      },
-    });
+    if (!url.startsWith("http")) {
+      url = "https://" + url;
+    }
 
-    const html = await res.text();
+    const html = await fetchHTML(url);
+
+    if (!html) {
+      return NextResponse.json({
+        links: [],
+        totalScanned: 0,
+      });
+    }
+
+    // ❗ FIX: dynamic import
+    const cheerio = await import("cheerio");
     const $ = cheerio.load(html);
 
     const linksSet = new Set<string>();
 
     $("a").each((_, el) => {
       const href = $(el).attr("href");
-
       if (!href) return;
 
       const absolute = toAbsoluteUrl(url, href);
@@ -49,36 +96,40 @@ export async function POST(req: Request) {
 
     const brokenLinks: any[] = [];
 
-    for (let link of links.slice(0, 30)) {
-      try {
-        // ❗ GET use karo instead of HEAD
-        const check = await fetch(link, {
-          method: "GET",
-          headers: {
-            "User-Agent": "Mozilla/5.0",
-          },
-        });
+    // 🔥 batching (VERY IMPORTANT)
+    const BATCH = 5;
 
-        if (check.status >= 400) {
-          brokenLinks.push({
-            url: link,
-            status: check.status,
-          });
+    for (let i = 0; i < links.length; i += BATCH) {
+      const batch = links.slice(i, i + BATCH);
+
+      const results = await Promise.allSettled(
+        batch.map(async (link) => {
+          try {
+            const res = await fetchWithTimeout(link);
+
+            if (res.status >= 400) {
+              return { url: link, status: res.status };
+            }
+
+            return null;
+          } catch {
+            return { url: link, status: 500 };
+          }
+        })
+      );
+
+      results.forEach((r) => {
+        if (r.status === "fulfilled" && r.value) {
+          brokenLinks.push(r.value);
         }
-      } catch {
-        brokenLinks.push({
-          url: link,
-          status: 500,
-        });
-      }
+      });
     }
 
     return NextResponse.json({
       links: brokenLinks,
       totalScanned: links.length,
     });
-
-  } catch (err) {
+  } catch {
     return NextResponse.json(
       { message: "Failed to scan links" },
       { status: 500 }
