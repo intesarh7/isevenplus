@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-
+export const dynamic = "force-dynamic";
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
 function detectIntent(keyword: string) {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
-
+export const dynamic = "force-dynamic";
 function normalizeDomain(input: string) {
 
     let url = input.trim();

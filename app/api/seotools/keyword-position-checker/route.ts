@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import db from "@/app/lib/db";
 import axios from "axios";
 import * as cheerio from "cheerio";
-
+export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   try {
     const { domain, keywords, forceRefresh, country = "IN", device = "desktop" } = await req.json();

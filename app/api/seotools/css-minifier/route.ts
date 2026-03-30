@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import CleanCSS from "clean-css";
-
+export const dynamic = "force-dynamic";
 export async function POST(req: NextRequest) {
   try {
     const { css } = await req.json();

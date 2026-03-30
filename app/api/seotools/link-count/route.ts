@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
-
+export const dynamic = "force-dynamic";
 // 🔥 fetch with timeout + headers
 async function fetchWithTimeout(url: string, options: any = {}, timeout = 8000) {
     const controller = new AbortController();

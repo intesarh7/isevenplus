@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
+export const dynamic = "force-dynamic";
 const STOP_WORDS = [
   "a","an","the","is","are","was","were","in","on","at","to","for","of","and","or","with","by","from"
 ];

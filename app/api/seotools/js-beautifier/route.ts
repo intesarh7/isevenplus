@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import beautify from "js-beautify";
-
+export const dynamic = "force-dynamic";
 const { js: jsBeautify } = beautify;
 
 export async function POST(req: NextRequest) {

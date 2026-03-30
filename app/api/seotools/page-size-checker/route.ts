@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-
+export const dynamic = "force-dynamic";
 function normalize(url: string) {
     if (!url.startsWith("http")) url = "https://" + url;
     return url;

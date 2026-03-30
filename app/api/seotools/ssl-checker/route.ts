@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"; 
 import tls from "tls";
-
+export const dynamic = "force-dynamic";
 function extractHostname(input: string) {
   try {
     if (!input.startsWith("http")) {

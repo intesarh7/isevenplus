@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import db from "@/app/lib/db";
-
+export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const { domain, keyword } = await req.json();
 
