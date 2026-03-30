@@ -2,7 +2,7 @@ import db from "@/app/lib/db";
 import Link from "next/link";
 import { RowDataPacket } from "mysql2";
 import PageHeader from "@/app/components/PageHeader";
-
+export const dynamic = "force-dynamic";
 function formatSlug(text: string) {
   return text
     .trim()

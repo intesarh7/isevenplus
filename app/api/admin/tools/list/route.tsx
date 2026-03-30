@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 import db from "@/app/lib/db";
-
-/**
- * GET - Fetch all tools for admin panel
- * URL: /api/admin/tools/list
- */
+export const dynamic = "force-dynamic";
+// ✅ cache enable (IMPORTANT)
+export const revalidate = 60; // 1 minute cache
 
 export async function GET() {
   try {
 
+    // ✅ LIMIT add karo (DB safe)
     const [rows]: any = await db.query(`
       SELECT 
         id,
@@ -24,11 +23,12 @@ export async function GET() {
       FROM tools
       WHERE deletedAt IS NULL
       ORDER BY createdAt DESC
+      LIMIT 50
     `);
 
     return NextResponse.json(rows, {
       headers: {
-        "Cache-Control": "no-store"
+        "Cache-Control": "public, s-maxage=60, stale-while-revalidate"
       }
     });
 
