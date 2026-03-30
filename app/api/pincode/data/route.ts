@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "@/app/lib/db";
 
-export const revalidate = 60; // cache
+export const dynamic = "force-dynamic"; // ✅ FIX
 
 export async function GET(req: Request) {
   try {
@@ -15,33 +15,31 @@ export async function GET(req: Request) {
     if (query) {
       const searchTerm = `%${query}%`;
 
-      if (type === "india") {
-        const [rows]: any = await db.query(
-          `SELECT 
-            office_name AS officeName,
-            pincode,
-            branch_type,
-            delivery_status,
-            district,
-            division,
-            region,
-            taluk,
-            circle,
-            state
-          FROM indian_pincodes
-          WHERE CAST(pincode AS CHAR) LIKE ?
-          OR office_name LIKE ?
-          OR district LIKE ?
-          OR state LIKE ?
-          ORDER BY district ASC
-          LIMIT 50`,
-          [searchTerm, searchTerm, searchTerm, searchTerm]
-        );
-        results = rows;
-      }
+      const [rows]: any = await db.query(
+        `SELECT 
+          office_name AS officeName,
+          pincode,
+          branch_type,
+          delivery_status,
+          district,
+          division,
+          region,
+          taluk,
+          circle,
+          state
+        FROM indian_pincodes
+        WHERE CAST(pincode AS CHAR) LIKE ?
+        OR office_name LIKE ?
+        OR district LIKE ?
+        OR state LIKE ?
+        ORDER BY district ASC
+        LIMIT 50`,
+        [searchTerm, searchTerm, searchTerm, searchTerm]
+      );
+
+      results = rows;
     }
 
-    // ✅ STATES (LIMIT added)
     const [states]: any = await db.query(`
       SELECT state, COUNT(*) as total 
       FROM indian_pincodes
@@ -51,17 +49,14 @@ export async function GET(req: Request) {
       LIMIT 50
     `);
 
-    // ✅ POPULAR CITIES
     const [cities]: any = await db.query(`
       SELECT district, state, COUNT(*) as total
       FROM indian_pincodes
-      WHERE district IS NOT NULL AND state IS NOT NULL
       GROUP BY district, state
       ORDER BY total DESC
       LIMIT 20
     `);
 
-    // ✅ BLOGS
     const [posts]: any = await db.query(`
       SELECT 
         b.id, b.title, b.slug, b.featuredImage, b.createdAt
@@ -78,11 +73,11 @@ export async function GET(req: Request) {
       results,
       states,
       cities,
-      posts
+      posts,
     });
 
   } catch (error) {
-    console.error("Pincode API Error:", error);
+    console.error("API Error:", error);
     return NextResponse.json({ error: true }, { status: 500 });
   }
 }
