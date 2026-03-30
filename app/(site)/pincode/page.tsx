@@ -5,6 +5,7 @@ import { Search, MapPin, Globe, TrendingUp, Navigation, Package, Building2, Arro
 import PincodeAutoSuggest from "@/app/components/PincodeAutoSuggest";
 import Image from "next/image";
 export const dynamic = "force-dynamic";
+
 /* ================= BASE URL ================= */
 const baseUrl =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
@@ -18,8 +19,6 @@ const generateSlug = (text: string) => {
     .replace(/-+/g, "-")
     .trim();
 };
-
-
 
 /* ================= METADATA ================= */
 export async function generateMetadata({ searchParams }: any) {
@@ -47,91 +46,30 @@ export default async function PincodePage({ searchParams }: any) {
   const query = resolvedSearchParams?.q?.toString().trim() ?? "";
   const type = resolvedSearchParams?.type || "india";
 
-  let results: RowDataPacket[] = [];
+  // ✅ ✅ API CALL (DB REMOVED)
+  let results: any[] = [];
+  let statesWithCount: any[] = [];
+  let popularCities: any[] = [];
+  let pincodePosts: any[] = [];
 
-  if (query) {
-    const searchTerm = `%${query}%`;
+  try {
+    const res = await fetch(
+      `${baseUrl}/api/pincode/data?q=${encodeURIComponent(query)}&type=${type}`,
+      {
+        cache: "no-store",
+      }
+    );
 
-    if (type === "india") {
-      const [rows] = await db.query<RowDataPacket[]>(
-        `SELECT 
-      office_name AS officeName,
-      pincode,
-      branch_type,
-      delivery_status,
-      district,
-      division,
-      region,
-      taluk,
-      circle,
-      state
-   FROM indian_pincodes
-   WHERE CAST(pincode AS CHAR) LIKE ?
-   OR office_name LIKE ?
-   OR district LIKE ?
-   OR state LIKE ?
-   ORDER BY district ASC
-   LIMIT 50`,
-        [searchTerm, searchTerm, searchTerm, searchTerm]
-      );
-      results = rows;
-    } else {
-      const [rows] = await db.query<RowDataPacket[]>(
-        `SELECT country_code AS country, postal_code AS postalCode,
-         place_name AS placeName, admin1 AS state
-         FROM worldwide_postal_codes
-         WHERE postal_code LIKE ?
-         OR place_name LIKE ?
-         OR admin1 LIKE ?
-         LIMIT 50`,
-        [searchTerm, searchTerm, searchTerm]
-      );
-      results = rows;
-    }
+    const data = await res.json();
+
+    results = data.results || [];
+    statesWithCount = data.states || [];
+    popularCities = data.cities || [];
+    pincodePosts = data.posts || [];
+
+  } catch (error) {
+    console.error("Pincode Page API Error:", error);
   }
-
-  /* ================= STATES ================= */
-  const [statesWithCount] = await db.query<RowDataPacket[]>(
-    `SELECT state, COUNT(*) as total 
-   FROM indian_pincodes
-   WHERE state IS NOT NULL 
-   AND state != ''
-   GROUP BY state 
-   ORDER BY state ASC`
-  );
-
-  /* ================= POPULAR SEARCHES ================= */
-  const [popularCities] = await db.query<RowDataPacket[]>(`
-  SELECT 
-    district, 
-    state, 
-    COUNT(*) as total
-  FROM indian_pincodes
-  WHERE 
-    district IS NOT NULL AND district != ''
-    AND state IS NOT NULL AND state != ''
-  GROUP BY district, state
-  ORDER BY total DESC
-  LIMIT 20
-`);
-
-  /* ================= PINCODE BLOG POSTS ================= */
-  const [pincodePosts] = await db.query<RowDataPacket[]>(`
-  SELECT 
-    b.id, 
-    b.title, 
-    b.slug, 
-    b.featuredImage,
-    b.createdAt
-  FROM blogs b
-  INNER JOIN blog_categories c ON b.categoryId = c.id
-  WHERE c.slug = 'pincode'
-  AND b.status = 'published'
-  AND b.deletedAt IS NULL
-  ORDER BY b.createdAt DESC
-  LIMIT 6
-`);
-
 
   return (
     <>
