@@ -37,7 +37,7 @@ export default function PostalAdminPage() {
     const [showModal, setShowModal] = useState(false);
     const [editingItem, setEditingItem] = useState<any>(null);
 
-    const limit = 20;
+    const limit = 100;
     const totalPages = Math.ceil(total / limit);
 
     const fetchData = async () => {

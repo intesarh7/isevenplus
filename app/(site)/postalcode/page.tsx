@@ -148,12 +148,16 @@ export default async function PostalHomePage() {
 
         // COUNTRIES
         db.query(`
-      SELECT country_code, COUNT(*) as total
-      FROM worldwide_postal_codes
-      WHERE country_code != '' AND country_code IS NOT NULL
-        AND country_code != 'IN'
-      GROUP BY country_code
-      ORDER BY country_code ASC
+      SELECT t.country_code, t.total
+FROM (
+  SELECT country_code, COUNT(*) as total
+  FROM worldwide_postal_codes
+  WHERE country_code != '' 
+    AND country_code IS NOT NULL
+    AND country_code != 'IN'
+  GROUP BY country_code
+) t
+ORDER BY t.country_code ASC
     `),
 
         // PLACES
@@ -180,6 +184,8 @@ export default async function PostalHomePage() {
       LIMIT 10
     `)
     ]);
+
+    //console.log("TOTAL COUNTRIES:", countryData.length);
     /* ================================
        🌍 GROUP BY CONTINENT
     ================================ */

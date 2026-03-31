@@ -12,8 +12,8 @@ export async function GET(req: Request) {
   const values: any[] = [];
 
   if (search) {
-    query += " AND (postal_code LIKE ? OR place_name LIKE ?)";
-    values.push(`%${search}%`, `%${search}%`);
+    query += " AND (LOWER(postal_code) LIKE ? OR LOWER(place_name) LIKE ?)";
+values.push(`%${search.toLowerCase()}%`, `%${search.toLowerCase()}%`);
   }
 
   query += " ORDER BY id DESC LIMIT ? OFFSET ?";
