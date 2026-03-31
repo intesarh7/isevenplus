@@ -66,7 +66,7 @@ export default function PincodeAutoSuggest({
 
       if (query.length >= 2) {
 
-        const normalized = normalizeText(query); // 🔥 KEY FIX
+        const normalized = normalizeText(query);
 
         setLoading(true);
 
@@ -131,7 +131,8 @@ export default function PincodeAutoSuggest({
     <div ref={containerRef} className="relative w-full">
 
       {/* INPUT */}
-      <div className="flex items-center border p-3 rounded-xl">
+      <div className="flex items-center border p-3 rounded-xl relative">
+
         <Search size={18} className="mr-2 text-gray-500" />
 
         <input
@@ -139,8 +140,15 @@ export default function PincodeAutoSuggest({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Enter Pincode / Post Office / District / State"
-          className="w-full outline-none"
+          className="w-full outline-none pr-6"
         />
+
+        {/* 🔥 LOADING SPINNER */}
+        {loading && (
+          <div className="absolute right-3">
+            <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
       </div>
 
       {/* DROPDOWN */}
@@ -149,7 +157,7 @@ export default function PincodeAutoSuggest({
 
           {/* LOADING */}
           {loading && (
-            <div className="p-4 text-center text-gray-500">
+            <div className="p-4 text-center text-gray-500 animate-pulse">
               Searching...
             </div>
           )}
@@ -186,7 +194,7 @@ export default function PincodeAutoSuggest({
                       router.push(finalUrl);
                       setShow(false);
                     }}
-                    className="p-3 hover:bg-indigo-50 cursor-pointer border-b"
+                    className="p-3 hover:bg-indigo-50 cursor-pointer border-b transition"
                   >
                     <p className="font-semibold">{item.office_name}</p>
                     <p className="text-sm text-gray-500">
@@ -214,11 +222,9 @@ export default function PincodeAutoSuggest({
 
                 const parts = ["postalcode", country];
 
-                // 🔥 ensure safe fallback
                 if (state && state !== "null") parts.push(state);
                 if (city && city !== "null") parts.push(city);
 
-                // 🔥 ALWAYS last me postal
                 parts.push(postal);
 
                 const finalUrl = `/${parts.join("/")}`;
@@ -230,7 +236,7 @@ export default function PincodeAutoSuggest({
                       router.push(finalUrl);
                       setShow(false);
                     }}
-                    className="p-3 hover:bg-indigo-50 cursor-pointer border-b"
+                    className="p-3 hover:bg-indigo-50 cursor-pointer border-b transition"
                   >
                     <p className="font-semibold">{item.postalCode}</p>
                     <p className="text-sm text-gray-500">

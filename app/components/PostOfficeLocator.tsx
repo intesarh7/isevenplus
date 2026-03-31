@@ -10,18 +10,26 @@ export default function PostOfficeLocator() {
     const [selectedDistrict, setSelectedDistrict] = useState("");
     const [selectedOffice, setSelectedOffice] = useState<any>(null);
 
+    // ✅ NEW: loading states
+    const [loadingStates, setLoadingStates] = useState(false);
+    const [loadingDistricts, setLoadingDistricts] = useState(false);
+    const [loadingOffices, setLoadingOffices] = useState(false);
+
     // Load states initially
     useEffect(() => {
+        setLoadingStates(true);
+
         fetch("/api/locator/states")
             .then(res => res.json())
-            .then(data => setStates(data));
+            .then(data => setStates(data))
+            .finally(() => setLoadingStates(false));
     }, []);
-
 
     // Load districts when state changes
     useEffect(() => {
-
         if (!selectedState) return;
+
+        setLoadingDistricts(true);
 
         fetch(`/api/locator/districts?state=${encodeURIComponent(selectedState)}`)
             .then(res => res.json())
@@ -30,22 +38,41 @@ export default function PostOfficeLocator() {
                 setOffices([]);
                 setSelectedDistrict("");
                 setSelectedOffice(null);
-            });
+            })
+            .finally(() => setLoadingDistricts(false));
 
     }, [selectedState]);
 
-
-    // Load offices when district changes
+    // Load offices when district changes (debounce + loading)
     useEffect(() => {
-
         if (!selectedDistrict) return;
 
-        fetch(`/api/locator/offices?state=${encodeURIComponent(selectedState)}&district=${encodeURIComponent(selectedDistrict)}`)
-            .then(res => res.json())
-            .then(data => {
-                setOffices(data);
-                setSelectedOffice(null);
-            });
+        const controller = new AbortController();
+        setLoadingOffices(true);
+
+        const delay = setTimeout(() => {
+
+            fetch(`/api/locator/offices?state=${encodeURIComponent(selectedState)}&district=${encodeURIComponent(selectedDistrict)}`, {
+                signal: controller.signal
+            })
+                .then(res => res.json())
+                .then(data => {
+                    setOffices(data);
+                    setSelectedOffice(null);
+                })
+                .catch(err => {
+                    if (err.name !== "AbortError") {
+                        console.error(err);
+                    }
+                })
+                .finally(() => setLoadingOffices(false));
+
+        }, 300);
+
+        return () => {
+            controller.abort();
+            clearTimeout(delay);
+        };
 
     }, [selectedDistrict]);
 
@@ -57,8 +84,11 @@ export default function PostOfficeLocator() {
                 className="border p-3 rounded-xl w-full"
                 value={selectedState}
                 onChange={(e) => setSelectedState(e.target.value)}
+                disabled={loadingStates}
             >
-                <option value="">Select State</option>
+                <option value="">
+                    {loadingStates ? "Loading States..." : "Select State"}
+                </option>
                 {states
                     .filter((s) => s.state && s.state.trim() !== "")
                     .map((s, i) => (
@@ -69,13 +99,16 @@ export default function PostOfficeLocator() {
             </select>
 
             {/* District */}
-            {districts.length > 0 && (
+            {(districts.length > 0 || loadingDistricts) && (
                 <select
                     className="border p-3 rounded-xl mt-4 w-full"
                     value={selectedDistrict}
                     onChange={(e) => setSelectedDistrict(e.target.value)}
+                    disabled={loadingDistricts}
                 >
-                    <option value="">Select District</option>
+                    <option value="">
+                        {loadingDistricts ? "Loading Districts..." : "Select District"}
+                    </option>
                     {districts
                         .filter((d) => d.district && d.district.trim() !== "")
                         .map((d, i) => (
@@ -85,15 +118,18 @@ export default function PostOfficeLocator() {
             )}
 
             {/* Post Office */}
-            {offices.length > 0 && (
+            {(offices.length > 0 || loadingOffices) && (
                 <select
                     className="border p-3 rounded-xl mt-4 w-full"
+                    disabled={loadingOffices}
                     onChange={(e) => {
                         const office = offices.find(o => o.office_name === e.target.value);
                         setSelectedOffice(office);
                     }}
                 >
-                    <option value="">Select Post Office</option>
+                    <option value="">
+                        {loadingOffices ? "Loading Offices..." : "Select Post Office"}
+                    </option>
                     {offices
                         .filter((o) => o.office_name && o.office_name.trim() !== "")
                         .map((o, i) => (
