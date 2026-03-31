@@ -112,19 +112,37 @@ export default function PostalAdminPage() {
 
                         <thead className="bg-gray-100 text-gray-700">
                             <tr>
-                                <th className="p-2">Code</th>
-                                <th className="p-2">Office Name</th>
-                                <th className="p-2">Branch Type</th>
-                                <th className="p-2">Delivery Status</th>
-                                <th className="p-2">District</th>
-                                <th className="p-2">Division</th>
-                                <th className="p-2">Region</th>
-                                <th className="p-2">Taluk</th>
-                                <th className="p-2">Circle</th>
-                                <th className="p-2">State</th>
-                                {tab === "world" && (
-                                    <th className="p-2">Country</th>
+
+                                {/* COMMON */}
+                                <th className="p-2">Postal Code</th>
+                                <th className="p-2">Name</th>
+
+                                {/* INDIA */}
+                                {tab === "india" && (
+                                    <>
+                                        <th className="p-2">Branch Type</th>
+                                        <th className="p-2">Delivery Status</th>
+                                        <th className="p-2">District</th>
+                                        <th className="p-2">Division</th>
+                                        <th className="p-2">Region</th>
+                                        <th className="p-2">Taluk</th>
+                                        <th className="p-2">Circle</th>
+                                        <th className="p-2">State</th>
+                                    </>
                                 )}
+
+                                {/* WORLD */}
+                                {tab === "world" && (
+                                    <>
+                                        <th className="p-2">Country</th>
+                                        <th className="p-2">Admin1</th>
+                                        <th className="p-2">Admin2</th>
+                                        <th className="p-2">Admin3</th>
+                                        <th className="p-2">Latitude</th>
+                                        <th className="p-2">Longitude</th>
+                                    </>
+                                )}
+
                                 <th className="p-2 text-right">Action</th>
                             </tr>
                         </thead>
@@ -133,6 +151,7 @@ export default function PostalAdminPage() {
                             {data.map((item) => (
                                 <tr key={item.id} className="hover:bg-gray-50">
 
+                                    {/* COMMON */}
                                     <td className="p-2">
                                         {item.pincode || item.postal_code}
                                     </td>
@@ -141,44 +160,33 @@ export default function PostalAdminPage() {
                                         {item.office_name || item.place_name}
                                     </td>
 
-                                    <td className="p-2">
-                                        {item.branch_type}
-                                    </td>
-
-                                    <td className="p-2">
-                                        {item.delivery_status}
-                                    </td>
-
-                                    <td className="p-2">
-                                        {item.district}
-                                    </td>
-
-                                    <td className="p-2">
-                                        {item.division}
-                                    </td>
-
-                                    <td className="p-2">
-                                        {item.region}
-                                    </td>
-
-                                    <td className="p-2">
-                                        {item.taluk}
-                                    </td>
-
-                                    <td className="p-2">
-                                        {item.circle}
-                                    </td>
-
-                                    <td className="p-2">
-                                        {item.state}
-                                    </td>
-
-                                    {tab === "world" && (
-                                        <td className="p-2">
-                                            {item.country_code}
-                                        </td>
+                                    {/* INDIA */}
+                                    {tab === "india" && (
+                                        <>
+                                            <td className="p-2">{item.branch_type}</td>
+                                            <td className="p-2">{item.delivery_status}</td>
+                                            <td className="p-2">{item.district}</td>
+                                            <td className="p-2">{item.division}</td>
+                                            <td className="p-2">{item.region}</td>
+                                            <td className="p-2">{item.taluk}</td>
+                                            <td className="p-2">{item.circle}</td>
+                                            <td className="p-2">{item.state}</td>
+                                        </>
                                     )}
 
+                                    {/* WORLD */}
+                                    {tab === "world" && (
+                                        <>
+                                            <td className="p-2">{item.country_code}</td>
+                                            <td className="p-2">{item.admin1}</td>
+                                            <td className="p-2">{item.admin2}</td>
+                                            <td className="p-2">{item.admin3}</td>
+                                            <td className="p-2">{item.latitude}</td>
+                                            <td className="p-2">{item.longitude}</td>
+                                        </>
+                                    )}
+
+                                    {/* ACTION */}
                                     <td className="p-2 flex gap-2">
                                         <button
                                             onClick={() => {
@@ -188,9 +196,10 @@ export default function PostalAdminPage() {
                                             className="text-blue-600">
                                             Edit
                                         </button>
+
                                         <button
                                             onClick={async () => {
-                                                await fetch(`/api/admin/indian-pincode?id=${item.id}`, {
+                                                await fetch(`/api/admin/${tab === "india" ? "indian-pincode" : "world-postal"}?id=${item.id}`, {
                                                     method: "DELETE",
                                                 });
                                                 fetchData();

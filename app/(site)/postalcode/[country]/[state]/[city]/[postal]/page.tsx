@@ -367,7 +367,13 @@ export default async function PostalDetail({ params }: any) {
                                     Place
                                 </td>
                                 <td className="px-6 py-4 text-gray-800 font-semibold">
-                                    {data.place_name}
+                                    {data.place_name ? (
+                                        data.place_name
+                                    ) : (
+                                        <span className="text-gray-400 italic">
+                                            Not Available
+                                        </span>
+                                    )}
                                 </td>
                             </tr>
 
@@ -375,10 +381,47 @@ export default async function PostalDetail({ params }: any) {
                             <tr className="hover:bg-gray-50 transition">
                                 <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
                                     <Navigation size={16} className="text-indigo-500" />
-                                    State / Region
+                                    State / Province
                                 </td>
                                 <td className="px-6 py-4 text-gray-800 font-semibold">
-                                    {data.admin1}
+                                    {data.admin1 ? (
+                                        data.admin1
+                                    ) : (
+                                        <span className="text-gray-400 italic">
+                                            Not Available
+                                        </span>
+                                    )}
+                                </td>
+                            </tr>
+                            <tr className="hover:bg-gray-50 transition">
+                                <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
+                                    <Navigation size={16} className="text-indigo-500" />
+                                    District / Region
+                                </td>
+                                <td className="px-6 py-4 text-gray-800 font-semibold">
+                                    {data.admin2 ? (
+                                        data.admin2
+                                    ) : (
+                                        <span className="text-gray-400 italic">
+                                            Not Available
+                                        </span>
+                                    )}
+                                </td>
+                            </tr>
+
+                            <tr className="hover:bg-gray-50 transition">
+                                <td className="px-6 py-4 font-medium text-gray-600 flex items-center gap-2">
+                                    <Navigation size={16} className="text-indigo-500" />
+                                    City / Area
+                                </td>
+                                <td className="px-6 py-4 text-gray-800 font-semibold">
+                                    {data.admin3 ? (
+                                        data.admin3
+                                    ) : (
+                                        <span className="text-gray-400 italic">
+                                            Not Available
+                                        </span>
+                                    )}
                                 </td>
                             </tr>
 
@@ -389,7 +432,13 @@ export default async function PostalDetail({ params }: any) {
                                     Country
                                 </td>
                                 <td className="px-6 py-4 text-gray-800 font-semibold">
-                                    {data.country_code}
+                                    {data.country_code ? (
+                                        data.country_code
+                                    ) : (
+                                        <span className="text-gray-400 italic">
+                                            Not Available
+                                        </span>
+                                    )}
                                 </td>
                             </tr>
 
@@ -400,7 +449,13 @@ export default async function PostalDetail({ params }: any) {
                                     Latitude
                                 </td>
                                 <td className="px-6 py-4 text-gray-800 font-semibold">
-                                    {data.latitude}
+                                    {data.latitude ? (
+                                        data.latitude
+                                    ) : (
+                                        <span className="text-gray-400 italic">
+                                            Not Available
+                                        </span>
+                                    )}
                                 </td>
                             </tr>
 
@@ -411,7 +466,13 @@ export default async function PostalDetail({ params }: any) {
                                     Longitude
                                 </td>
                                 <td className="px-6 py-4 text-gray-800 font-semibold">
-                                    {data.longitude}
+                                    {data.longitude ? (
+                                        data.longitude
+                                    ) : (
+                                        <span className="text-gray-400 italic">
+                                            Not Available
+                                        </span>
+                                    )}
                                 </td>
                             </tr>
 

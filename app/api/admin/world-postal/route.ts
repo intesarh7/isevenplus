@@ -31,3 +31,43 @@ export async function GET(req: Request) {
     page,
   });
 }
+
+// ✅ CREATE (ADD NEW)
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+
+    const {
+      postal_code,
+      place_name,
+      country_code,
+      admin1,
+      admin2,
+      admin3,
+      latitude,
+      longitude,
+    } = body;
+
+    await db.query(
+      `INSERT INTO worldwide_postal_codes 
+      (postal_code, place_name, country_code, admin1, admin2, admin3, latitude, longitude)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        postal_code,
+        place_name,
+        country_code,
+        admin1,
+        admin2,
+        admin3,
+        latitude,
+        longitude,
+      ]
+    );
+
+    return NextResponse.json({ success: true });
+
+  } catch (error) {
+    console.error("POST Error:", error);
+    return NextResponse.json({ error: "Insert failed" }, { status: 500 });
+  }
+}
