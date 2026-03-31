@@ -38,7 +38,7 @@ export default function ToolRating({
 
   return (
     <>
-    <div className="flex items-center gap-4 mb-6">
+    <div className="flex items-center gap-4">
       <span className="text-yellow-500 font-semibold flex gap-1 items-center">
         <Star size={16} className="text-yellow-500 fill-yellow-500" /> {currentRating} ({count})
       </span>

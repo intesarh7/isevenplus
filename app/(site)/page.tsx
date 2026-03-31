@@ -21,6 +21,14 @@ import {
   ShieldCheck,
   LogIn,
   Rocket,
+  Receipt,
+  Clock,
+  BarChart3,
+  Activity,
+  Users,
+  Code,
+  Briefcase,
+  GraduationCap,
 } from "lucide-react";
 import PincodeTabs from "../components/PincodeTabs";
 import HomeSearch from "../components/HomeSearch";
@@ -193,12 +201,15 @@ SELECT COUNT(*) as total FROM blogs
         <h1 className="relative z-10 text-2xl sm:text-4xl md:text-5xl font-bold mt-4 leading-tight text-gray-900">
           All-in-One Free Calculator & SEO Tools
           <br />
-          <span className="text-indigo-600">100+ Smart Tools in One Place</span>
+          <span className="text-indigo-600">500+ Smart Tools in One Place</span>
         </h1>
 
         {/* 📄 SUBTEXT */}
         <p className="relative z-10 text-gray-600 max-w-2xl mx-auto mt-4 text-sm sm:text-base">
           Calculate anything instantly — from finance to SEO. Save time, boost productivity, and get accurate results without signup.
+        </p>
+        <p className="text-xs text-indigo-600 font-medium mb-2">
+          ✔ 500+ Tools • ✔ Instant Results • ✔ No Signup Required
         </p>
 
         {/* 🚀 CTA BUTTONS */}
@@ -234,6 +245,35 @@ SELECT COUNT(*) as total FROM blogs
           <PincodeTabs />
         </div>
 
+      </section>
+
+
+      {/* 🔥 SEO CONTENT INTRO */}
+      <section className="max-w-6xl mx-auto pt-5 pb-10">
+        <div className="bg-white border rounded-2xl p-6 md:p-10 shadow-sm">
+
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">
+            Free Online Calculator & SEO Tools for Daily Use
+          </h2>
+
+          <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">
+            iSevenPlus is a powerful platform offering <strong>100+ free online calculators</strong> and
+            <strong> advanced SEO tools</strong> designed for students, professionals, developers, and marketers.
+            Whether you need to calculate EMI, GST, BMI, or analyze SEO metrics like domain authority,
+            backlinks, and keyword difficulty — everything is available in one place.
+          </p>
+
+          <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">
+            Our tools are built with accuracy and speed in mind, helping you save time and make smarter
+            decisions. From <strong>financial calculators</strong> to <strong>pincode search tools</strong>
+            and <strong>SEO analyzers</strong>, iSevenPlus simplifies complex calculations instantly.
+          </p>
+
+          <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+            No signup required, no hidden charges — just fast, reliable, and free tools available anytime, anywhere.
+          </p>
+
+        </div>
       </section>
 
       {/* DASHBOARD CARDS */}
@@ -337,40 +377,74 @@ SELECT COUNT(*) as total FROM blogs
 
       </section>
 
+      {/* ⚙️ HOW IT WORKS */}
+      <section className="max-w-6xl mx-auto pt-5 pb-10">
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">
+          How iSevenPlus Tools Work
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-6">
+
+          {[
+            {
+              title: "Choose a Tool",
+              desc: "Select from 100+ calculators and SEO tools based on your need.",
+            },
+            {
+              title: "Enter Details",
+              desc: "Fill in simple inputs like numbers, keywords, or URLs.",
+            },
+            {
+              title: "Get Instant Results",
+              desc: "Get fast, accurate results instantly without any signup.",
+            },
+          ].map((item, i) => (
+            <div key={i} className="border rounded-2xl p-6 bg-white hover:shadow-lg transition">
+              <h3 className="font-semibold text-lg mb-2 text-indigo-600">
+                {item.title}
+              </h3>
+              <p className="text-gray-600 text-sm">
+                {item.desc}
+              </p>
+            </div>
+          ))}
+
+        </div>
+      </section>
+
 
       {/* CATEGORIES */}
-      <section className="pb-10">
+      {/* <section className="pb-10"> */}
 
         {/* HEADER */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-4">
+        {/* <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-4">
           <h2 className="font-bold text-lg flex items-center gap-2">
             Popular Categories
           </h2>
-        </div>
+        </div> */}
 
         {/* GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {categories.map((cat: any, index: number) => (
             <Link
               key={cat.id}
               href={`/category/${cat.slug}`}
               className="group relative border rounded-2xl p-5 bg-white hover:shadow-xl hover:border-indigo-300 transition-all duration-300 overflow-hidden"
-            >
+            > */}
 
               {/* HOVER GRADIENT */}
-              <div className="absolute inset-0 bg-linear-to-r from-indigo-50 to-purple-50 opacity-0 group-hover:opacity-100 transition"></div>
+              {/* <div className="absolute inset-0 bg-linear-to-r from-indigo-50 to-purple-50 opacity-0 group-hover:opacity-100 transition"></div> */}
 
               {/* CONTENT */}
-              <div className="relative z-10 flex items-start gap-4">
+              {/* <div className="relative z-10 flex items-start gap-4"> */}
 
                 {/* ICON BOX */}
-                <div className="p-3 rounded-xl bg-indigo-100 text-indigo-600 group-hover:scale-110 transition">
+                {/* <div className="p-3 rounded-xl bg-indigo-100 text-indigo-600 group-hover:scale-110 transition">
                   <Layers className="w-5 h-5" />
-                </div>
+                </div> */}
 
                 {/* TEXT */}
-                <div className="flex-1">
+                {/* <div className="flex-1">
                   <h3 className="text-base font-semibold text-gray-800 group-hover:text-indigo-700">
                     {cat.name}
                   </h3>
@@ -378,10 +452,10 @@ SELECT COUNT(*) as total FROM blogs
                   <p className="text-xs text-gray-500 mt-1">
                     ⚡ Free • Instant • No Signup
                   </p>
-                </div>
+                </div> */}
 
                 {/* ARROW */}
-                <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-indigo-600 group-hover:translate-x-1 transition" />
+                {/* <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-indigo-600 group-hover:translate-x-1 transition" />
 
               </div>
 
@@ -390,10 +464,10 @@ SELECT COUNT(*) as total FROM blogs
 
         </div>
 
-      </section>
+      </section> */}
 
       {/* FEATURED */}
-      <section className="bg-white pb-16">
+      <section className="bg-white pb-5">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-4">
             <h2 className="font-bold text-lg flex items-center gap-2">
@@ -473,6 +547,112 @@ SELECT COUNT(*) as total FROM blogs
 
           </div>
         </div>
+      </section>
+
+      {/* 🎯 USE CASES */}
+      <section className="max-w-6xl mx-auto pt-5 pb-10">
+
+        {/* HEADER */}
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+            Popular Uses of Our Tools
+          </h2>
+          <p className="text-gray-500 text-sm mt-2 max-w-2xl m-auto">
+            Our free online calculators and SEO tools are designed to solve real-world problems —
+            from finance and health tracking to SEO analysis and productivity.
+          </p>
+          <p className="text-xs text-indigo-600 font-medium mb-2 mt-3">
+            ✔ 500+ Tools • ✔ Instant Results • ✔ No Signup Required
+          </p>
+        </div>
+
+        {/* CONTENT GRID */}
+        <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 text-sm">
+
+          {/* LEFT */}
+          <div className="space-y-5">
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-indigo-600">
+                <Calculator size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Calculate EMI, loan interest & financial planning</strong> using accurate and easy-to-use tools.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-green-600">
+                <Activity size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Check BMI, calorie intake & fitness tracking</strong> to maintain a healthy lifestyle.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-purple-600">
+                <BarChart3 size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Analyze SEO metrics like Domain Authority, Page Authority & backlinks</strong> to improve rankings.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-blue-600">
+                <Search size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Find keyword difficulty & search volume</strong> for better SEO strategy and content planning.
+              </p>
+            </div>
+
+          </div>
+
+          {/* RIGHT */}
+          <div className="space-y-5">
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-indigo-600">
+                <MapPin size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Search Indian pincode & postal code details</strong> with accurate and updated database.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-orange-600">
+                <Receipt size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Calculate GST, tax & business costs</strong> for better financial decision making.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-gray-700">
+                <Clock size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Time, date & productivity calculators</strong> to manage your daily tasks efficiently.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-yellow-600">
+                <Zap size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Free tools for students & professionals</strong> with instant results and no signup required.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
       </section>
 
       {/* TRENDING */}
@@ -890,6 +1070,94 @@ SELECT COUNT(*) as total FROM blogs
 
       </section>
 
+      {/* 👥 WHO CAN USE */}
+      <section className="max-w-6xl mx-auto pt-5 pb-10">
+
+        {/* HEADER */}
+        <div className="mb-6 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+            Who Can Use iSevenPlus?
+          </h2>
+          <p className="text-gray-500 text-sm mt-2 mb-3">
+            iSevenPlus is built for a wide range of users who need fast, accurate, and free tools
+            for daily calculations, SEO analysis, and productivity.
+          </p>
+          <p className="text-xs text-indigo-600 font-medium mb-2">
+            ✔ For Students • ✔ For Professionals • ✔ For Businesses • ✔ For SEO Experts
+          </p>
+        </div>
+
+        {/* CONTENT */}
+        <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 text-sm">
+
+          {/* LEFT */}
+          <div className="space-y-5">
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-indigo-600">
+                <GraduationCap size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Students</strong> can use calculators for academic purposes like percentage, BMI, and basic calculations.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-green-600">
+                <Briefcase size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Professionals</strong> can plan finances, calculate EMI, taxes, and manage daily productivity tasks.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-purple-600">
+                <Search size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>SEO experts</strong> can analyze websites, check backlinks, domain authority, and keyword difficulty.
+              </p>
+            </div>
+
+          </div>
+
+          {/* RIGHT */}
+          <div className="space-y-5">
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-blue-600">
+                <Code size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Developers</strong> can quickly perform calculations and use utility tools to speed up workflows.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-orange-600">
+                <Building2 size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>Businesses</strong> can estimate costs, calculate GST, and optimize operations using smart tools.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 text-yellow-600">
+                <Users size={18} />
+              </span>
+              <p className="text-gray-700 leading-relaxed">
+                <strong>General users</strong> can use daily tools like age calculator, time tools, and pincode search easily.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
       {/* GUIDES */}
       <section className="pb-20 mt-12">
 
@@ -1116,6 +1384,33 @@ SELECT COUNT(*) as total FROM blogs
         >
           Explore All Tools
         </Link>
+      </section>
+
+      {/* 📄 SEO LONG CONTENT */}
+      <section className="max-w-6xl mx-auto px-4 py-12">
+        <div className="bg-white border rounded-2xl p-6 md:p-10">
+
+          <h2 className="text-2xl font-bold mb-4">
+            Best Free Online Calculators & SEO Tools Platform
+          </h2>
+
+          <p className="text-gray-600 text-sm leading-relaxed mb-4">
+            iSevenPlus is one of the best platforms to access free online calculators and SEO tools
+            without any limitations. Our tools are designed to provide accurate results instantly
+            for a wide range of use cases including finance, health, productivity, and digital marketing.
+          </p>
+
+          <p className="text-gray-600 text-sm leading-relaxed mb-4">
+            Whether you want to calculate EMI, analyze website SEO performance, find postal codes,
+            or perform daily calculations, our platform offers everything in one place. We continuously
+            update our tools to ensure accuracy, speed, and reliability.
+          </p>
+
+          <p className="text-gray-600 text-sm leading-relaxed">
+            Start using our free tools today and simplify your calculations with ease.
+          </p>
+
+        </div>
       </section>
 
     </main>

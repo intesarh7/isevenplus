@@ -2,14 +2,11 @@
 
 import { useState, useRef } from "react";
 import {
-    Calculator,
     RotateCcw,
     Wand2,
     Download,
     Share2,
-    Home,
-    Paintbrush,
-    Ruler,
+    Home, Calculator, Settings, CheckCircle, Briefcase, Sparkles, HelpCircle
 } from "lucide-react";
 
 export default function RoomAreaCalculator() {
@@ -292,42 +289,188 @@ export default function RoomAreaCalculator() {
                     </>
                 )}
                 {/* SEO Section */}
-                <section className="mt-14">
-                    <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800">
-                        About Room Area Calculator
-                    </h2>
+                <section className="mt-14 space-y-10 text-gray-700 leading-relaxed">
 
-                    <p className="text-gray-600 leading-relaxed mb-6">
-                        The Room Area Calculator helps you calculate the total area of a room
-                        using its length and width. The result is displayed in square feet and square meters.
-                    </p>
+                    {/* 🔷 ABOUT */}
+                    <div>
+                        <h2 className="text-2xl sm:text-3xl font-bold flex items-center gap-2 text-gray-900">
+                            <Home className="text-indigo-600" size={22} />
+                            About Room Area Calculator
+                        </h2>
 
-                    <div className="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 className="text-xl font-semibold mb-3 text-indigo-600">
-                                How to Use
-                            </h3>
-                            <ul className="space-y-2 text-gray-600 list-disc pl-5">
-                                <li>Enter room length</li>
-                                <li>Enter room width</li>
-                                <li>Click Calculate</li>
-                                <li>Get area instantly</li>
-                            </ul>
+                        <p className="mt-4 text-sm md:text-base">
+                            The <strong>Room Area Calculator</strong> is a simple yet powerful online tool that helps you
+                            calculate the total area of a room based on its length and width. It instantly provides accurate
+                            results in both <strong>square feet (sq ft)</strong> and <strong>square meters (m²)</strong>,
+                            making it ideal for homeowners, builders, architects, and interior designers.
+                        </p>
+
+                        <p className="mt-3 text-sm md:text-base">
+                            Whether you are planning flooring, painting, tiling, or furniture placement, knowing the exact
+                            area of your room is essential. This tool eliminates manual calculations and provides precise
+                            results within seconds.
+                        </p>
+
+                        <p className="mt-3 text-sm md:text-base">
+                            With increasing demand for accurate construction and interior planning tools, this calculator
+                            ensures you can estimate materials, costs, and layouts efficiently without errors.
+                        </p>
+                    </div>
+
+                    {/* 🔷 FORMULA */}
+                    <div>
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            <Calculator className="text-indigo-600" size={22} />
+                            Room Area Formula
+                        </h3>
+
+                        <p className="mt-3 text-sm md:text-base">
+                            The calculation of room area is based on a simple mathematical formula:
+                        </p>
+
+                        <div className="mt-4 bg-gray-50 border rounded-xl p-4 text-center font-semibold">
+                            Area = Length × Width
                         </div>
 
-                        <div>
-                            <h3 className="text-xl font-semibold mb-3 text-indigo-600">
-                                Why Use This Tool?
-                            </h3>
-                            <ul className="space-y-2 text-gray-600 list-disc pl-5">
-                                <li>Instant calculation</li>
-                                <li>Square feet & meter conversion</li>
-                                <li>Mobile friendly</li>
-                                <li>Download result image</li>
-                                <li>100% free</li>
-                            </ul>
+                        <p className="mt-3 text-sm md:text-base">
+                            For example, if a room has a length of 10 feet and a width of 12 feet, the total area will be
+                            <strong>120 square feet</strong>. The calculator also converts this value into square meters automatically.
+                        </p>
+                    </div>
+
+                    {/* 🔷 HOW TO USE */}
+                    <div>
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            <Settings className="text-purple-600" size={22} />
+                            How to Use the Room Area Calculator
+                        </h3>
+
+                        <ul className="mt-4 space-y-3 text-sm md:text-base">
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Enter the <strong>length of the room</strong> in feet or meters.
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Enter the <strong>width of the room</strong>.
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Click on the <strong>Calculate</strong> button.
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Get instant area results in <strong>sq ft and m²</strong>.
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* 🔷 USE CASES */}
+                    <div>
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            <Briefcase className="text-indigo-600" size={22} />
+                            Where is This Calculator Used?
+                        </h3>
+
+                        <ul className="mt-4 space-y-3 text-sm md:text-base">
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                <strong>Home Construction:</strong> Estimate floor size and layout planning.
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                <strong>Interior Design:</strong> Plan furniture placement and decoration.
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                <strong>Painting & Flooring:</strong> Calculate material requirements.
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                <strong>Real Estate:</strong> Measure property area for listings.
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* 🔷 BENEFITS */}
+                    <div>
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            <Sparkles className="text-pink-600" size={22} />
+                            Benefits of Using This Tool
+                        </h3>
+
+                        <ul className="mt-4 space-y-3 text-sm md:text-base">
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Instant and accurate calculations
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Supports square feet & meter conversion
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Mobile-friendly and easy to use
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Helps in cost estimation and planning
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                100% free with no signup required
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* 🔷 FAQ */}
+                    <div>
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            <HelpCircle className="text-indigo-600" size={22} />
+                            Frequently Asked Questions
+                        </h3>
+
+                        <div className="mt-4 space-y-5 text-sm md:text-base">
+
+                            <div>
+                                <h4 className="font-semibold">
+                                    1. Can I calculate area in meters?
+                                </h4>
+                                <p className="text-gray-600 mt-1">
+                                    Yes, the calculator supports both square feet and square meters automatically.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="font-semibold">
+                                    2. Is this tool accurate?
+                                </h4>
+                                <p className="text-gray-600 mt-1">
+                                    Yes, it uses standard mathematical formulas to ensure precise results.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="font-semibold">
+                                    3. Can I use it for irregular rooms?
+                                </h4>
+                                <p className="text-gray-600 mt-1">
+                                    This tool is best for rectangular rooms. For irregular shapes, divide the room into sections.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="font-semibold">
+                                    4. Is it free to use?
+                                </h4>
+                                <p className="text-gray-600 mt-1">
+                                    Yes, the Room Area Calculator is completely free with no hidden charges.
+                                </p>
+                            </div>
+
                         </div>
                     </div>
+
                 </section>
             </div>
         </div>

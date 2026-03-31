@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Calculator, CheckCircle, TrendingUp, Circle, Sparkles, BarChart3, ShieldCheck, Lightbulb } from "lucide-react";
 
 export default function MortgageCalculator() {
   const [loanAmount, setLoanAmount] = useState("");
@@ -40,7 +41,7 @@ export default function MortgageCalculator() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-2xl p-6 mt-8">
+    <div className="bg-white shadow-xl rounded-2xl p-6">
       <h2 className="text-2xl font-bold mb-6 text-center">
         Mortgage Calculator
       </h2>
@@ -98,25 +99,203 @@ export default function MortgageCalculator() {
       )}
 
       {/* SEO Explanation */}
-      <div className="mt-10 border-t pt-6 text-sm text-gray-700 leading-6">
-        <h3 className="font-semibold text-lg mb-2">
-          Example Calculation
-        </h3>
+      <div className="mt-10 border-t pt-8 space-y-8 text-gray-700 leading-relaxed">
 
-        <p>
-          For a ₹30,00,000 home loan at 8.5% interest for 20 years:
-        </p>
+        {/* 🔷 HEADER */}
+        <div>
+          <h3 className="text-xl md:text-2xl font-bold flex items-center gap-2">
+            <Calculator className="text-indigo-600" size={20} />
+            Mortgage Calculator Example
+          </h3>
 
-        <p className="mt-2">
-          Monthly EMI ≈ ₹26,035 <br />
-          Total Interest ≈ ₹32,48,000+ <br />
-          Total Payment ≈ ₹62,48,000+
-        </p>
+          <p className="text-sm md:text-base mt-2 text-gray-600">
+            Let’s understand how a <strong>Mortgage Calculator</strong> works with a real-life home loan example.
+          </p>
+        </div>
 
-        <p className="mt-4">
-          Mortgage EMI is calculated using the standard loan amortization formula.
-          This calculator helps estimate monthly payments and total interest cost.
-        </p>
+        {/* 🔷 EXAMPLE BOX */}
+        <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-5">
+
+          <p className="text-sm md:text-base mb-3">
+            Suppose you take a <strong>home loan of ₹30,00,000</strong> at an annual interest rate of
+            <strong> 8.5%</strong> for a tenure of <strong>20 years</strong>.
+          </p>
+
+          <div className="space-y-2 text-sm md:text-base">
+
+            <p className="flex items-center gap-2">
+              <CheckCircle className="text-green-600" size={16} />
+              <strong>Monthly EMI:</strong> ₹26,035 (approx)
+            </p>
+
+            <p className="flex items-center gap-2">
+              <CheckCircle className="text-green-600" size={16} />
+              <strong>Total Interest Payable:</strong> ₹32,48,000+
+            </p>
+
+            <p className="flex items-center gap-2">
+              <CheckCircle className="text-green-600" size={16} />
+              <strong>Total Payment:</strong> ₹62,48,000+
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* 🔷 EXPLANATION */}
+        <div>
+          <h4 className="font-semibold text-lg flex items-center gap-2">
+            <TrendingUp className="text-indigo-600" size={18} />
+            How Mortgage EMI is Calculated
+          </h4>
+
+          <p className="mt-2 text-sm md:text-base">
+            The <strong>Mortgage EMI (Equated Monthly Installment)</strong> is calculated using the
+            standard loan amortization formula. It considers the loan amount (principal), interest rate,
+            and loan tenure to determine a fixed monthly payment.
+          </p>
+
+          <p className="mt-3 text-sm md:text-base">
+            Each EMI consists of two components:
+          </p>
+
+          <ul className="mt-3 space-y-2 text-sm md:text-base">
+            <li className="flex items-start gap-2">
+              <Circle className="text-indigo-600 mt-1" size={10} />
+              <span><strong>Principal Amount:</strong> Portion of the loan repaid each month</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Circle className="text-indigo-600 mt-1" size={10} />
+              <span><strong>Interest Amount:</strong> Cost charged by the lender</span>
+            </li>
+          </ul>
+
+          <p className="mt-3 text-sm md:text-base">
+            In the initial years, a larger portion of EMI goes toward interest, while in later years,
+            more of it goes toward the principal repayment.
+          </p>
+        </div>
+
+        {/* 🔷 WHY USE */}
+        <div>
+          <h4 className="font-semibold text-lg flex items-center gap-2">
+            <Sparkles className="text-pink-600" size={18} />
+            Why Use a Mortgage Calculator?
+          </h4>
+
+          <ul className="mt-3 space-y-2 text-sm md:text-base">
+            <li className="flex items-start gap-2">
+              <CheckCircle size={16} className="text-green-600 mt-1" />
+              Plan your monthly budget before taking a home loan
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle size={16} className="text-green-600 mt-1" />
+              Compare different interest rates and loan tenures
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle size={16} className="text-green-600 mt-1" />
+              Understand total interest payable over time
+            </li>
+            <li className="flex items-start gap-2">
+              <CheckCircle size={16} className="text-green-600 mt-1" />
+              Make better financial and investment decisions
+            </li>
+          </ul>
+        </div>
+
+        {/* 🔷 EXTRA CONTENT */}
+        <div className="space-y-6">
+
+          <div>
+            <h4 className="font-semibold text-lg flex items-center gap-2">
+              <BarChart3 className="text-indigo-600" size={18} />
+              Key Factors That Affect Your Mortgage EMI
+            </h4>
+
+            <p className="mt-2 text-sm md:text-base">
+              Your monthly EMI depends on several important factors. Understanding these can help you
+              reduce your loan burden and make better financial decisions:
+            </p>
+
+            <ul className="mt-3 space-y-2 text-sm md:text-base">
+              <li className="flex items-start gap-2">
+                <CheckCircle size={16} className="text-green-600 mt-1" />
+                <span><strong>Loan Amount:</strong> Higher loan amount results in higher EMI.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle size={16} className="text-green-600 mt-1" />
+                <span><strong>Interest Rate:</strong> Even a small increase in rate can significantly increase total interest.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle size={16} className="text-green-600 mt-1" />
+                <span><strong>Loan Tenure:</strong> Longer tenure reduces EMI but increases total interest paid.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-lg flex items-center gap-2">
+              <ShieldCheck className="text-green-600" size={18} />
+              Tips to Reduce Your Home Loan EMI
+            </h4>
+
+            <p className="mt-2 text-sm md:text-base">
+              If you're planning to take a home loan, here are some practical tips to reduce your EMI
+              and overall interest burden:
+            </p>
+
+            <ul className="mt-3 space-y-2 text-sm md:text-base">
+              <li className="flex items-start gap-2">
+                <CheckCircle size={16} className="text-green-600 mt-1" />
+                <span>Make a higher down payment to reduce loan principal</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle size={16} className="text-green-600 mt-1" />
+                <span>Choose a shorter tenure if you can afford higher EMI</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle size={16} className="text-green-600 mt-1" />
+                <span>Compare multiple lenders to get the lowest interest rate</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle size={16} className="text-green-600 mt-1" />
+                <span>Make prepayments whenever possible to reduce interest</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-lg flex items-center gap-2">
+              <Lightbulb className="text-yellow-500" size={18} />
+              Why Accurate EMI Calculation Matters
+            </h4>
+
+            <p className="mt-2 text-sm md:text-base">
+              Accurate EMI calculation is essential for financial planning. A mortgage is a long-term
+              commitment, and even small miscalculations can lead to budgeting issues. By using a
+              reliable <strong>Mortgage Calculator</strong>, you can clearly understand your repayment
+              schedule and avoid financial stress.
+            </p>
+
+            <p className="mt-3 text-sm md:text-base">
+              This tool helps you visualize your loan structure, compare different loan scenarios,
+              and make informed decisions before applying for a home loan. It is especially useful
+              for first-time home buyers who want clarity on their monthly financial obligations.
+            </p>
+          </div>
+
+        </div>
+
+        {/* 🔷 SEO PARAGRAPH */}
+        <div>
+          <p className="text-sm md:text-base">
+            Our <strong>Mortgage Calculator</strong> helps you calculate monthly EMI, total interest,
+            and total repayment amount instantly. Whether you are planning to buy a home, refinance
+            your loan, or compare different mortgage options, this tool provides accurate results
+            to support your financial planning.
+          </p>
+        </div>
+
       </div>
     </div>
   );

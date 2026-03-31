@@ -2,12 +2,12 @@
 
 import { useState, useRef } from "react";
 import {
-    Calculator,
     RotateCcw,
     Wand2,
     Download,
     Share2,
-    Grid3X3
+    Grid3X3,
+    LayoutGrid, Calculator, Settings, CheckCircle, Briefcase, Sparkles, HelpCircle
 } from "lucide-react";
 
 export default function TileCalculator() {
@@ -70,9 +70,9 @@ export default function TileCalculator() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="">
 
-            <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-200">
+            <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-4">
 
                 {/* Heading with Lucide Icon */}
                 <h2 className="flex items-center justify-center gap-3 text-3xl font-bold text-center mb-6">
@@ -193,42 +193,187 @@ export default function TileCalculator() {
 
 
                 {/* SEO Section */}
-                <section className="mt-14">
-                    <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800">
-                        About Tile Calculator
-                    </h2>
+                <section className="mt-14 space-y-10 text-gray-700 leading-relaxed">
 
-                    <p className="text-gray-600 leading-relaxed mb-6">
-                        Our Tile Calculator helps you estimate the number of tiles required
-                        for flooring or wall installation based on room dimensions and tile size.
-                    </p>
+                    {/* 🔷 ABOUT */}
+                    <div>
+                        <h2 className="text-2xl sm:text-3xl font-bold flex items-center gap-2 text-gray-900">
+                            <LayoutGrid className="text-indigo-600" size={22} />
+                            About Tile Calculator
+                        </h2>
 
-                    <div className="grid md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 className="text-xl font-semibold mb-3 text-indigo-600">
-                                How It Works
-                            </h3>
-                            <ul className="space-y-2 text-gray-600 list-disc pl-5">
-                                <li>Enter room length and width</li>
-                                <li>Enter tile dimensions</li>
-                                <li>Click Calculate</li>
-                                <li>Get total tiles required instantly</li>
-                            </ul>
+                        <p className="mt-4 text-sm md:text-base">
+                            The <strong>Tile Calculator</strong> is a smart and easy-to-use online tool that helps you estimate
+                            the number of tiles required for flooring or wall installation. By entering the room dimensions and
+                            tile size, you can instantly calculate how many tiles you need for your project.
+                        </p>
+
+                        <p className="mt-3 text-sm md:text-base">
+                            Whether you are renovating your home, designing interiors, or working on a construction project,
+                            accurate tile estimation is essential to avoid wastage and extra costs. This tool ensures precise
+                            calculations so you can plan your materials efficiently.
+                        </p>
+
+                        <p className="mt-3 text-sm md:text-base">
+                            It is widely used by homeowners, contractors, builders, and interior designers to simplify
+                            flooring and wall tiling calculations.
+                        </p>
+                    </div>
+
+                    {/* 🔷 FORMULA */}
+                    <div>
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            <Calculator className="text-indigo-600" size={22} />
+                            Tile Calculation Formula
+                        </h3>
+
+                        <p className="mt-3 text-sm md:text-base">
+                            The tile calculation is based on the total area of the room divided by the area of a single tile:
+                        </p>
+
+                        <div className="mt-4 bg-gray-50 border rounded-xl p-4 text-center font-semibold">
+                            Number of Tiles = Room Area ÷ Tile Area
                         </div>
 
-                        <div>
-                            <h3 className="text-xl font-semibold mb-3 text-indigo-600">
-                                Benefits
-                            </h3>
-                            <ul className="space-y-2 text-gray-600 list-disc pl-5">
-                                <li>Accurate tile estimation</li>
-                                <li>Mobile responsive</li>
-                                <li>Download result image</li>
-                                <li>Easy sharing</li>
-                                <li>Free to use</li>
-                            </ul>
+                        <p className="mt-3 text-sm md:text-base">
+                            For example, if your room area is 120 sq ft and each tile covers 1 sq ft, you will need
+                            approximately <strong>120 tiles</strong>. You can also add extra tiles for wastage and cutting.
+                        </p>
+                    </div>
+
+                    {/* 🔷 HOW IT WORKS */}
+                    <div>
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            <Settings className="text-purple-600" size={22} />
+                            How the Tile Calculator Works
+                        </h3>
+
+                        <ul className="mt-4 space-y-3 text-sm md:text-base">
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Enter the <strong>room length and width</strong>.
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Input the <strong>tile dimensions</strong> (length & width).
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Click on the <strong>Calculate</strong> button.
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Get instant results showing total tiles required.
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* 🔷 USE CASES */}
+                    <div>
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            <Briefcase className="text-indigo-600" size={22} />
+                            Where is Tile Calculator Used?
+                        </h3>
+
+                        <ul className="mt-4 space-y-3 text-sm md:text-base">
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                <strong>Home Renovation:</strong> Estimate tiles for flooring and walls.
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                <strong>Interior Design:</strong> Plan layouts and tile arrangements.
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                <strong>Construction Projects:</strong> Manage material requirements efficiently.
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                <strong>Cost Estimation:</strong> Calculate total cost based on tile quantity.
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* 🔷 BENEFITS */}
+                    <div>
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            <Sparkles className="text-pink-600" size={22} />
+                            Benefits of Using Tile Calculator
+                        </h3>
+
+                        <ul className="mt-4 space-y-3 text-sm md:text-base">
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Accurate tile estimation with minimal wastage
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Saves time and effort compared to manual calculations
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Mobile-friendly and easy to use
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                Helps in budgeting and cost planning
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <CheckCircle size={16} className="text-green-600 mt-1" />
+                                100% free online tool with no signup required
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* 🔷 FAQ */}
+                    <div>
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            <HelpCircle className="text-indigo-600" size={22} />
+                            Frequently Asked Questions
+                        </h3>
+
+                        <div className="mt-4 space-y-5 text-sm md:text-base">
+
+                            <div>
+                                <h4 className="font-semibold">
+                                    1. How many extra tiles should I buy?
+                                </h4>
+                                <p className="text-gray-600 mt-1">
+                                    It is recommended to add 5–10% extra tiles for cutting and wastage.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="font-semibold">
+                                    2. Can I use this for wall tiles?
+                                </h4>
+                                <p className="text-gray-600 mt-1">
+                                    Yes, the calculator works for both floor tiles and wall tiles.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="font-semibold">
+                                    3. Does it support different tile sizes?
+                                </h4>
+                                <p className="text-gray-600 mt-1">
+                                    Yes, you can input any tile dimensions to get accurate results.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="font-semibold">
+                                    4. Is this tile calculator free?
+                                </h4>
+                                <p className="text-gray-600 mt-1">
+                                    Yes, it is completely free and available online without registration.
+                                </p>
+                            </div>
+
                         </div>
                     </div>
+
                 </section>
             </div>
         </div>

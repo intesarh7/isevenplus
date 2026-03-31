@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-
+import { Wallet, Calculator, TrendingUp, CheckCircle, AlertTriangle, Settings, Sparkles, Lightbulb, HelpCircle } from "lucide-react";
 export default function NetWorthCalculator() {
     const [assets, setAssets] = useState("");
     const [liabilities, setLiabilities] = useState("");
@@ -20,7 +20,7 @@ export default function NetWorthCalculator() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-6 mt-8">
+        <div className="bg-white shadow-xl rounded-2xl p-6">
             <h2 className="text-2xl font-bold text-center mb-6">
                 Net Worth Calculator
             </h2>
@@ -52,66 +52,254 @@ export default function NetWorthCalculator() {
             )}
 
             {/* ✅ SEO CONTENT SECTION */}
-            <div className="mt-10 border-t pt-6 text-sm text-gray-700 leading-6 space-y-4">
-                <h3 className="text-lg font-semibold">
-                    What is Net Worth?
-                </h3>
-                <p>
-                    Net worth represents your overall financial position. It is calculated
-                    by subtracting your total liabilities (debts) from your total assets
-                    (everything you own).
-                </p>
+            <section className="mt-14 space-y-10 text-gray-700 leading-relaxed">
 
-                <h3 className="text-lg font-semibold">
-                    Net Worth Formula
-                </h3>
-                <p className="font-mono">
-                    Net Worth = Total Assets − Total Liabilities
-                </p>
-                <p>
-                    Assets may include cash, savings, investments, real estate, vehicles,
-                    retirement accounts, and business ownership. Liabilities include loans,
-                    credit card balances, mortgages, and other outstanding debts.
-                </p>
+                {/* 🔷 INTRO */}
+                <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold flex items-center gap-2 text-gray-900">
+                        <Wallet className="text-indigo-600" size={22} />
+                        What is Net Worth?
+                    </h2>
 
-                <h3 className="text-lg font-semibold">
-                    Why Tracking Net Worth is Important
-                </h3>
-                <p>
-                    Monitoring your net worth helps you understand your financial growth
-                    over time. It shows whether you are building wealth or accumulating
-                    more debt. Financial advisors often use net worth as a key indicator
-                    of long-term financial health.
-                </p>
+                    <p className="mt-4 text-sm md:text-base">
+                        <strong>Net Worth</strong> is a measure of your financial health. It represents the difference between your total assets and total liabilities. In simple terms, it shows how much you own versus how much you owe.
+                    </p>
 
-                <h3 className="text-lg font-semibold">
-                    Example Calculation
-                </h3>
-                <p>
-                    If your total assets are $150,000 and total liabilities are $50,000,
-                    your net worth would be $100,000. A positive net worth indicates
-                    financial stability, while a negative net worth means debts exceed assets.
-                </p>
+                    <p className="mt-3 text-sm md:text-base">
+                        Your net worth can be positive or negative. A positive net worth means your assets exceed your liabilities, while a negative net worth indicates that your debts are higher than your assets.
+                    </p>
 
-                <h3 className="text-lg font-semibold">
-                    How to Improve Your Net Worth
-                </h3>
-                <p>
-                    You can increase your net worth by reducing high-interest debt,
-                    investing consistently, building emergency savings, and growing
-                    income sources. Long-term disciplined financial planning plays a
-                    crucial role in wealth creation.
-                </p>
+                    <p className="mt-3 text-sm md:text-base">
+                        Our <strong>Net Worth Calculator</strong> helps you calculate your financial position instantly and track your wealth growth over time.
+                    </p>
+                </div>
 
-                <h3 className="text-lg font-semibold">
-                    Who Should Use This Calculator?
-                </h3>
-                <p>
-                    Anyone interested in personal finance, wealth tracking, retirement
-                    planning, or financial independence can use this calculator to
-                    evaluate their current financial standing.
-                </p>
-            </div>
+                {/* 🔷 FORMULA */}
+                <div>
+                    <h3 className="text-xl font-semibold flex items-center gap-2">
+                        <Calculator className="text-indigo-600" size={20} />
+                        Net Worth Formula
+                    </h3>
+
+                    <div className="mt-4 bg-gray-50 border rounded-xl p-4 text-center font-semibold">
+                        Net Worth = Total Assets − Total Liabilities
+                    </div>
+
+                    <p className="mt-3 text-sm md:text-base">
+                        Assets include everything you own, while liabilities include everything you owe. This simple formula provides a clear snapshot of your financial status.
+                    </p>
+                </div>
+
+                {/* 🔷 ASSETS */}
+                <div>
+                    <h3 className="text-xl font-semibold flex items-center gap-2">
+                        <TrendingUp className="text-indigo-600" size={20} />
+                        What Are Assets?
+                    </h3>
+
+                    <p className="mt-3 text-sm md:text-base">
+                        Assets are valuable items or investments that you own. These contribute positively to your net worth.
+                    </p>
+
+                    <ul className="mt-4 space-y-3 text-sm md:text-base">
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Cash and bank balance
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Investments (stocks, mutual funds, bonds)
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Real estate property
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Vehicles and valuable assets
+                        </li>
+                    </ul>
+                </div>
+
+                {/* 🔷 LIABILITIES */}
+                <div>
+                    <h3 className="text-xl font-semibold flex items-center gap-2">
+                        <AlertTriangle className="text-red-500" size={20} />
+                        What Are Liabilities?
+                    </h3>
+
+                    <p className="mt-3 text-sm md:text-base">
+                        Liabilities are financial obligations or debts that reduce your net worth.
+                    </p>
+
+                    <ul className="mt-4 space-y-3 text-sm md:text-base">
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Home loans or mortgages
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Credit card debt
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Personal or education loans
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Other outstanding liabilities
+                        </li>
+                    </ul>
+                </div>
+
+                {/* 🔷 HOW TOOL WORKS */}
+                <div>
+                    <h3 className="text-xl font-semibold flex items-center gap-2">
+                        <Settings className="text-purple-600" size={20} />
+                        How to Use Net Worth Calculator?
+                    </h3>
+
+                    <ul className="mt-4 space-y-3 text-sm md:text-base">
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Enter total value of your assets
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Enter total liabilities or debts
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Click Calculate
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Get your net worth instantly
+                        </li>
+                    </ul>
+                </div>
+
+                {/* 🔷 BENEFITS */}
+                <div>
+                    <h3 className="text-xl font-semibold flex items-center gap-2">
+                        <Sparkles className="text-pink-600" size={20} />
+                        Benefits of Tracking Net Worth
+                    </h3>
+
+                    <ul className="mt-4 space-y-3 text-sm md:text-base">
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Understand your financial health clearly
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Track progress toward financial goals
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Identify areas to reduce debt
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Improve wealth-building strategies
+                        </li>
+                    </ul>
+                </div>
+
+                {/* 🔷 EXAMPLE */}
+                <div>
+                    <h3 className="text-xl font-semibold flex items-center gap-2">
+                        <TrendingUp className="text-indigo-600" size={20} />
+                        Example Net Worth Calculation
+                    </h3>
+
+                    <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mt-4 space-y-2 text-sm md:text-base">
+                        <p>Total Assets = ₹20,00,000</p>
+                        <p>Total Liabilities = ₹8,00,000</p>
+                        <p><strong>Net Worth = ₹12,00,000</strong></p>
+                    </div>
+
+                    <p className="mt-3 text-sm md:text-base">
+                        This means your financial position is positive, and you are building wealth over time.
+                    </p>
+                </div>
+
+                {/* 🔷 TIPS */}
+                <div>
+                    <h3 className="text-xl font-semibold flex items-center gap-2">
+                        <Lightbulb className="text-yellow-500" size={20} />
+                        Tips to Increase Your Net Worth
+                    </h3>
+
+                    <ul className="mt-4 space-y-3 text-sm md:text-base">
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Increase your savings and investments
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Reduce high-interest debts
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Invest in appreciating assets
+                        </li>
+                        <li className="flex items-start gap-2">
+                            <CheckCircle size={16} className="text-green-600 mt-1" />
+                            Track your finances regularly
+                        </li>
+                    </ul>
+                </div>
+
+                {/* 🔷 SEO TEXT */}
+                <div>
+                    <p className="text-sm md:text-base">
+                        Our <strong>Net Worth Calculator</strong> is one of the best tools to calculate your
+                        <strong>personal net worth</strong>, track financial growth, and improve wealth management.
+                        Whether you are planning for retirement, investments, or debt reduction, this tool helps you make smarter financial decisions.
+                    </p>
+                </div>
+
+                {/* 🔷 FAQ */}
+                <div>
+                    <h3 className="text-xl font-semibold flex items-center gap-2">
+                        <HelpCircle className="text-indigo-600" size={20} />
+                        Frequently Asked Questions
+                    </h3>
+
+                    <div className="mt-4 space-y-5 text-sm md:text-base">
+
+                        <div>
+                            <h4 className="font-semibold">
+                                1. What is a good net worth?
+                            </h4>
+                            <p className="text-gray-600 mt-1">
+                                It depends on age, income, and financial goals.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h4 className="font-semibold">
+                                2. Can net worth be negative?
+                            </h4>
+                            <p className="text-gray-600 mt-1">
+                                Yes, if liabilities exceed assets.
+                            </p>
+                        </div>
+
+                        <div>
+                            <h4 className="font-semibold">
+                                3. How often should I calculate net worth?
+                            </h4>
+                            <p className="text-gray-600 mt-1">
+                                Ideally once every few months to track progress.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
         </div>
     );
 }
