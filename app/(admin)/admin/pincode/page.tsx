@@ -43,7 +43,7 @@ export default function PostalAdminPage() {
     const fetchData = async () => {
         try {
             const res = await fetch(
-                `/api/admin/${tab === "india" ? "indian-pincode" : "world-postal"}?page=${page}&search=${search}`
+                `/api/admin/${tab === "india" ? "indian-pincode" : "world-postal"}?page=${page}&limit=${limit}&search=${search}`
             );
 
             if (!res.ok) {
@@ -54,11 +54,17 @@ export default function PostalAdminPage() {
             const json = await res.json();
             setData(json.data || []);
             setTotal(json.total || 0);
-
+            
+            console.log("DATA LENGTH:", json.data?.length);
+            console.log("TOTAL:", json.total);
         } catch (err) {
             console.error("Fetch Error:", err);
         }
     };
+    useEffect(() => {
+        setPage(1); // 👈 IMPORTANT
+    }, [tab]);
+
     useEffect(() => {
         fetchData();
     }, [tab, page, search]);
