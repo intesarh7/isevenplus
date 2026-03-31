@@ -3,32 +3,52 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
+
   const page = Number(searchParams.get("page") || 1);
+  const limit = Number(searchParams.get("limit")) || 100;
   const search = searchParams.get("search") || "";
-  const limit = 20;
+
   const offset = (page - 1) * limit;
 
-  let query = "SELECT * FROM worldwide_postal_codes WHERE 1";
+  let query = `
+    SELECT *
+    FROM worldwide_postal_codes
+    WHERE 1
+  `;
+
   const values: any[] = [];
 
   if (search) {
-    query += " AND (LOWER(postal_code) LIKE ? OR LOWER(place_name) LIKE ?)";
-values.push(`%${search.toLowerCase()}%`, `%${search.toLowerCase()}%`);
+    query += `
+      AND (
+        LOWER(postal_code) LIKE ?
+        OR LOWER(place_name) LIKE ?
+        OR LOWER(country_code) LIKE ?
+      )
+    `;
+    values.push(
+      `%${search.toLowerCase()}%`,
+      `%${search.toLowerCase()}%`,
+      `%${search.toLowerCase()}%`
+    );
   }
 
-  query += " ORDER BY id DESC LIMIT ? OFFSET ?";
+  // ✅ IMPORTANT FIX
+  query += ` ORDER BY country_code ASC, postal_code ASC LIMIT ? OFFSET ?`;
   values.push(limit, offset);
 
   const [rows]: any = await db.query(query, values);
 
-  const [[count]]: any = await db.query(
-    "SELECT COUNT(*) as total FROM worldwide_postal_codes"
-  );
+  const [[count]]: any = await db.query(`
+    SELECT COUNT(*) as total
+    FROM worldwide_postal_codes
+  `);
 
   return NextResponse.json({
     data: rows,
     total: count.total,
     page,
+    limit
   });
 }
 
