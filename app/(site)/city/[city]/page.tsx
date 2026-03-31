@@ -38,7 +38,7 @@ export async function generateMetadata({
 
   const stateName = rows?.[0]?.state || "";
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
   return {
     title: `${cityName} Pincode List (${year}) - (${stateName}) -All Post Office & ZIP Codes`,
@@ -91,7 +91,7 @@ export default async function CityPage({
     [stateName, cityName]
   );
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
   /* =========================================================
      🔥 SCHEMA: CollectionPage

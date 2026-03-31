@@ -11,7 +11,7 @@ function slugify(text: string) {
 }
 
 export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
   const [states] = await db.query<RowDataPacket[]>(
     "SELECT DISTINCT state FROM indian_pincodes WHERE state IS NOT NULL AND state != ''"

@@ -51,7 +51,7 @@ export default async function RegionPage({
 
     const regionName = params.region.replace(/-/g, " ").toUpperCase();
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
     /* ================= GET DISTRICTS ================= */
 

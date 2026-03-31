@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 /* ================= BASE URL ================= */
 const baseUrl =
-  process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
 /* ================= METADATA ================= */
 export async function generateMetadata({ searchParams }: any) {

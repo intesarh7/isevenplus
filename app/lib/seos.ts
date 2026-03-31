@@ -12,7 +12,7 @@ export function generateToolSEO({
   category: string;
 }): Metadata {
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
   const title = `${name} – Free Online ${category} Tool`;
   const url = `${baseUrl}/tools/${slug}/`;

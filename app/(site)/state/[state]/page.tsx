@@ -98,7 +98,7 @@ export default async function StatePage({
     [stateName.replace(/\s+/g, " ")]
   );
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.isevenplus.com";
 
   /* =========================================================
      🔥 SCHEMA: CollectionPage
