@@ -116,13 +116,13 @@ export default function ContinentFilterGrid({ countryData }: any) {
 
                 {/* ================= GRID ================= */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {filteredData.map((c: any) => {
+                    {filteredData.map((c: any, i: number) => {
                         const continent = continentMap[c.country_code] || "Other";
                         const countryName = getCountryName(c.country_code);
-
+console.log("TOTAL UI:", filteredData.length);
                         return (
                             <Link
-                                key={c.country_code}
+                               key={`${c.country_code}-${i}`}
                                 href={`/postalcode/${slugify(c.country_code)}`}
                                 className="group border rounded-2xl p-4 hover:shadow-md transition bg-white"
                             >
