@@ -53,14 +53,19 @@ const continentMap: Record<string, string> = {
     PE: "South America",
 
     // Europe
-    GB: "Europa",
-    DE: "Europa",
-    FR: "Europa",
-    IT: "Europa",
-    ES: "Europa",
-    NL: "Europa",
-    SE: "Europa",
-    CH: "Europa",
+    GB: "Europe",
+    DE: "Europe",
+    FR: "Europe",
+    IT: "Europe",
+    ES: "Europe",
+    NL: "Europe",
+    SE: "Europe",
+    CH: "Europe",
+    RU: "Europe",
+    PL: "Europe",
+    BE: "Europe",
+    AT: "Europe",
+    DK: "Europe",
 
     // Asia
     IN: "Asia",
@@ -70,6 +75,16 @@ const continentMap: Record<string, string> = {
     BD: "Asia",
     AE: "Asia",
     SG: "Asia",
+    SA: "Asia",
+    KR: "Asia",
+    TH: "Asia",
+    MY: "Asia",
+    ID: "Asia",
+    PH: "Asia",
+    VN: "Asia",
+    QA: "Asia",
+    KW: "Asia",
+    OM: "Asia",
 
     // Oceania
     AU: "Oceania",
@@ -82,6 +97,10 @@ const continentMap: Record<string, string> = {
     EG: "Africa",
     KE: "Africa",
     TZ: "Africa",
+    GH: "Africa",
+    UG: "Africa",
+    DZ: "Africa",
+
 };
 /* ================================
    🔥 SEO METADATA (FULL)
@@ -148,16 +167,16 @@ export default async function PostalHomePage() {
 
         // COUNTRIES
         db.query(`
-      SELECT t.country_code, t.total
-FROM (
-  SELECT country_code, COUNT(*) as total
-  FROM worldwide_postal_codes
-  WHERE country_code != '' 
-    AND country_code IS NOT NULL
-    AND country_code != 'IN'
-  GROUP BY country_code
-) t
-ORDER BY t.country_code ASC
+        SELECT t.country_code, t.total
+        FROM (
+        SELECT country_code, COUNT(*) as total
+        FROM worldwide_postal_codes
+        WHERE country_code != '' 
+        AND country_code IS NOT NULL
+        GROUP BY country_code
+        ) t
+        ORDER BY t.total DESC
+        LIMIT 300
     `),
 
         // PLACES

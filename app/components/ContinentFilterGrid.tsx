@@ -18,24 +18,22 @@ function slugify(text: string) {
 ================================ */
 const countryNames: Record<string, string> = {
     IN: "India",
+    PT: "Portugal",
+    AE: "United Arab Emirates",
     US: "United States",
     CA: "Canada",
+    SG: "Singapore ",
     MX: "Mexico",
-
     BR: "Brazil",
     AR: "Argentina",
-
     GB: "United Kingdom",
     DE: "Germany",
     FR: "France",
     IT: "Italy",
-
     CN: "China",
     JP: "Japan",
-
     AU: "Australia",
     NZ: "New Zealand",
-
     ZA: "South Africa",
     NG: "Nigeria",
 };
@@ -54,24 +52,59 @@ const continentMap: Record<string, string> = {
     US: "North America & Caribbean",
     CA: "North America & Caribbean",
     MX: "North America & Caribbean",
+    JM: "North America & Caribbean",
+    CU: "North America & Caribbean",
 
     BR: "South America",
     AR: "South America",
+    CL: "South America",
+    CO: "South America",
+    PE: "South America",
 
     GB: "Europe",
     DE: "Europe",
     FR: "Europe",
     IT: "Europe",
+    ES: "Europe",
+    NL: "Europe",
+    SE: "Europe",
+    CH: "Europe",
+    RU: "Europe",
+    PL: "Europe",
+    BE: "Europe",
+    AT: "Europe",
+    DK: "Europe",
 
     IN: "Asia",
     CN: "Asia",
     JP: "Asia",
+    PK: "Asia",
+    BD: "Asia",
+    AE: "Asia",
+    SG: "Asia",
+    SA: "Asia",
+    KR: "Asia",
+    TH: "Asia",
+    MY: "Asia",
+    ID: "Asia",
+    PH: "Asia",
+    VN: "Asia",
+    QA: "Asia",
+    KW: "Asia",
+    OM: "Asia",
 
     AU: "Oceania",
     NZ: "Oceania",
+    FJ: "Oceania",
 
     ZA: "Africa",
     NG: "Africa",
+    EG: "Africa",
+    KE: "Africa",
+    TZ: "Africa",
+    GH: "Africa",
+    UG: "Africa",
+    DZ: "Africa",
 };
 
 /* ================================
