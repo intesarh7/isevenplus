@@ -269,7 +269,7 @@ export default async function ToolsPage({
                   <div key={categoryName} id={`cat-${categoryName.replace(/\s+/g, "-").toLowerCase()}`}>
 
                     {/* CATEGORY HEADER */}
-                    <div className="flex items-center justify-between mb-4 px-4 py-3 rounded-xl bg-linear-to-r from-indigo-50 to-blue-50 border border-indigo-100 shadow-sm">
+                    <div className="flex items-center justify-between mb-4 px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-100 shadow-sm">
 
                       <h2 className="text-lg md:text-xl font-bold text-gray-800 flex items-center gap-2">
                         <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>

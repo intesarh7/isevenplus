@@ -219,8 +219,6 @@ ORDER BY t.total DESC
         groupedCountries[continent].push(c);
     });
 console.log("TOTAL:", countryData.length);
-console.log(countryData.find(c => c.country_code === "SG"));
-console.log(countryData.find(c => c.country_code === "ZA"));
     return (
         <div className="mx-auto py-10 px-4">
 

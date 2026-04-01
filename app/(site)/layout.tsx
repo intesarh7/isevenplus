@@ -155,10 +155,10 @@ LIMIT 10
       {/* ================= MAIN ================= */}
 
       <main className="min-h-screen w-full">
-        <div className="container mx-auto px-4 md:flex gap-8">
+        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
 
           {/* Main Content */}
-          <div className="md:w-3/3">
+          <div className="md:col-span-3">
             {children}
 
             {/* Bottom Content Ad */}
@@ -168,7 +168,7 @@ LIMIT 10
           </div>
 
           {/* Sidebar Ads (Desktop Only) */}
-          <aside className="md:w-1/4 hidden md:block">
+          <aside className="hidden md:block md:col-span-1">
             <div className="sticky top-24 space-y-6">
               <AdSlot location="sidebar_top" />
               <SidebarCard

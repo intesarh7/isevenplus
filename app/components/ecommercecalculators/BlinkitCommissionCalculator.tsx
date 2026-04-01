@@ -157,7 +157,7 @@ export default function BlinkitCommissionCalculator() {
             <div className="mx-auto mt-10 space-y-10">
 
                 {/* HERO TRUST SECTION */}
-                <section className="bg-linear-to-r from-indigo-50 to-purple-50 p-6 rounded-2xl shadow-sm border">
+                <section className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-2xl shadow-sm border">
                     <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
                         <div>
                             <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">

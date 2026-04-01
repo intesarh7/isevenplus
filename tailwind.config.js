@@ -1,8 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",        // ✅ App Router
+    "./components/**/*.{js,ts,jsx,tsx,mdx}", // ✅ Components
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",      // ✅ (optional)
   ],
 
   darkMode: "class",
@@ -30,13 +31,15 @@ module.exports = {
       },
     },
   },
+
+  // ⚠️ optional (remove if warning aaye)
   future: {
     hoverOnlyWhenSupported: true,
   },
 
   plugins: [
     require("@tailwindcss/typography"),
-    require("@tailwindcss/line-clamp"),
-    
+    // ❌ REMOVE this (v3 me already included)
+    // require("@tailwindcss/line-clamp"),
   ],
 };

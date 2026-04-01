@@ -144,7 +144,7 @@ export default function ZeptoCommissionCalculator() {
             <div className="mx-auto mt-10 space-y-10">
 
                 {/* TRUST SECTION */}
-                <section className="bg-linear-to-r from-purple-50 to-pink-50 p-6 rounded-2xl shadow-sm border">
+                <section className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-2xl shadow-sm border">
                     <div className="flex flex-col sm:flex-row justify-between gap-4">
                         <div>
                             <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">

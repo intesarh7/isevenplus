@@ -133,7 +133,7 @@ export default function GSTCalculator() {
           <div className="bg-white border rounded-2xl shadow-md overflow-hidden">
 
             {/* Header */}
-            <div className="bg-linear-to-r from-indigo-500 to-indigo-600 text-white px-5 py-3 flex items-center gap-2">
+            <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-5 py-3 flex items-center gap-2">
               <Receipt size={18} />
               <span className="font-semibold">GST Calculation Result</span>
             </div>
@@ -181,7 +181,7 @@ export default function GSTCalculator() {
         <div className="mx-auto mt-10 space-y-10">
 
           {/* TOP CTA STRIP */}
-          <section className="bg-linear-to-r from-indigo-50 to-blue-50 p-6 rounded-2xl border shadow-sm">
+          <section className="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-2xl border shadow-sm">
             <div className="grid sm:grid-cols-3 gap-4 text-sm font-medium">
 
               <div className="flex items-center gap-2 text-indigo-700">

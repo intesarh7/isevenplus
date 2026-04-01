@@ -158,7 +158,7 @@ SELECT COUNT(*) as total FROM blogs
 
 
       {/* 1️⃣ HERO */}
-      <section className="relative text-center pt-5 pb-10 px-4 bg-linear-to-b from-indigo-50 via-white to-white">
+      <section className="relative text-center pt-5 pb-10 px-4 bg-gradient-to-b from-indigo-50 via-white to-white">
 
         {/* 🔥 BACKGROUND GLOW */}
         <div className="absolute -top-16 sm:-top-20 md:-top-24 left-1/2 -translate-x-1/2 bg-indigo-200 opacity-30 blur-3xl rounded-full w-62.5 h-62.5 sm:w-100 sm:h-100 md:w-125 md:h-125 lg:w-150 lg:h-150 "></div>
@@ -433,7 +433,7 @@ SELECT COUNT(*) as total FROM blogs
             > */}
 
               {/* HOVER GRADIENT */}
-              {/* <div className="absolute inset-0 bg-linear-to-r from-indigo-50 to-purple-50 opacity-0 group-hover:opacity-100 transition"></div> */}
+              {/* <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 opacity-0 group-hover:opacity-100 transition"></div> */}
 
               {/* CONTENT */}
               {/* <div className="relative z-10 flex items-start gap-4"> */}
@@ -694,7 +694,7 @@ SELECT COUNT(*) as total FROM blogs
                 )}
 
                 {/* HOVER GRADIENT */}
-                <div className="absolute inset-0 bg-linear-to-r from-indigo-50 to-purple-50 opacity-0 group-hover:opacity-100 transition"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 opacity-0 group-hover:opacity-100 transition"></div>
 
                 {/* CONTENT */}
                 <div className="relative z-10 flex items-start gap-4">
@@ -1202,7 +1202,7 @@ SELECT COUNT(*) as total FROM blogs
               >
 
                 {/* HOVER GRADIENT */}
-                <div className="absolute inset-0 bg-linear-to-r from-indigo-50 to-purple-50 opacity-0 group-hover:opacity-100 transition"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 opacity-0 group-hover:opacity-100 transition"></div>
 
                 {/* CONTENT */}
                 <div className="relative z-10 flex flex-col justify-between h-full">

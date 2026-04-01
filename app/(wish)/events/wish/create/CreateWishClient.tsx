@@ -75,7 +75,7 @@ export default function CreateWish() {
 
     return (
         <>
-            <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50 py-10 px-4">
+            <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-10 px-4">
 
                 <div className="max-w-6xl mx-auto space-y-8">
 
@@ -178,8 +178,8 @@ export default function CreateWish() {
                             onClick={handleSubmit}
                             disabled={loading}
                             className={`mt-6 w-full py-3 rounded-xl text-white font-medium transition ${loading
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-linear-to-r from-indigo-600 to-purple-600 hover:opacity-90"
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90"
                                 }`}
                         >
                             {loading ? "Generating..." : "Generate Your Wish 🚀"}

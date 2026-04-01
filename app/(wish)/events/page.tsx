@@ -107,7 +107,7 @@ export default async function EventsPage() {
           >
 
             {/* FIXED GRADIENT */}
-            <div className="absolute inset-0 bg-linear-to-r from-indigo-50 to-purple-50 opacity-0 group-hover:opacity-100 transition"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 opacity-0 group-hover:opacity-100 transition"></div>
 
             <div className="relative z-10 flex flex-col justify-between h-full">
 

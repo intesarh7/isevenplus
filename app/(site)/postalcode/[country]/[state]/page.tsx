@@ -446,7 +446,7 @@ export default async function StatePage({ params }: any) {
             {/* ================================
             🚀 CTA (NEW)
             ================================ */}
-            <div className="mt-12 p-6 rounded-2xl bg-linear-to-r from-indigo-500 to-purple-600 text-white text-center">
+            <div className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-center">
 
                 <h2 className="text-2xl font-bold mb-2">
                     Find Postal Codes Instantly
