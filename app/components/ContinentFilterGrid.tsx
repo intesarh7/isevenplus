@@ -17,25 +17,7 @@ function slugify(text: string) {
    ✅ STATIC COUNTRY NAME MAP (SAFE)
 ================================ */
 const countryNames: Record<string, string> = {
-    IN: "India",
-    PT: "Portugal",
-    AE: "United Arab Emirates",
-    US: "United States",
-    CA: "Canada",
-    SG: "Singapore",
-    MX: "Mexico",
-    BR: "Brazil",
-    AR: "Argentina",
-    GB: "United Kingdom",
-    DE: "Germany",
-    FR: "France",
-    IT: "Italy",
-    CN: "China",
-    JP: "Japan",
-    AU: "Australia",
-    NZ: "New Zealand",
-    ZA: "South Africa",
-    NG: "Nigeria",
+     
 };
 
 /* ================================
