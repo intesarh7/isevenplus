@@ -34,74 +34,7 @@ function slugify(text: string) {
         .replace(/\s+/g, "-");
 }
 
-/* ================================
-   🌍 CONTINENT MAPPING
-================================ */
-const continentMap: Record<string, string> = {
-    // North America & Caribbean
-    US: "North America & Caribbean",
-    CA: "North America & Caribbean",
-    MX: "North America & Caribbean",
-    JM: "North America & Caribbean",
-    CU: "North America & Caribbean",
-
-    // South America
-    BR: "South America",
-    AR: "South America",
-    CL: "South America",
-    CO: "South America",
-    PE: "South America",
-
-    // Europe
-    GB: "Europe",
-    DE: "Europe",
-    FR: "Europe",
-    IT: "Europe",
-    ES: "Europe",
-    NL: "Europe",
-    SE: "Europe",
-    CH: "Europe",
-    RU: "Europe",
-    PL: "Europe",
-    BE: "Europe",
-    AT: "Europe",
-    DK: "Europe",
-
-    // Asia
-    IN: "Asia",
-    CN: "Asia",
-    JP: "Asia",
-    PK: "Asia",
-    BD: "Asia",
-    AE: "Asia",
-    SG: "Asia",
-    SA: "Asia",
-    KR: "Asia",
-    TH: "Asia",
-    MY: "Asia",
-    ID: "Asia",
-    PH: "Asia",
-    VN: "Asia",
-    QA: "Asia",
-    KW: "Asia",
-    OM: "Asia",
-
-    // Oceania
-    AU: "Oceania",
-    NZ: "Oceania",
-    FJ: "Oceania",
-
-    // Africa
-    ZA: "Africa",
-    NG: "Africa",
-    EG: "Africa",
-    KE: "Africa",
-    TZ: "Africa",
-    GH: "Africa",
-    UG: "Africa",
-    DZ: "Africa",
-
-};
+ 
 /* ================================
    🔥 SEO METADATA (FULL)
 ================================ */
@@ -204,20 +137,8 @@ ORDER BY t.total DESC
     ]);
 
     //console.log("TOTAL COUNTRIES:", countryData.length);
-    /* ================================
-       🌍 GROUP BY CONTINENT
-    ================================ */
-    const groupedCountries: Record<string, any[]> = {};
-
-    countryData.forEach((c: any) => {
-        const continent = continentMap[c.country_code] || "Other";
-
-        if (!groupedCountries[continent]) {
-            groupedCountries[continent] = [];
-        }
-
-        groupedCountries[continent].push(c);
-    });
+     
+     
 console.log("TOTAL:", countryData.length);
     return (
         <div className="mx-auto py-10 px-4">

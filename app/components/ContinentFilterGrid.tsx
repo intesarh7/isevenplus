@@ -106,34 +106,13 @@ const continents = [
 export default function ContinentFilterGrid({ countryData }: any) {
     const [selected, setSelected] = useState("All");
 
-    const filteredData =
-        selected === "All"
-            ? countryData
-            : countryData.filter((c: any) => {
-                const continent = continentMap[c.country_code] || "Other";
-                return continent === selected;
-            });
+    const filteredData = countryData;
 
     return (
         <>
             <div>
 
-                {/* ================= FILTER BUTTONS ================= */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                    {continents.map((c) => (
-                        <button
-                            key={c}
-                            onClick={() => setSelected(c)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium border transition cursor-pointer
-              ${selected === c
-                                    ? "bg-indigo-600 text-white"
-                                    : "bg-white hover:bg-gray-100"
-                                }`}
-                        >
-                            {c === "Other" ? "🌐 Other Regions" : c}
-                        </button>
-                    ))}
-                </div>
+                
 
                 {/* ================= GRID ================= */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
