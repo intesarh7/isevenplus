@@ -168,15 +168,14 @@ export default async function PostalHomePage() {
         // COUNTRIES
         db.query(`
         SELECT t.country_code, t.total
-        FROM (
-        SELECT country_code, COUNT(*) as total
-        FROM worldwide_postal_codes
-        WHERE country_code != '' 
-        AND country_code IS NOT NULL
-        GROUP BY country_code
-        ) t
-        ORDER BY t.total DESC
-        LIMIT 300
+FROM (
+  SELECT country_code, COUNT(*) as total
+  FROM worldwide_postal_codes
+  WHERE country_code != '' 
+    AND country_code IS NOT NULL
+  GROUP BY country_code
+) t
+ORDER BY t.total DESC
     `),
 
         // PLACES
@@ -219,7 +218,9 @@ export default async function PostalHomePage() {
 
         groupedCountries[continent].push(c);
     });
-
+console.log("TOTAL:", countryData.length);
+console.log(countryData.find(c => c.country_code === "SG"));
+console.log(countryData.find(c => c.country_code === "ZA"));
     return (
         <div className="mx-auto py-10 px-4">
 

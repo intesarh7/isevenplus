@@ -22,7 +22,7 @@ const countryNames: Record<string, string> = {
     AE: "United Arab Emirates",
     US: "United States",
     CA: "Canada",
-    SG: "Singapore ",
+    SG: "Singapore",
     MX: "Mexico",
     BR: "Brazil",
     AR: "Argentina",
