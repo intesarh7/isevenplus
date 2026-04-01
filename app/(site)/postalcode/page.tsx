@@ -20,11 +20,12 @@ export const dynamic = "force-dynamic";
 /* ================================
    CACHE
 ================================ */
-export const revalidate = 3600;
+export const revalidate = 0;
 
 /* ================================
    HELPER
 ================================ */
+console.log("NEXT RUNTIME:", process.env.NEXT_RUNTIME);
 function slugify(text: string) {
     return text
         ?.toString()
@@ -132,7 +133,9 @@ export async function generateMetadata(): Promise<Metadata> {
 ================================ */
 export default async function PostalHomePage() {
 
-
+    console.log("==== DEBUG START ====");
+    console.log("DB HOST:", process.env.DB_HOST);
+    console.log("DB NAME:", process.env.DB_NAME);
 
     /* ================================
        FAST + PARALLEL QUERIES ⚡
@@ -148,16 +151,15 @@ export default async function PostalHomePage() {
 
         // COUNTRIES
         db.query(`
-      SELECT t.country_code, t.total
-FROM (
-  SELECT country_code, COUNT(*) as total
-  FROM worldwide_postal_codes
-  WHERE country_code != '' 
-    AND country_code IS NOT NULL
-    AND country_code != 'IN'
-  GROUP BY country_code
-) t
-ORDER BY t.country_code ASC
+      SELECT 
+  TRIM(UPPER(country_code)) as country_code,
+  COUNT(*) as total
+FROM worldwide_postal_codes
+WHERE country_code IS NOT NULL
+AND TRIM(country_code) != ''
+AND TRIM(UPPER(country_code)) != 'IN'
+GROUP BY TRIM(UPPER(country_code))
+ORDER BY TRIM(UPPER(country_code)) ASC
     `),
 
         // PLACES
@@ -184,11 +186,19 @@ ORDER BY t.country_code ASC
       LIMIT 10
     `)
     ]);
+    console.log("COUNTRY DATA SAMPLE:", countryData.slice(0, 10));
+    console.log("TOTAL COUNTRIES:", countryData.length);
 
-    //console.log("TOTAL COUNTRIES:", countryData.length);
+    const codes = countryData.map((c: any) => c.country_code);
+    console.log("SORTED COUNTRY CODES:", codes.slice(0, 20));
     /* ================================
        🌍 GROUP BY CONTINENT
     ================================ */
+    countryData.forEach((c: any) => {
+        if (c.country_code !== c.country_code?.trim()) {
+            console.log("DIRTY CODE FOUND:", c.country_code);
+        }
+    });
     const groupedCountries: Record<string, any[]> = {};
 
     countryData.forEach((c: any) => {
@@ -200,7 +210,7 @@ ORDER BY t.country_code ASC
 
         groupedCountries[continent].push(c);
     });
-
+console.log("==== DEBUG END ====");
     return (
         <div className="mx-auto py-10 px-4">
 

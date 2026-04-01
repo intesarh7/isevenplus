@@ -26,8 +26,8 @@ export async function generateMetadata({ searchParams }: any) {
   const type = searchParams?.type || "india";
 
   const title = query
-    ? `${query} ${type === "india" ? "Pincode" : "Postal Code"} Search | iSevenPlus`
-    : "Indian & Worldwide Pincode Search | iSevenPlus";
+    ? `${query} ${type === "india" ? "Pincode" : "Postal Code"} Search (Location, Map & Nearby Codes)`
+    : "Find Pincode of Any Area in India & World Wide (Fast & Accurate)";
 
   const canonical = query
     ? `${baseUrl}/pincode?q=${encodeURIComponent(query)}&type=${type}`
@@ -36,7 +36,7 @@ export async function generateMetadata({ searchParams }: any) {
   return {
     title,
     description:
-      "Search Indian pincode and worldwide postal codes instantly by city, state, or postal code.",
+      "Search any area pincode instantly. 100% accurate data with city & district details.",
     alternates: { canonical },
   };
 }
