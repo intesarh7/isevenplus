@@ -34,7 +34,7 @@ function slugify(text: string) {
         .replace(/\s+/g, "-");
 }
 
- 
+
 /* ================================
    🔥 SEO METADATA (FULL)
 ================================ */
@@ -100,15 +100,14 @@ export default async function PostalHomePage() {
 
         // COUNTRIES
         db.query(`
-        SELECT t.country_code, t.total
-FROM (
-  SELECT country_code, COUNT(*) as total
-  FROM worldwide_postal_codes
-  WHERE country_code != '' 
-    AND country_code IS NOT NULL
-  GROUP BY country_code
-) t
-ORDER BY t.total DESC
+        SELECT 
+  country_code, 
+  COUNT(*) as total
+FROM worldwide_postal_codes
+WHERE country_code IS NOT NULL
+AND country_code != ''
+GROUP BY country_code
+ORDER BY total DESC;
     `),
 
         // PLACES
@@ -137,9 +136,9 @@ ORDER BY t.total DESC
     ]);
 
     //console.log("TOTAL COUNTRIES:", countryData.length);
-     
-     
-console.log("TOTAL:", countryData.length);
+
+
+    console.log("TOTAL:", countryData.length);
     return (
         <div className="mx-auto py-10 px-4">
 
