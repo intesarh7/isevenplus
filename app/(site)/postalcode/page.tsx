@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 /* ================================
    CACHE
 ================================ */
-export const revalidate = 3600;
+export const revalidate = 0;
 
 /* ================================
    HELPER
